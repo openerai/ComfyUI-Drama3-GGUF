@@ -53,10 +53,14 @@ to a test fixture; it does **not** perform model inference or prove voice clonin
 The Windows build helper was parsed successfully. The existing pinned CUDA backend
 was used for real inference; a fresh backend build was not repeated for this release.
 
-GitHub Actions is configured to run client/runtime checks on Windows, Linux, and
-macOS. See the repository's [Actions page](https://github.com/openerai/ComfyUI-Drama3-GGUF/actions)
-for the actual status of a given commit. These jobs do not install ComfyUI or run a model.
-The Windows-only Job Object test is skipped on other operating systems.
+GitHub Actions [run 39092405264](https://github.com/openerai/ComfyUI-Drama3-GGUF/actions/runs/39092405264)
+passed on Windows, Linux, and macOS for code commit `a504e07`.
+The first CI run exposed a test assertion comparing temporary-directory aliases
+as raw strings (Windows short paths and macOS `/var` symlinks). The assertion was
+corrected to compare canonical resolved paths. Runtime behavior did not change.
+These jobs do not install ComfyUI or run a model. The Windows-only Job Object
+test is skipped on other operating systems. See the [Actions page](https://github.com/openerai/ComfyUI-Drama3-GGUF/actions)
+for the actual status of subsequent commits.
 
 ## Independent review
 
