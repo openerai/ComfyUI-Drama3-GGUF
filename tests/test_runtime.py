@@ -1,4 +1,5 @@
 import importlib
+import base64
 import io
 import json
 import os
@@ -147,12 +148,13 @@ class PortableClientTests(unittest.TestCase):
         thread.start()
         try:
             url = f"http://127.0.0.1:{server.server_port}"
-            reference = client.reference_payload(np.zeros((1000, 1), dtype=np.float32), 16000, "Reference words.")
+            reference = client.reference_payload(np.sin(np.arange(1000, dtype=np.float32) * 0.1)[:, None] * 0.2, 16000, "Reference words.")
             audio, rate = client.generate({"mode": "external", "server_url": url}, "안녕하세요.", 7, 65, reference=reference)
             self.assertEqual((len(audio), rate), (1600, 16000))
             self.assertEqual(FakeAudioServer.received["model"], "custom-quant")
             self.assertEqual(FakeAudioServer.received["input"], "안녕하세요.")
             self.assertEqual(FakeAudioServer.received["voice_ref"]["type"], "base64")
+            self.assertEqual(FakeAudioServer.received["reference_text"], "Reference words.")
             self.assertNotIn("path", FakeAudioServer.received["voice_ref"])
         finally:
             server.shutdown()
@@ -163,7 +165,34 @@ class PortableClientTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             client.reference_payload(np.zeros(10), 16000, "")
         with self.assertRaises(ValueError):
-            client.reference_payload(np.zeros(3_000_000, dtype=np.float32), 16000, "Too long.")
+            client.reference_payload(np.ones(3_000_000, dtype=np.float32) * 0.1, 16000, "Too large.", max_seconds=1000)
+
+    def test_empty_silent_and_nonfinite_references_are_rejected(self):
+        invalid = [np.empty(0), np.empty((10, 0)), np.zeros(100), np.array([np.nan, 0.1]),
+                   np.array([np.inf, 0.1]), np.zeros((1, 2, 3)), np.array([[0.1, -0.1]] * 100)]
+        for audio in invalid:
+            with self.subTest(shape=audio.shape), self.assertRaises(ValueError):
+                client.reference_payload(audio, 16000, "Reference words.")
+        with self.assertRaises(ValueError):
+            client.reference_payload(np.ones(100), 0, "Reference words.")
+
+    def test_long_reference_is_rejected_before_wav_encoding(self):
+        audio = np.full(60 * 16000, 0.1, dtype=np.float32)
+        with patch.object(client.soundfile, "write") as encode:
+            with self.assertRaisesRegex(ValueError, "Trim Audio Duration"):
+                client.reference_payload(audio, 16000, "Long reference.")
+            encode.assert_not_called()
+        with self.assertRaises(ValueError):
+            client.reference_payload(audio[:100], 16000, "Reference.", max_seconds=float("nan"))
+
+    def test_inline_reference_roundtrip_preserves_audio_rate_and_transcript(self):
+        audio = np.column_stack([np.sin(np.arange(1000) * 0.1) * 0.2, np.cos(np.arange(1000) * 0.1) * 0.1])
+        payload = client.reference_payload(audio, 22050, "실제로 말한 대사.")
+        decoded, rate = soundfile.read(io.BytesIO(base64.b64decode(payload["voice_ref"]["data"])), always_2d=True)
+        self.assertEqual(rate, 22050)
+        self.assertEqual(decoded.shape, audio.shape)
+        self.assertTrue(np.allclose(audio, decoded, atol=1 / 32768))
+        self.assertEqual(payload["reference_text"], "실제로 말한 대사.")
 
     def test_launcher_lock_prevents_two_watchdogs(self):
         with tempfile.TemporaryDirectory() as temporary:

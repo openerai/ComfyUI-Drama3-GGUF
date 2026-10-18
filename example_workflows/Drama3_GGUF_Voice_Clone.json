@@ -1,0 +1,357 @@
+{
+  "id": "d655eef0-b42b-4ef4-8fcd-f06f46025b4e",
+  "revision": 0,
+  "last_node_id": 12,
+  "last_link_id": 4,
+  "nodes": [
+    {
+      "id": 10,
+      "type": "LoadAudio",
+      "pos": [
+        40,
+        80
+      ],
+      "size": [
+        380,
+        170
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "COMBO",
+          "widget": {
+            "name": "audio"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "title": "1 · Load Reference Audio"
+    },
+    {
+      "id": 11,
+      "type": "TrimAudioDuration",
+      "pos": [
+        40,
+        310
+      ],
+      "size": [
+        380,
+        150
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 1
+        },
+        {
+          "name": "start_index",
+          "type": "FLOAT",
+          "widget": {
+            "name": "start_index"
+          },
+          "link": null
+        },
+        {
+          "name": "duration",
+          "type": "FLOAT",
+          "widget": {
+            "name": "duration"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            2
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TrimAudioDuration"
+      },
+      "widgets_values": [
+        0,
+        10
+      ],
+      "title": "2 · Select Reference Segment (seconds)"
+    },
+    {
+      "id": 12,
+      "type": "PreviewAudio",
+      "pos": [
+        40,
+        520
+      ],
+      "size": [
+        380,
+        150
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            3
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAudio"
+      },
+      "widgets_values": [],
+      "title": "3 · Reference Preview"
+    },
+    {
+      "id": 1,
+      "type": "Drama3GGUFClone",
+      "pos": [
+        500,
+        80
+      ],
+      "size": [
+        560,
+        660
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "reference_audio",
+          "type": "AUDIO",
+          "link": 3
+        },
+        {
+          "name": "reference_text",
+          "type": "STRING",
+          "widget": {
+            "name": "reference_text"
+          },
+          "link": null
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "name": "max_seconds",
+          "type": "FLOAT",
+          "widget": {
+            "name": "max_seconds"
+          },
+          "link": null
+        },
+        {
+          "name": "server_url",
+          "type": "STRING",
+          "widget": {
+            "name": "server_url"
+          },
+          "link": null
+        },
+        {
+          "name": "model_id",
+          "type": "STRING",
+          "widget": {
+            "name": "model_id"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            4
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Drama3GGUFClone"
+      },
+      "widgets_values": [
+        "",
+        "반갑습니다. 이 문장은 참조 음성을 사용한 복제 테스트입니다.",
+        123,
+        "fixed",
+        12.0,
+        "",
+        "auto"
+      ],
+      "title": "Drama3 GGUF · Voice Clone"
+    },
+    {
+      "id": 2,
+      "type": "SaveAudioAdvanced",
+      "pos": [
+        1140,
+        80
+      ],
+      "size": [
+        430,
+        210
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 4
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        },
+        {
+          "name": "format",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "format"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveAudioAdvanced"
+      },
+      "widgets_values": [
+        "drama3_gguf/Clone",
+        "flac"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "MarkdownNote",
+      "pos": [
+        1140,
+        350
+      ],
+      "size": [
+        520,
+        480
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "## Drama3 GGUF · Voice Clone\n\n1. Load Audio에서 참조 음성을 선택하거나 업로드합니다.\n2. Trim Audio Duration으로 한 사람의 깨끗한 말소리 구간을 선택합니다. start_index와 duration의 단위는 초입니다. 기본 10초, 5~10초 정도의 짧은 구간을 권장합니다.\n3. Reference Preview만 우클릭 → Run Branch로 잘린 구간을 먼저 듣습니다. 이 실행은 복제 노드를 실행하지 않습니다.\n4. reference_text에는 선택한 구간에서 실제 말한 대사만 정확히 적습니다.\n5. text에는 새로 생성할 다른 문장을 적고 실행합니다.\n\n복제 노드는 참조 음성과 전사문이 모두 필수입니다. 참조가 빠지면 일반 TTS로 대신 실행하지 않습니다.\n기본 참조 상한은 15초입니다. 긴 파일은 구간을 잘라 사용하고, 자른 구간에 맞게 전사문도 수정하세요.\n\nserver_url이 비어 있으면 이 PC의 config.json을 사용합니다. model_id=auto는 서버에 Drama3 모델이 하나일 때 선택합니다. GPU·모델 파일·메모리 설정은 PC별 config.json에서 관리합니다.\n\n참조 음성은 설정한 서버로 전송됩니다. 공유 파일에는 참조 녹음이 포함되지 않습니다. 음색 유사도는 녹음·언어·모델에 따라 달라집니다.\n"
+      ],
+      "color": "#234",
+      "bgcolor": "#345"
+    }
+  ],
+  "links": [
+    [
+      1,
+      10,
+      0,
+      11,
+      0,
+      "AUDIO"
+    ],
+    [
+      2,
+      11,
+      0,
+      12,
+      0,
+      "AUDIO"
+    ],
+    [
+      3,
+      12,
+      0,
+      1,
+      0,
+      "AUDIO"
+    ],
+    [
+      4,
+      1,
+      0,
+      2,
+      0,
+      "AUDIO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.65,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}

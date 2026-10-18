@@ -11,6 +11,12 @@ models/
 *.safetensors
 *.wav
 *.flac
+*.mp3
+*.m4a
+*.ogg
+*.opus
+*.aac
+*.mp4
 *.log
 *.exe
 *.dll

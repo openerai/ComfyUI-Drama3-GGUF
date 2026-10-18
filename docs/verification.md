@@ -103,3 +103,32 @@ defects in the revised version. This review is not a certification or a guarante
 The shared workflow contains no GPU model, RAM capacity, user directory, or fixed
 quantization filename. Each installation supplies its backend/model/memory settings.
 That portability is configuration behavior, not evidence that every machine can run Drama3.
+
+## Voice clone workflow checks (0.1.1)
+
+The additional clone workflow was reviewed independently through Gravitas and
+checked against the pinned audio.cpp speech protocol and Drama3 session code.
+Both reference audio and its transcript are now required by `Drama3GGUFClone`.
+The existing TTS node rejects a transcript without audio. Multiple audio batches,
+empty/silent references, NaN/Inf, invalid sample rates, and references over the
+default 15-second limit are rejected before an HTTP generation request.
+
+All 21 client/runtime/input-boundary unit tests and Ruff passed locally on Windows.
+The node boundary tests isolate ComfyUI/Torch imports; they are not model inference.
+A real ComfyUI submission with a missing reference returned HTTP 400 before inference.
+
+The complete Load Audio → Trim Audio Duration → Preview Audio → Voice Clone →
+Save Audio graph was installed in ComfyUI. In the actual frontend, right-clicking
+only Reference Preview and choosing Run Branch produced a successful history entry
+whose selected output IDs were only `["12"]`. The clone and output-save branches
+were not executed. The trimmed reference player showed approximately 7 seconds.
+
+A user-selected Korean reference was transcribed locally with the already installed
+Qwen3-ASR 0.6B model. A 7.75-second segment ending with a complete sentence was selected.
+The recording, its path, and its transcript are not included in this repository.
+
+Initial full-generation attempts on the listed 12 GiB GPU failed with CUDA allocation
+errors, including allocation of a 511.88 MiB codec decode graph. Ordinary TTS success
+does not prove that a reference-conditioned request fits the same resource settings.
+No completed clone-generation or perceptual voice-similarity claim is made by these
+input and preview checks.

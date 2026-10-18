@@ -7,7 +7,8 @@ Drama3 GGUF를 실행하는 audio.cpp 서버와 ComfyUI를 연결하는 노드�
 
 1. ComfyUI의 `custom_nodes` 안에 이 저장소를 clone합니다.
 2. **ComfyUI를 실행하는 Python 환경**으로 `requirements.txt`를 설치하고 ComfyUI를 재시작합니다.
-3. `example_workflows/Drama3_GGUF_TTS.json`을 엽니다.
+3. 일반 TTS는 `example_workflows/Drama3_GGUF_TTS.json`, 음성 복제는
+   `example_workflows/Drama3_GGUF_Voice_Clone.json`을 엽니다.
 
 **audio.cpp 실행 파일과 GGUF 모델은 별도로 필요합니다.**
 노드만 설치해도 추론 엔진이 자동 설치되는 구성은 아닙니다.
@@ -48,9 +49,32 @@ Windows 관리 모드는 실제 RAM 작업 집합과 private memory 한도를 �
 실제 추론을 확인한 환경과 미확인 범위는 [검증 기록](docs/verification.md)에 적었습니다.
 CPU·Vulkan·Metal 선택을 제공하지만 모든 환경에서의 추론 성공을 검증한 것은 아닙니다.
 VRAM 부족 시 CPU offload가 가능하지만 RAM 사용량과 속도가 달라집니다.
+복제는 참조 인코딩도 수행하므로 일반 TTS가 실행되는 설정에서도 VRAM이 부족할 수
+있습니다. CPU 전문가 레이어 오프로딩과 코덱 설정은 각 PC에서 조절하세요.
 긴 글은 짧은 문장으로 나누어 생성하세요.
 
-참조 음성을 쓰려면 Load Audio를 `reference_audio`에 연결하고 정확한 전사문을 입력하세요.
+## 음성 복제
+
+복제 전용 워크플로우는 **Load Audio → Trim Audio Duration → Reference Preview
+→ Voice Clone → Save Audio**로 연결돼 있습니다. 참조 음성과 전사문이 모두
+필수이므로 참조 없이 일반 TTS로 대신 실행하지 않습니다.
+
+한 사람의 깨끗한 말소리 파일을 선택하고, `start_index`와 `duration`으로
+5~10초 정도의 구간을 고릅니다. 단위는 초입니다. `reference_text`에는
+**자른 구간에서 실제 말한 대사**, `text`에는 **새로 생성할 문장**을 적습니다.
+참조 구간을 바꾸면 전사문도 맞춰 수정하세요. 공유 파일에는 녹음과 전사문이
+없으므로 실행 전에 직접 선택해야 합니다.
+
+복제 전에 참조만 들으려면 **Reference Preview 노드만 우클릭 → Run Branch**를
+선택하세요. 해당 참조 경로만 실행해 재생기를 만들며 Voice Clone과 Save Audio는
+실행하지 않습니다. 전사문을 확인한 뒤 상단 **Run**으로 전체 복제를 실행합니다.
+ComfyUI 0.41.0 / frontend 1.55.17에서 실제 확인했습니다.
+
+빈 음성·무음·NaN/Inf·여러 배치는 미리 거절합니다. 기본 참조 상한은 15초입니다.
+더 긴 참조가 필요하면 서버의 문맥 용량을 확인한 뒤 로컬 설정의
+`reference_max_seconds`를 조절하세요. 짧은 파일도 길이가 길면 기본 1024-token
+문맥을 초과할 수 있습니다. 기존 TTS 노드도 전사문만 있고 오디오가 없으면 거절합니다.
+
 참조는 설정한 서버에 WAV base64로 전송되며 5MiB 제한이 있습니다.
 여러 화자·언어의 복제 품질은 아직 검증하지 않았습니다.
 

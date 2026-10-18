@@ -25,7 +25,8 @@ then restart ComfyUI. Do not install a different PyTorch build for this node.
 python -m pip install -r ComfyUI-Drama3-GGUF/requirements.txt
 ```
 
-Open `example_workflows/Drama3_GGUF_TTS.json` in ComfyUI.
+Open `example_workflows/Drama3_GGUF_TTS.json` for text-to-speech, or
+`example_workflows/Drama3_GGUF_Voice_Clone.json` for reference voice cloning.
 The node ID `Drama3GGUFGenerate` is retained for older local workflows.
 The example uses ComfyUI's built-in `SaveAudioAdvanced` node, verified with ComfyUI 0.41.0.
 
@@ -119,16 +120,40 @@ If VRAM is insufficient, upstream supports moving the codec to CPU
 (`fish_drama3.codec_backend=cpu`) and moving expert layers to CPU
 (`fish_drama3.cpu_expert_layers`). This increases host-memory demand and changes performance.
 Use the upstream guide and verify your own settings. Split long text into short sentences.
+Cloning also encodes the reference, so a configuration that fits ordinary TTS can
+still run out of VRAM during cloning. Adjust CPU expert offload and codec settings
+locally; the example workflow does not select these settings for other machines.
 Managed mode releases ComfyUI's cached models before using the local backend by default;
 set `release_comfy_models=false` to keep them, provided enough resources remain.
 
-## Voice reference
+## Voice clone workflow
 
-Connect a built-in Load Audio node to `reference_audio` and enter its exact transcript
-in `reference_text`. References are sent as PCM16 WAV base64 so server-side local paths
-are not required, including for an external server. The inline WAV limit is 5 MiB.
-Audio and text are sent to the server URL you configure. Voice-cloning quality has
-not been validated across speakers/languages by this project.
+The clone example connects **Load Audio → Trim Audio Duration → Reference Preview
+→ Voice Clone → Save Audio**. `Drama3GGUFClone` requires both reference audio and
+its transcript, so a missing reference cannot silently fall back to ordinary TTS.
+
+Select a clean recording of one person speaking. Set the trim start/duration in
+seconds; use a short segment, such as 5–10 seconds. Put the **exact words from that
+selected segment** in `reference_text`, and the **new sentence** in `text`.
+If you change the selected segment, update its transcript too. The shared example
+contains no recording or transcript; choose your own before running the clone.
+
+To listen to the cropped reference **before cloning**, right-click only the
+**Reference Preview** node and choose **Run Branch** (ComfyUI 0.41.0 frontend
+1.55.17). Its player is generated without running Voice Clone or Save Audio.
+Enter/correct the transcript, then use the main **Run** button for the full clone.
+
+References must contain finite, non-silent samples and one audio batch. The default
+reference limit is 15 seconds, checked before encoding or starting the server.
+Change `reference_max_seconds` in your local config only if your server's context
+capacity supports the longer reference plus the generation budget. The default
+1024-token context can be exhausted by a long reference even when the file is small.
+
+The existing TTS node still supports optional references. It now rejects a transcript
+without reference audio. References are sent as PCM16 WAV base64 so server-side local
+paths are not required, including for an external server. The inline WAV limit is
+5 MiB. Audio and text are sent to the server URL you configure. Voice-cloning quality
+has not been validated across speakers/languages by this project.
 
 ## Validation and limits
 

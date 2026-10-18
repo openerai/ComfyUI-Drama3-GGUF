@@ -2,6 +2,8 @@
 import base64
 import io
 import json
+import math
+from numbers import Integral
 from pathlib import Path
 import subprocess
 import sys
@@ -10,6 +12,7 @@ import time
 import requests
 import soundfile
 import psutil
+import numpy as np
 
 from .configuration import ROOT, managed_server_config, memory_limits, resolve_path, server_url, state_directory
 
@@ -32,11 +35,27 @@ def select_model(document, requested="auto"):
     return candidates[0]["id"]
 
 
-def reference_payload(audio, sample_rate, transcript):
+def reference_payload(audio, sample_rate, transcript, *, max_seconds=15.0):
     if not transcript.strip():
         raise ValueError("reference_text must match the words spoken in reference_audio.")
+    if not isinstance(sample_rate, Integral) or sample_rate <= 0:
+        raise ValueError("Reference sample_rate must be a positive integer.")
+    audio = np.asarray(audio, dtype=np.float32)
+    if audio.ndim not in {1, 2} or not audio.size or not audio.shape[0]:
+        raise ValueError("Reference audio is empty or has an invalid shape. Check the selected time range.")
+    if not np.isfinite(audio).all():
+        raise ValueError("Reference audio contains NaN or infinite samples.")
+    mono = audio.mean(axis=1) if audio.ndim == 2 else audio
+    if np.max(np.abs(mono)) <= 1e-6:
+        raise ValueError("Reference audio is silent. Select a section containing clear speech.")
+    max_seconds = float(max_seconds)
+    if not math.isfinite(max_seconds) or max_seconds <= 0:
+        raise ValueError("reference_max_seconds must be finite and positive.")
+    duration = audio.shape[0] / sample_rate
+    if duration > max_seconds:
+        raise ValueError(f"Reference audio is {duration:.1f}s; limit is {max_seconds:g}s. Use Trim Audio Duration, or configure reference_max_seconds for your server's context capacity.")
     buffer = io.BytesIO()
-    soundfile.write(buffer, audio, sample_rate, format="WAV", subtype="PCM_16")
+    soundfile.write(buffer, audio, int(sample_rate), format="WAV", subtype="PCM_16")
     data = buffer.getvalue()
     if len(data) > 5 * 1024 ** 2:
         raise ValueError("Reference WAV exceeds audio.cpp's 5 MiB inline limit. Use a shorter reference.")
