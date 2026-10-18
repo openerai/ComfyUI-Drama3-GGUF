@@ -8,7 +8,7 @@
       "id": 10,
       "type": "LoadAudio",
       "pos": [
-        40,
+        840,
         80
       ],
       "size": [
@@ -50,7 +50,7 @@
       "id": 11,
       "type": "TrimAudioDuration",
       "pos": [
-        40,
+        840,
         310
       ],
       "size": [
@@ -106,12 +106,12 @@
       "id": 12,
       "type": "PreviewAudio",
       "pos": [
-        40,
-        520
+        840,
+        540
       ],
       "size": [
         380,
-        150
+        170
       ],
       "flags": {},
       "order": 2,
@@ -144,8 +144,8 @@
       "id": 13,
       "type": "Qwen3ASRLoader",
       "pos": [
-        40,
-        760
+        840,
+        780
       ],
       "size": [
         380,
@@ -186,7 +186,7 @@
       "id": 14,
       "type": "Qwen3ASRTranscribe",
       "pos": [
-        480,
+        1300,
         80
       ],
       "size": [
@@ -262,7 +262,7 @@
       "id": 15,
       "type": "Drama3GGUFReferenceText",
       "pos": [
-        480,
+        1300,
         380
       ],
       "size": [
@@ -309,8 +309,8 @@
       "id": 1,
       "type": "Drama3GGUFClone",
       "pos": [
-        1030,
-        60
+        1860,
+        80
       ],
       "size": [
         500,
@@ -429,11 +429,11 @@
       "id": 2,
       "type": "SaveAudioAdvanced",
       "pos": [
-        2100,
-        60
+        1860,
+        1110
       ],
       "size": [
-        430,
+        500,
         210
       ],
       "flags": {},
@@ -481,19 +481,35 @@
       "id": 3,
       "type": "MarkdownNote",
       "pos": [
-        2100,
-        380
+        840,
+        1060
       ],
       "size": [
-        500,
-        360
+        420,
+        700
       ],
       "flags": {},
       "order": 8,
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "properties": {},
+      "properties": {
+        "drama3Guide": {
+          "version": 1,
+          "role": "workflow",
+          "locale": "ko",
+          "translations": {
+            "ko": {
+              "title": "Markdown Note",
+              "text": "## Automatic reference transcript · 참조 대사 자동 입력\n\n1. Load Reference Audio에서 파일을 선택하고 Trim에서 5~10초의 깨끗한 구간을 고릅니다.\n2. ASR Model에서 models/asr 안의 Qwen3-ASR 모델을 선택합니다. 이 워크플로우는 ComfyUI-Drama3의 Qwen3-ASR 노드가 추가로 필요합니다.\n3. Reference Transcript 노드만 우클릭 → Run Branch를 선택하면 잘린 음성의 대사가 자동 표시됩니다. 복제는 아직 실행하지 않습니다.\n4. Used reference transcript는 복제에 실제로 연결된 대사입니다. 잘못 인식했다면 Correction에 선택 구간의 정확한 전체 대사를 입력하세요. 빈칸이면 자동 인식을 사용합니다.\n5. Script & Direction의 New speech text에는 새로 말하게 할 문장을 적고 상단 Run을 누릅니다.\n\n음성 파일이나 Trim 구간을 바꾸면 Correction을 비우고 전사 미리보기를 다시 실행하세요. ASR은 원본 전체가 아닌 복제와 동일한 잘린 구간을 인식합니다. 파일만 업로드한 시점에는 전사를 실행하지 않습니다.\n\n모델과 실행 환경은 각 PC에서 설정합니다. 전사는 로컬에서 수행되며 참조 음성과 대사는 config.json에 지정된 복제 서버로 전송됩니다. 이 템플릿에는 사용자 파일과 전사문이 없습니다.\n\n\n새 대사는 Script & Direction에 입력하고, 생성 후 속도·볼륨은 Audio Controls (Local)에서 조절하세요. 자세한 사용법은 Guide 노트에 있습니다.\n"
+            },
+            "en": {
+              "title": "Workflow / Usage",
+              "text": "# Drama3 GGUF · Automatic Reference Transcription\n\nChoose a clean single-speaker recording. Trim a short segment, such as 5–10 seconds. Use Reference Preview → Run Branch to listen before cloning. Reference transcript must contain the exact words spoken in that selected segment; New speech text is the new dialogue.\n\nInstall the optional Qwen3-ASR nodes and converted ASR weights in models/asr. Select ASR Model. Use Run Branch on Reference Transcript to recognize/review the trimmed segment without cloning. Correction replaces the complete transcript; leave it blank to use ASR. Clear Correction and review again when changing the file or trim. Uploading alone does not run recognition.\n\nEnter new dialogue in Script & Direction. See Guide for emotion examples and Audio Controls for post-processing.\n\nRun the workflow, then preview/save the result. Blank Server URL uses this installation's config or localhost:8035. Model ID=auto needs exactly one registered Drama3 model. Model paths, backend and resource limits belong to each installation. Reference audio/text are sent to the configured server. Shared templates contain no personal recording or transcript.\n\nMax seconds=47 is a per-chunk starting budget, not the total output limit. The model-based input ceiling is 12,173 seconds, without a duration/quality guarantee. Prompt, reference and history need context too. Managed context starts at 4096; explicit older config values need manual adjustment. Merge settings, then stop the managed server so the next request applies them. request_timeout_seconds=0 removes the read wait, not inference errors. See Hardware for memory/context troubleshooting."
+            }
+          }
+        }
+      },
       "widgets_values": [
         "## Automatic reference transcript · 참조 대사 자동 입력\n\n1. Load Reference Audio에서 파일을 선택하고 Trim에서 5~10초의 깨끗한 구간을 고릅니다.\n2. ASR Model에서 models/asr 안의 Qwen3-ASR 모델을 선택합니다. 이 워크플로우는 ComfyUI-Drama3의 Qwen3-ASR 노드가 추가로 필요합니다.\n3. Reference Transcript 노드만 우클릭 → Run Branch를 선택하면 잘린 음성의 대사가 자동 표시됩니다. 복제는 아직 실행하지 않습니다.\n4. Used reference transcript는 복제에 실제로 연결된 대사입니다. 잘못 인식했다면 Correction에 선택 구간의 정확한 전체 대사를 입력하세요. 빈칸이면 자동 인식을 사용합니다.\n5. Script & Direction의 New speech text에는 새로 말하게 할 문장을 적고 상단 Run을 누릅니다.\n\n음성 파일이나 Trim 구간을 바꾸면 Correction을 비우고 전사 미리보기를 다시 실행하세요. ASR은 원본 전체가 아닌 복제와 동일한 잘린 구간을 인식합니다. 파일만 업로드한 시점에는 전사를 실행하지 않습니다.\n\n모델과 실행 환경은 각 PC에서 설정합니다. 전사는 로컬에서 수행되며 참조 음성과 대사는 config.json에 지정된 복제 서버로 전송됩니다. 이 템플릿에는 사용자 파일과 전사문이 없습니다.\n\n\n새 대사는 Script & Direction에 입력하고, 생성 후 속도·볼륨은 Audio Controls (Local)에서 조절하세요. 자세한 사용법은 Guide 노트에 있습니다.\n"
       ],
@@ -505,11 +521,11 @@
       "type": "Drama3GGUFScript",
       "title": "Script & Direction / 새 문장·연기 지시",
       "pos": [
-        500,
-        810
+        1300,
+        850
       ],
       "size": [
-        460,
+        500,
         390
       ],
       "flags": {},
@@ -565,11 +581,11 @@
       "type": "Drama3GGUFAudioControls",
       "title": "Audio Controls (Local) / 출력 속도·음량",
       "pos": [
-        1600,
-        60
+        1860,
+        710
       ],
       "size": [
-        420,
+        500,
         300
       ],
       "flags": {},
@@ -639,18 +655,33 @@
       "type": "MarkdownNote",
       "title": "Guide / 연기·샘플링·오디오 조절법",
       "pos": [
-        1030,
-        690
+        1300,
+        1420
       ],
       "size": [
-        1500,
-        620
+        1060,
+        900
       ],
       "flags": {},
       "order": 11,
       "mode": 0,
       "properties": {
-        "Node name for S&R": "MarkdownNote"
+        "Node name for S&R": "MarkdownNote",
+        "drama3Guide": {
+          "version": 1,
+          "role": "guide",
+          "locale": "ko",
+          "translations": {
+            "ko": {
+              "title": "Guide / 연기·샘플링·오디오 조절법",
+              "text": "## Drama3 조절 가이드 · 이 노트를 클릭하고 . 키로 확대\n\n### 1. Script & Direction · 새로 말할 문장과 연기\nNew speech text에는 새로 생성할 대사만 적습니다. Direction은 '차분하고 또렷한 안내 말투로'처럼 괄호 없이 적으면 [연기 지시]가 앞에 붙습니다. Delivery tag는 문장 전체에 적용합니다.\n한 단어만 바꾸려면 Delivery=none으로 두고 본문에 직접 쓰세요: `오늘은 <emphasis>새로운</emphasis> 시작입니다.` `<whisper>조용히 말해요.</whisper>`도 가능합니다. [한숨] 같은 소리 지시는 본문의 해당 위치에 씁니다.\n태그가 음색·연기 품질을 보장하지는 않습니다. 짧은 문장부터 비교하세요. 기본 200자 청크를 넘어가면 지시·쌍 태그의 범위가 이어지지 않을 수 있습니다.\n참조 전사문에는 연기 태그를 추가하지 마세요. 그 칸은 녹음에서 실제로 한 말을 위한 입력입니다.\n\n### 감정 표현 예시 · Direction에 괄호 없이 입력\n감정은 7개 Delivery tag에 한정되지 않습니다. Delivery는 속삭임·강조·속도 등의 말하기 방식 프리셋이고, 감정은 Direction에 자연어로 적습니다. Delivery=none부터 시작해 아래 지시를 하나씩 비교하세요.\n- 기쁨: `기쁜 마음으로, 웃음이 살짝 섞인 밝은 말투로`\n- 슬픔: `울음을 참으며 슬프고 조용하게`\n- 억누른 분노: `분노를 억누르며 낮고 단호하게`\n- 당황: `당황해서 잠깐 머뭇거리다가 조심스럽게`\n- 감정 변화: `처음에는 불안하게, 마지막에는 안도하며`\n\n문장 중간의 지시는 New speech text에 직접 넣을 수 있습니다: `[놀라며] 정말이야? [안도하며] 다행이다.` 감정 이름을 고정된 명령어 목록으로 인식하는 기능이 아니라 자연어 연기 지시입니다. 목소리·대사마다 반영 정도가 다르며, 감정 강도를 수치처럼 정확히 보장하지 않습니다.\nDirection에는 새 대사의 연기 지시를, New speech text에는 읽을 대사를 적습니다. 참조 전사문에는 녹음에서 실제로 한 말만 적으세요.\n\n### 2. Generate / Voice Clone · 모델 샘플링\n기본 Temperature=1.0 / Top P=0.9 / Top K=30으로 시작합니다. Temperature는 생성 변화량, Top P·K는 후보 선택 범위를 바꿉니다. 지나치게 낮추면 침묵·반복이 생길 수 있습니다. 이 로컬 서버는 Top K=0과 Top P=0을 지원하지 않습니다.\nSeed를 고정하면 같은 설정을 비교하기 쉽습니다. Temperature=0도 모든 반복 방지 경로가 완전 결정적인 것은 아닙니다. Max seconds는 문장 블록당 생성 상한입니다.\n\n### 최대 생성 길이 · 모델 범위와 서버 용량\nMax seconds는 텍스트 구간 하나의 생성 예산입니다. 이 워크플로우의 시작 예산은 구간당 47초이며, 특정 PC 기준의 24초 제한은 없습니다. 모델의 262144개 문맥 위치와 코덱 프레임 비율로 계산한 범위까지 설정합니다(노드 상한 12173초). 이 상한은 이론상 문맥 예산이며 그 길이의 음성 생성이나 품질을 보장하지 않습니다. 입력 대사·참조 음성·이전 구간도 같은 문맥 공간을 사용합니다.\n실제 서버의 fish_drama3.context_length가 요청보다 작으면 '문맥 용량 초과'로 안내합니다. 각 서버의 session_options에서 문맥 용량을 설정한 뒤 해당 서버를 재시작하세요(관리 모드는 각 설치의 config.json). 큰 문맥은 메모리를 더 사용하며, 실행 불가능하면 메모리 부족 등 실제 원인을 표시합니다. 워크플로우가 PC별 메모리 보호 설정을 자동 변경하지는 않습니다.\n생성 대기 시간은 음성 길이와 별개입니다. config.json의 request_timeout_seconds 기본값은 600초이며, 더 늘리거나 0으로 읽기 대기 제한을 해제할 수 있습니다. 시간 초과 메시지가 떠도 서버는 계속 생성 중일 수 있으니 상태를 확인하고 재시도하세요.\n\n### 3. Audio Controls (Local) · 생성 후 출력 조절\nSpeed=1.0이 원래 속도, 1.2는 빠르게, 0.8은 느리게입니다. FFmpeg atempo로 음정을 유지합니다. Volume은 dB 단위: 0은 유지, -6은 줄이기, +3은 키우기입니다.\nNormalize loudness를 켜면 EBU R128 음량 정규화를 적용합니다. Target LUFS 기본 -16은 이 노드의 목표값이며 Fish 웹앱과 같은 알고리즘/설정이라는 뜻은 아닙니다. 순서는 속도 → 정규화 → 볼륨 → 피크 제한(0.98)입니다. 따라서 볼륨을 추가로 올리면 최종 LUFS도 달라집니다.\n속도·볼륨·정규화만 바꾸면 같은 그래프에서 생성 음성을 재사용할 수 있습니다. Run Branch로 전사만 따로 실행한 뒤에는 ComfyUI 캐시가 생성 결과를 비울 수 있습니다. FFmpeg가 PATH에 필요하며 config.json의 ffmpeg_path로도 지정할 수 있습니다. 기본 1x/0dB/정규화 끔은 무가공입니다.\n\n### 4. Fish 웹앱과 다른 부분\n확인한 웹앱에서 Drama3는 볼륨·속도, S2.1 Pro는 음량 정규화·텍스트 정규화·태그 호환 모드도 표시합니다. 이 노드의 속도·음량 조절은 로컬 후처리입니다. 사이트의 숫자/날짜 읽기용 텍스트 정규화, 자동 태그, 태그 호환 모드를 그대로 구현한 기능은 아닙니다. 읽기 어려운 숫자·단위는 원하는 발음대로 직접 적으세요.\n공식 안내: https://docs.fish.audio/features/text-to-speech/drama-3\n\n### 장문 생성 설정\n이 워크플로우의 Max seconds 시작값은 **47초(구간당 생성 예산)**입니다. 전체 음성의 길이 상한이 아니며, 긴 본문은 서버가 나누어 생성·합칩니다. 필요하면 이 값을 더 늘릴 수 있고, 실제 문맥·메모리가 부족하면 원인을 안내합니다.\n관리 서버의 기본 fish_drama3.context_length는 4096입니다. 기존 config.json에 1024 등을 명시했다면 session_options에서 직접 변경해야 합니다. 긴 생성의 응답 대기 제한은 request_timeout_seconds=0으로 해제할 수 있습니다. 기존 경로·백엔드·다른 옵션을 유지하고, 변경 후 python run_server.py --stop으로 관리 서버를 중지하면 다음 생성부터 적용됩니다.\n감정 지시와 짧은 쌍 태그는 새 대사 본문에 넣으세요. 긴 대사에서 Delivery 선택값이 있다면 none으로 두고 필요한 문장만 태그로 감쌉니다. 참조 전사문에는 녹음에서 실제로 말한 내용만 적습니다. 서버의 문맥·메모리 설정은 각 설치에서 관리하며, 워크플로우가 다른 사용자의 설정을 변경하지 않습니다.\n"
+            },
+            "en": {
+              "title": "Guide / Acting, Sampling and Audio Controls",
+              "text": "# Acting, sampling and audio controls\n\n## Script & Direction\n\nPut new dialogue in New speech text and natural-language acting directions in Direction, without brackets. Script & Direction prepends `[direction]`. Basic workflows without this node accept those brackets directly in the generation text.\n\nDelivery applies a paired tag to the whole short sentence. For individual words, leave Delivery=none and write tags manually: `Today is a <emphasis>new</emphasis> beginning.` or `<whisper>Please be quiet.</whisper>`. Place sound directions such as `[sighs]` at their intended position. These instructions do not guarantee acting or voice quality; compare short examples first. Keep reference transcripts limited to the words actually spoken in the recording.\n\n### Emotion examples\n\nThe delivery presets are not an exhaustive emotion list. Use natural language for emotions; start with Delivery=none.\n\n- Joy: `bright and happy, with a slight smile in the voice`\n- Sadness: `quietly sad, holding back tears`\n- Restrained anger: `low and firm, suppressing anger`\n- Embarrassment: `hesitate briefly, then speak cautiously`\n- A change of emotion: `anxious at first, relieved at the end`\n\nInline directions are also possible: `[surprised] Really? [relieved] What a relief.` They are acting instructions, not a guaranteed set of fixed emotion commands or a numeric intensity control.\n\nThe default native chunker uses 200 characters and does not carry a long paired tag's scope across chunks. When Delivery is selected, Script & Direction rejects inputs over 200 characters including tags/directions. Split long manually tagged passages into short sentences. [Official syntax](https://docs.fish.audio/features/text-to-speech/drama-3)\n\n## Generation and sampling\n\nStart with Temperature=1.0 / Top P=0.9 / Top K=30. Change one setting at a time. Very low temperature can produce silence or repetition. This runtime rejects Top P=0 and Top K=0. Temperature=0 is not fully deterministic in every repetition-handling path. A fixed seed helps comparisons within the same configuration, but changing quantization or backend/offload can change output.\n\nMax seconds is a budget for each text chunk. New nodes default to 12; saved workflows start at **47 seconds per chunk**. This is adjustable and not the total output-duration limit. The model-based input ceiling is 12,173 seconds, derived from 262,144 context positions and the codec rate; it is not an output-duration or quality guarantee. Prompts, references and history also use context.\n\nManaged context starts at `fish_drama3.context_length=4096`. Explicit older values in config.json are preserved until edited. Merge changes without removing paths, backend or memory settings. Stop the managed server with `python run_server.py --stop` so the next request applies them. More context needs more memory. `request_timeout_seconds=0` disables the HTTP read wait; default is 600 seconds. A timeout does not cancel server inference, so check status before retrying.\n\n## Audio Controls (Local)\n\n- Speed=1.0 preserves tempo; 1.2 is faster, 0.8 slower. FFmpeg atempo preserves pitch.\n- Volume dB: 0 preserves gain; -6 reduces it, +3 increases it.\n- Normalize loudness uses local EBU R128 processing. Target LUFS defaults to -16 here, not a promise of Fish web-app parity or an exact result on every short clip.\n- Processing order: tempo → normalization → gain → 0.98 peak limiter. Additional gain changes final loudness after normalization.\n\nNon-neutral processing requires FFmpeg on PATH or ffmpeg_path in config.json. Neutral 1x / 0dB / normalization-off passes samples through unchanged. Sample rate/channels are preserved; one audio batch is supported. Changing only audio controls can reuse generated audio from the same graph. Running an ASR branch separately can clear ComfyUI's generation cache.\n\n## Fish web-app differences\n\nThese are local post-processing controls, not native speed controls or a clone of Fish cloud. Cloud number/date normalization, automatic tagging and S2.1 tag-compatibility mode are not implemented. Spell difficult numbers or units the way they should be pronounced. The examined web app exposed volume/speed for Drama3 and additional normalization/tag options for S2.1 Pro; these are distinct models and services."
+            }
+          }
+        }
       },
       "widgets_values": [
         "## Drama3 조절 가이드 · 이 노트를 클릭하고 . 키로 확대\n\n### 1. Script & Direction · 새로 말할 문장과 연기\nNew speech text에는 새로 생성할 대사만 적습니다. Direction은 '차분하고 또렷한 안내 말투로'처럼 괄호 없이 적으면 [연기 지시]가 앞에 붙습니다. Delivery tag는 문장 전체에 적용합니다.\n한 단어만 바꾸려면 Delivery=none으로 두고 본문에 직접 쓰세요: `오늘은 <emphasis>새로운</emphasis> 시작입니다.` `<whisper>조용히 말해요.</whisper>`도 가능합니다. [한숨] 같은 소리 지시는 본문의 해당 위치에 씁니다.\n태그가 음색·연기 품질을 보장하지는 않습니다. 짧은 문장부터 비교하세요. 기본 200자 청크를 넘어가면 지시·쌍 태그의 범위가 이어지지 않을 수 있습니다.\n참조 전사문에는 연기 태그를 추가하지 마세요. 그 칸은 녹음에서 실제로 한 말을 위한 입력입니다.\n\n### 감정 표현 예시 · Direction에 괄호 없이 입력\n감정은 7개 Delivery tag에 한정되지 않습니다. Delivery는 속삭임·강조·속도 등의 말하기 방식 프리셋이고, 감정은 Direction에 자연어로 적습니다. Delivery=none부터 시작해 아래 지시를 하나씩 비교하세요.\n- 기쁨: `기쁜 마음으로, 웃음이 살짝 섞인 밝은 말투로`\n- 슬픔: `울음을 참으며 슬프고 조용하게`\n- 억누른 분노: `분노를 억누르며 낮고 단호하게`\n- 당황: `당황해서 잠깐 머뭇거리다가 조심스럽게`\n- 감정 변화: `처음에는 불안하게, 마지막에는 안도하며`\n\n문장 중간의 지시는 New speech text에 직접 넣을 수 있습니다: `[놀라며] 정말이야? [안도하며] 다행이다.` 감정 이름을 고정된 명령어 목록으로 인식하는 기능이 아니라 자연어 연기 지시입니다. 목소리·대사마다 반영 정도가 다르며, 감정 강도를 수치처럼 정확히 보장하지 않습니다.\nDirection에는 새 대사의 연기 지시를, New speech text에는 읽을 대사를 적습니다. 참조 전사문에는 녹음에서 실제로 한 말만 적으세요.\n\n### 2. Generate / Voice Clone · 모델 샘플링\n기본 Temperature=1.0 / Top P=0.9 / Top K=30으로 시작합니다. Temperature는 생성 변화량, Top P·K는 후보 선택 범위를 바꿉니다. 지나치게 낮추면 침묵·반복이 생길 수 있습니다. 이 로컬 서버는 Top K=0과 Top P=0을 지원하지 않습니다.\nSeed를 고정하면 같은 설정을 비교하기 쉽습니다. Temperature=0도 모든 반복 방지 경로가 완전 결정적인 것은 아닙니다. Max seconds는 문장 블록당 생성 상한입니다.\n\n### 최대 생성 길이 · 모델 범위와 서버 용량\nMax seconds는 텍스트 구간 하나의 생성 예산입니다. 이 워크플로우의 시작 예산은 구간당 47초이며, 특정 PC 기준의 24초 제한은 없습니다. 모델의 262144개 문맥 위치와 코덱 프레임 비율로 계산한 범위까지 설정합니다(노드 상한 12173초). 이 상한은 이론상 문맥 예산이며 그 길이의 음성 생성이나 품질을 보장하지 않습니다. 입력 대사·참조 음성·이전 구간도 같은 문맥 공간을 사용합니다.\n실제 서버의 fish_drama3.context_length가 요청보다 작으면 '문맥 용량 초과'로 안내합니다. 각 서버의 session_options에서 문맥 용량을 설정한 뒤 해당 서버를 재시작하세요(관리 모드는 각 설치의 config.json). 큰 문맥은 메모리를 더 사용하며, 실행 불가능하면 메모리 부족 등 실제 원인을 표시합니다. 워크플로우가 PC별 메모리 보호 설정을 자동 변경하지는 않습니다.\n생성 대기 시간은 음성 길이와 별개입니다. config.json의 request_timeout_seconds 기본값은 600초이며, 더 늘리거나 0으로 읽기 대기 제한을 해제할 수 있습니다. 시간 초과 메시지가 떠도 서버는 계속 생성 중일 수 있으니 상태를 확인하고 재시도하세요.\n\n### 3. Audio Controls (Local) · 생성 후 출력 조절\nSpeed=1.0이 원래 속도, 1.2는 빠르게, 0.8은 느리게입니다. FFmpeg atempo로 음정을 유지합니다. Volume은 dB 단위: 0은 유지, -6은 줄이기, +3은 키우기입니다.\nNormalize loudness를 켜면 EBU R128 음량 정규화를 적용합니다. Target LUFS 기본 -16은 이 노드의 목표값이며 Fish 웹앱과 같은 알고리즘/설정이라는 뜻은 아닙니다. 순서는 속도 → 정규화 → 볼륨 → 피크 제한(0.98)입니다. 따라서 볼륨을 추가로 올리면 최종 LUFS도 달라집니다.\n속도·볼륨·정규화만 바꾸면 같은 그래프에서 생성 음성을 재사용할 수 있습니다. Run Branch로 전사만 따로 실행한 뒤에는 ComfyUI 캐시가 생성 결과를 비울 수 있습니다. FFmpeg가 PATH에 필요하며 config.json의 ffmpeg_path로도 지정할 수 있습니다. 기본 1x/0dB/정규화 끔은 무가공입니다.\n\n### 4. Fish 웹앱과 다른 부분\n확인한 웹앱에서 Drama3는 볼륨·속도, S2.1 Pro는 음량 정규화·텍스트 정규화·태그 호환 모드도 표시합니다. 이 노드의 속도·음량 조절은 로컬 후처리입니다. 사이트의 숫자/날짜 읽기용 텍스트 정규화, 자동 태그, 태그 호환 모드를 그대로 구현한 기능은 아닙니다. 읽기 어려운 숫자·단위는 원하는 발음대로 직접 적으세요.\n공식 안내: https://docs.fish.audio/features/text-to-speech/drama-3\n\n### 장문 생성 설정\n이 워크플로우의 Max seconds 시작값은 **47초(구간당 생성 예산)**입니다. 전체 음성의 길이 상한이 아니며, 긴 본문은 서버가 나누어 생성·합칩니다. 필요하면 이 값을 더 늘릴 수 있고, 실제 문맥·메모리가 부족하면 원인을 안내합니다.\n관리 서버의 기본 fish_drama3.context_length는 4096입니다. 기존 config.json에 1024 등을 명시했다면 session_options에서 직접 변경해야 합니다. 긴 생성의 응답 대기 제한은 request_timeout_seconds=0으로 해제할 수 있습니다. 기존 경로·백엔드·다른 옵션을 유지하고, 변경 후 python run_server.py --stop으로 관리 서버를 중지하면 다음 생성부터 적용됩니다.\n감정 지시와 짧은 쌍 태그는 새 대사 본문에 넣으세요. 긴 대사에서 Delivery 선택값이 있다면 none으로 두고 필요한 문장만 태그로 감쌉니다. 참조 전사문에는 녹음에서 실제로 말한 내용만 적습니다. 서버의 문맥·메모리 설정은 각 설치에서 관리하며, 워크플로우가 다른 사용자의 설정을 변경하지 않습니다.\n"
@@ -663,18 +694,33 @@
       "type": "MarkdownNote",
       "title": "Setup / 모델 다운로드·설치",
       "pos": [
-        40,
-        1430
+        2470,
+        80
       ],
       "size": [
         1230,
-        1300
+        850
       ],
       "flags": {},
       "order": 12,
       "mode": 0,
       "properties": {
-        "Node name for S&R": "MarkdownNote"
+        "Node name for S&R": "MarkdownNote",
+        "drama3Guide": {
+          "version": 1,
+          "role": "setup",
+          "locale": "ko",
+          "translations": {
+            "ko": {
+              "title": "Setup / 모델 다운로드·설치",
+              "text": "## 모델 다운로드·설치\n\n2026-10-18 확인 · 노트를 선택하고 . 키로 확대할 수 있습니다.\n\n### GGUF 모델 하나 선택\n\n[Jmica / Drama-3-GGUF 파일 목록](https://huggingface.co/Jmica/Drama-3-GGUF/tree/main)에서 사용할 **GGUF 하나**를 받으세요. 아래 파일명 링크를 열고 Download를 누릅니다. 모두 audio.cpp용 패키지이며, 이 흐름에는 원본 Drama3 체크포인트·별도 코덱을 추가로 받을 필요가 없습니다.\n\n| 파일 | 다운로드 크기 | 선택할 때 참고 |\n| --- | --- | --- |\n| [drama-3-backbone-8bit-experts-Q2_K.gguf](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | 아래 기본 4종 중 가장 작은 파일 |\n| [drama-3-backbone-8bit-experts-Q3_K_S.gguf](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | Q8 backbone + Q3 전문가 |\n| [drama-3-backbone-4bit-experts-Q4_K_S.gguf](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | backbone도 4bit인 별도 비교 후보 |\n| [drama-3-backbone-8bit-experts-Q4_K_S.gguf](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | Q8 backbone + Q4 전문가 |\n\n용량은 **디스크 파일 크기**입니다. RAM·VRAM 필요량과 같지 않습니다. 파일 크기 순서로 GPU 메모리 사용량을 판단하지 마세요. 높은 비트 수가 발음·감정 표현의 개선을 보장하지도 않습니다. 모델 카드의 FP32-router/BF16 추가 프로파일은 고급 비교용이며, 이 노드의 고정 런타임에서 별도 검증하지 않았습니다.\n\n### 저장 위치와 실행 엔진\n\n1. GGUF를 예를 들어 `ComfyUI/models/drama3/`에 보관합니다. SSD는 디스크 전문가 읽기 속도에 도움이 됩니다. 다운로드 파일 외에 실행 도구·캐시·출력용 공간도 남겨 두세요.\n2. **Drama3를 지원하는 audio.cpp 실행 파일도 별도로 필요합니다.** 일반 GGUF 텍스트 모델 로더에 연결하지 않습니다. [이 노드의 빌드·설치 안내](https://github.com/openerai/ComfyUI-Drama3-GGUF#obtain-a-compatible-backend)를 따라 호환 엔진을 준비합니다.\n3. 자동 시작은 `custom_nodes/ComfyUI-Drama3-GGUF/config.managed.example.json`을 처음에만 `config.json`으로 복사한 뒤 `mode=managed`, `executable`, `model_path`, `backend`를 지정합니다. 기존 config.json이 있으면 필요한 항목만 수정하세요.\n4. 위 예시 폴더를 사용했다면 model_path는 `../../models/drama3/<받은 파일명>.gguf`로 지정할 수 있습니다. 상대 경로 기준은 config.json 폴더입니다. 노드의 `model_id=auto`는 서버에 등록된 모델을 고르며, 디스크 파일을 직접 찾는 옵션이 아닙니다.\n5. 외부 서버는 모델을 **서버 쪽에** 등록하고 `server_url`을 연결합니다. 클라이언트의 config.json으로 외부 서버 자원을 조절하지 않습니다.\n\n### 자동 전사 Clone에만 추가할 모델\n\n[Qwen3-ASR-ComfyUI 파일 목록](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/tree/main)에서 **qwen3_asr_0.6b_bf16.safetensors**(약 1.6 GB)를 받아 `ComfyUI/models/asr/`에 넣고 ASR Model에서 선택합니다. 이 자동 전사 워크플로우에는 [ComfyUI-Drama3의 Qwen3-ASR 노드](https://github.com/PedroMarinhoDev/ComfyUI-Drama3)도 필요합니다. 수동 전사 Clone과 일반 TTS에는 ASR이 필요 없습니다. ForcedAligner나 원본 TTS 가중치는 이 GGUF 워크플로우 때문에 받을 필요가 없습니다.\n\n출처: [GGUF 모델 카드](https://huggingface.co/Jmica/Drama-3-GGUF), [ASR 모델 안내](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI). 모델 배포 라이선스는 해당 모델 카드에서 확인하세요."
+            },
+            "en": {
+              "title": "Setup / Model Downloads and Installation",
+              "text": "# Model Downloads and Installation\n\nChoose **one standalone GGUF** from [Jmica / Drama-3-GGUF](https://huggingface.co/Jmica/Drama-3-GGUF/tree/main). Open the file link and choose Download. These packages include the codec and required model metadata; an original Drama3 checkpoint or separate codec is not needed for this pipeline.\n\n| Package | Disk size | Selection notes |\n| --- | --- | --- |\n| [Q8 backbone / Q2 experts](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | Smallest of these four files |\n| [Q8 backbone / Q3 experts](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | Comparison candidate |\n| [Q4 backbone / Q4 experts](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | Different backbone precision |\n| [Q8 backbone / Q4 experts](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | Comparison candidate |\n\nDisk size is not a RAM/VRAM requirement or a ranking of GPU memory use. More bits do not guarantee better pronunciation or acting. The additional FP32-router/BF16 profiles have not been separately verified with this project's pinned runtime.\n\n### Storage and engine\n\n1. Store the GGUF in a folder such as `ComfyUI/models/drama3/`. An SSD helps disk-expert reads. Leave extra space for the runtime, cache and outputs.\n2. A **Drama3-capable audio.cpp executable is required separately**. Generic LLM GGUF loaders will not work. Follow the [backend build guide](https://github.com/openerai/ComfyUI-Drama3-GGUF#obtain-a-compatible-backend).\n3. For managed mode, copy config.managed.example.json to config.json only on first install, then set mode, executable, model_path and backend. Preserve other existing settings.\n4. For the suggested folder, model_path is `../../models/drama3/<selected-file>.gguf`, relative to config.json. Model ID=auto selects a registered server model, not a file on disk.\n5. For external mode, register the model on the server and set Server URL. Client configuration does not control that server's resources.\n\n### Optional automatic reference transcription\n\nOnly auto-transcript Clone additionally needs **qwen3_asr_0.6b_bf16.safetensors** (about 1.6 GB) from [Qwen3-ASR-ComfyUI](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/tree/main) in `ComfyUI/models/asr/`, plus [ComfyUI-Drama3's Qwen3-ASR nodes](https://github.com/PedroMarinhoDev/ComfyUI-Drama3). Select the file in ASR Model. Ordinary TTS and manual-transcript Clone do not need ASR. A ForcedAligner or original TTS weights are not required by this GGUF workflow.\n\nSources: [GGUF model card](https://huggingface.co/Jmica/Drama-3-GGUF), [ASR model card](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI). Check each model's own license."
+            }
+          }
+        }
       },
       "widgets_values": [
         "## 모델 다운로드·설치\n\n2026-10-18 확인 · 노트를 선택하고 . 키로 확대할 수 있습니다.\n\n### GGUF 모델 하나 선택\n\n[Jmica / Drama-3-GGUF 파일 목록](https://huggingface.co/Jmica/Drama-3-GGUF/tree/main)에서 사용할 **GGUF 하나**를 받으세요. 아래 파일명 링크를 열고 Download를 누릅니다. 모두 audio.cpp용 패키지이며, 이 흐름에는 원본 Drama3 체크포인트·별도 코덱을 추가로 받을 필요가 없습니다.\n\n| 파일 | 다운로드 크기 | 선택할 때 참고 |\n| --- | --- | --- |\n| [drama-3-backbone-8bit-experts-Q2_K.gguf](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | 아래 기본 4종 중 가장 작은 파일 |\n| [drama-3-backbone-8bit-experts-Q3_K_S.gguf](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | Q8 backbone + Q3 전문가 |\n| [drama-3-backbone-4bit-experts-Q4_K_S.gguf](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | backbone도 4bit인 별도 비교 후보 |\n| [drama-3-backbone-8bit-experts-Q4_K_S.gguf](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | Q8 backbone + Q4 전문가 |\n\n용량은 **디스크 파일 크기**입니다. RAM·VRAM 필요량과 같지 않습니다. 파일 크기 순서로 GPU 메모리 사용량을 판단하지 마세요. 높은 비트 수가 발음·감정 표현의 개선을 보장하지도 않습니다. 모델 카드의 FP32-router/BF16 추가 프로파일은 고급 비교용이며, 이 노드의 고정 런타임에서 별도 검증하지 않았습니다.\n\n### 저장 위치와 실행 엔진\n\n1. GGUF를 예를 들어 `ComfyUI/models/drama3/`에 보관합니다. SSD는 디스크 전문가 읽기 속도에 도움이 됩니다. 다운로드 파일 외에 실행 도구·캐시·출력용 공간도 남겨 두세요.\n2. **Drama3를 지원하는 audio.cpp 실행 파일도 별도로 필요합니다.** 일반 GGUF 텍스트 모델 로더에 연결하지 않습니다. [이 노드의 빌드·설치 안내](https://github.com/openerai/ComfyUI-Drama3-GGUF#obtain-a-compatible-backend)를 따라 호환 엔진을 준비합니다.\n3. 자동 시작은 `custom_nodes/ComfyUI-Drama3-GGUF/config.managed.example.json`을 처음에만 `config.json`으로 복사한 뒤 `mode=managed`, `executable`, `model_path`, `backend`를 지정합니다. 기존 config.json이 있으면 필요한 항목만 수정하세요.\n4. 위 예시 폴더를 사용했다면 model_path는 `../../models/drama3/<받은 파일명>.gguf`로 지정할 수 있습니다. 상대 경로 기준은 config.json 폴더입니다. 노드의 `model_id=auto`는 서버에 등록된 모델을 고르며, 디스크 파일을 직접 찾는 옵션이 아닙니다.\n5. 외부 서버는 모델을 **서버 쪽에** 등록하고 `server_url`을 연결합니다. 클라이언트의 config.json으로 외부 서버 자원을 조절하지 않습니다.\n\n### 자동 전사 Clone에만 추가할 모델\n\n[Qwen3-ASR-ComfyUI 파일 목록](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/tree/main)에서 **qwen3_asr_0.6b_bf16.safetensors**(약 1.6 GB)를 받아 `ComfyUI/models/asr/`에 넣고 ASR Model에서 선택합니다. 이 자동 전사 워크플로우에는 [ComfyUI-Drama3의 Qwen3-ASR 노드](https://github.com/PedroMarinhoDev/ComfyUI-Drama3)도 필요합니다. 수동 전사 Clone과 일반 TTS에는 ASR이 필요 없습니다. ForcedAligner나 원본 TTS 가중치는 이 GGUF 워크플로우 때문에 받을 필요가 없습니다.\n\n출처: [GGUF 모델 카드](https://huggingface.co/Jmica/Drama-3-GGUF), [ASR 모델 안내](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI). 모델 배포 라이선스는 해당 모델 카드에서 확인하세요."
@@ -689,18 +735,33 @@
       "type": "MarkdownNote",
       "title": "Hardware / 사양별 설정·문제 해결",
       "pos": [
-        1330,
-        1430
+        2470,
+        1010
       ],
       "size": [
         1230,
-        1300
+        1100
       ],
       "flags": {},
       "order": 13,
       "mode": 0,
       "properties": {
-        "Node name for S&R": "MarkdownNote"
+        "Node name for S&R": "MarkdownNote",
+        "drama3Guide": {
+          "version": 1,
+          "role": "hardware",
+          "locale": "ko",
+          "translations": {
+            "ko": {
+              "title": "Hardware / 사양별 설정·문제 해결",
+              "text": "## 사양별 설정·문제 해결\n\n2026-10-18 확인 · 제안과 실제 검증 범위를 구분해 읽어 주세요.\n\n### 사양에 따라 어디서 시작할까\n\n아래는 **선택 출발점에 대한 제안**이며 최소 사양이나 실행 보장표가 아닙니다. 사용 가능한 RAM·VRAM, 다른 앱, 운영체제, 참조 길이·문맥·백엔드에 따라 결과가 달라집니다. 대부분의 조합은 이 프로젝트에서 실측하지 않았습니다.\n\n| 환경 | 모델·설정 선택 출발점 |\n| --- | --- |\n| RAM 16 GB 전후 / VRAM 8 GB 이하 | 실행 미확인입니다. Q2도 맞지 않을 수 있습니다. 아래 고정 GPU 가중치 설명을 먼저 확인하고 CPU 또는 외부 서버도 검토하세요. |\n| RAM 32 GB 전후 / VRAM 8–12 GB | 작은 파일부터 시험하려면 Q2 후보. disk_experts=true, cache=8, pin_experts=false로 시작하고 여유 메모리를 관찰합니다. |\n| RAM 32–64 GB / VRAM 16 GB 전후 | Q3/Q8 또는 Q4/Q4를 비교할 후보. 파일 크기보다 실제 메모리 피크를 보고 선택합니다. |\n| RAM 64 GB 이상 / VRAM 24 GB 이상 | Q4/Q8도 비교할 후보. 여유가 확인된 뒤 전문가 캐시나 문맥을 확대합니다. |\n| CPU·다른 GPU 백엔드 | CPU용 엔진 또는 해당 Metal/Vulkan 빌드의 Drama3 지원을 확인합니다. NVIDIA CUDA 설정을 그대로 적용하지 마세요. 통합 메모리는 RAM과 GPU가 같은 용량을 공유합니다. |\n\n이 프로젝트의 실제 장문 확인은 **RAM 32 GB·VRAM 12 GB의 한 Windows CUDA 구성에서 Q2와 streaming으로 74.7초 TTS 생성**한 범위입니다. 위 표 전체나 장문 Clone의 성공을 의미하지 않습니다. [실행 검증 기록](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md)\n\n### 조정할 설정\n\n설정은 각 설치의 `config.json`에 둡니다. 기존 옵션을 보존하며 필요한 항목을 합쳐 수정하세요. 변경 후 노드 폴더에서 ComfyUI의 Python으로 `python run_server.py --stop`을 실행하면 관리 서버가 다음 생성 때 새 설정으로 시작됩니다.\n\n- **백엔드:** `backend=cuda`는 호환 NVIDIA CUDA 엔진, `cpu`는 CPU 엔진입니다. `metal`·`vulkan`은 해당 빌드 지원을 확인합니다.\n- **session_options:** 메모리가 민감하면 `fish_drama3.disk_experts=true`, `fish_drama3.expert_cache_size=8`, `fish_drama3.pin_experts=false`를 출발점으로 삼습니다. 전체 전문가를 RAM에 고정하는 pin 옵션은 충분한 여유를 실측한 뒤 검토합니다.\n- **GPU가 부족할 때:** `fish_drama3.codec_backend=cpu`와 `fish_drama3.cpu_expert_layers` 증가를 검토합니다(계층 수 0–40). CPU/RAM 사용과 대기 시간이 늘 수 있습니다. 디스크 모드의 전문가 오프로딩은 제한된 전문가 캐시를 옮기는 것으로, attention·공통 backbone·audio tower까지 CPU로 이동시키지는 않습니다. 아주 작은 GPU에서 실행을 보장하지 않습니다.\n- **코덱 메모리:** 관리 config.json의 최상위 `run_mode=streaming`은 지원 런타임에서 코덱을 프레임 단위로 처리하고 완성 WAV를 반환합니다. 기본 `offline`보다 최종 코덱 그래프 메모리를 줄이는 선택지이며, 참조 인코딩이나 모델 전체의 실행을 보장하지는 않습니다. 변경 후 관리 서버를 재시작하세요.\n- **긴 생성:** 기본 `fish_drama3.context_length=4096`은 시작값입니다. 워크플로우의 Max seconds=47은 구간당 예산이고 전체 음성 길이 상한이 아닙니다. 입력·참조·이전 구간·다음 생성 예산이 같은 문맥을 사용합니다. 더 큰 예산에는 더 큰 문맥·작업 메모리가 필요할 수 있습니다. `request_timeout_seconds=0`은 HTTP 응답 대기 제한만 해제합니다.\n- **생성 후 길이·품질:** 한도 도달 경고가 나면 대사 끝을 확인하세요. 문맥 설정과 별개로 모델이 반복·누락할 수 있으며, 같은 시드도 양자화·CPU/GPU 배치를 바꾸면 결과가 달라질 수 있습니다.\n\n### 오류가 나면 확인할 곳\n\n| 메시지·현상 | 먼저 확인 |\n| --- | --- |\n| 문맥 용량 초과 | session_options의 context_length를 늘리고 관리 서버 재시작. 참조·이전 구간의 사용량도 포함합니다. |\n| CUDA/메모리 할당 실패 | 실제 VRAM과 RAM을 함께 확인. Windows에서는 `memory.private_limit_gib`에 걸릴 수도 있습니다. GPU 오프로딩과 private 상한 중 실제 원인을 구분합니다. |\n| RAM 보호로 중단 | 다른 앱 점유와 `memory.working_set_gib`를 확인하고 점유 목표를 줄입니다. 최소 여유 RAM 보호를 없애서 해결하지 않습니다. |\n| 응답 대기 시간 초과 | 서버가 아직 생성 중인지 확인. 필요하면 request_timeout_seconds를 늘리거나 0으로 설정합니다. |\n\nprivate 한도는 실제 RAM 점유 한도와 다릅니다. 필요한 자원 한도는 각 설치에서 선택하며, 이 안내나 워크플로우가 사용자 설정을 자동 변경하지 않습니다.\n\n출처: [이 프로젝트의 검증 기록](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md), [고정 audio.cpp 버전의 Drama3 안내](https://github.com/0xShug0/audio.cpp/blob/ace630deedf60b9c2ff7ec2277a9cdfb1f37f69f/docs/models/fish_drama3.md), [GGUF 배포자의 검증 범위](https://huggingface.co/Jmica/Drama-3-GGUF#validation-limits). 파일 용량은 2026-10-18 공개 메타데이터 기준이며 변경될 수 있습니다."
+            },
+            "en": {
+              "title": "Hardware / Settings and Troubleshooting",
+              "text": "# Hardware Settings and Troubleshooting\n\nThese are **suggested starting points, not minimum requirements or guaranteed configurations**. Most combinations have not been measured by this project. Available memory, other apps, backend, operating system, reference duration and context all matter.\n\n| Environment | Starting candidate |\n| --- | --- |\n| Around 16 GB RAM / up to 8 GB VRAM | Unverified; even Q2 may not fit. Check fixed GPU weights below and consider CPU or an external server. |\n| Around 32 GB RAM / 8–12 GB VRAM | Q2 is the smallest file to try. Start with disk experts, cache=8 and pin_experts=false; monitor available memory. |\n| 32–64 GB RAM / around 16 GB VRAM | Compare Q3/Q8 and Q4/Q4 using measured peak memory, not file size alone. |\n| 64+ GB RAM / 24+ GB VRAM | Q4/Q8 is another candidate. Increase cache or context only after measuring headroom. |\n| CPU / other GPU backends | Confirm Drama3 support in your CPU, Metal or Vulkan build. Do not copy CUDA settings blindly. Unified memory is shared by CPU and GPU. |\n\nThe actual long-form check was **74.7 seconds of Q2 TTS on one Windows CUDA system with 32 GB RAM, 12 GB VRAM and streaming mode**. This does not validate every tier or long-form Clone. [Execution record](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md)\n\n### Settings to adjust\n\nMerge options into the installation's config.json. After changes, run `python run_server.py --stop` using ComfyUI's Python from the node folder. The managed server uses the new settings on its next request.\n\n- **Backend:** cuda requires a compatible NVIDIA CUDA engine; cpu uses the CPU engine. Confirm your build supports metal or vulkan before selecting one.\n- **Session options:** `fish_drama3.disk_experts=true`, `fish_drama3.expert_cache_size=8`, `fish_drama3.pin_experts=false` are conservative starting choices. Pinning all experts in RAM needs measured headroom.\n- **Low VRAM:** consider `fish_drama3.codec_backend=cpu` and increasing `fish_drama3.cpu_expert_layers` (0–40). Host memory use and latency can increase. With disk experts this moves bounded expert caches, **not the attention, shared backbone or audio tower**. It does not guarantee operation on a very small GPU.\n- **Codec memory:** top-level `run_mode=streaming` processes codec frames incrementally in a compatible engine and returns a complete WAV. Compared with the default offline mode, it can reduce the final codec graph allocation. It does not guarantee reference encoding or overall model fit. Restart the managed server after changes.\n- **Long-form generation:** `fish_drama3.context_length=4096` is a starting value. Saved Max seconds=47 is a per-chunk budget, not the total output limit. Prompt, reference, previous chunk and next generation share context. Larger budgets may need more context and working memory. `request_timeout_seconds=0` removes only the HTTP read-wait limit.\n- **Output checks:** if a token-cap warning appears, check the ending. The model can repeat or omit dialogue. The same seed can produce different results after changing quantization or offload placement.\n\n### Troubleshooting\n\n| Message or symptom | First checks |\n| --- | --- |\n| Context capacity exceeded | Increase context_length in session_options, then restart the managed server. References and previous chunks also occupy context. |\n| CUDA / allocation failure | Inspect VRAM, RAM and, on Windows, memory.private_limit_gib. Distinguish GPU allocation failure from the private/commit cap. |\n| Stopped to preserve RAM | Check other apps and memory.working_set_gib; lower the local resident-memory target if needed. Retain the minimum-available-RAM guard. |\n| Response timeout | Check whether the server is still generating. Increase request_timeout_seconds or set 0 if appropriate. |\n\nPrivate commit and resident RAM are different limits. Each installation chooses its own limits; these notes do not automatically change settings.\n\nSources: [verification](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md), [pinned audio.cpp guide](https://github.com/0xShug0/audio.cpp/blob/ace630deedf60b9c2ff7ec2277a9cdfb1f37f69f/docs/models/fish_drama3.md), [publisher validation limits](https://huggingface.co/Jmica/Drama-3-GGUF#validation-limits). Sizes checked 2026-10-18 and may change."
+            }
+          }
+        }
       },
       "widgets_values": [
         "## 사양별 설정·문제 해결\n\n2026-10-18 확인 · 제안과 실제 검증 범위를 구분해 읽어 주세요.\n\n### 사양에 따라 어디서 시작할까\n\n아래는 **선택 출발점에 대한 제안**이며 최소 사양이나 실행 보장표가 아닙니다. 사용 가능한 RAM·VRAM, 다른 앱, 운영체제, 참조 길이·문맥·백엔드에 따라 결과가 달라집니다. 대부분의 조합은 이 프로젝트에서 실측하지 않았습니다.\n\n| 환경 | 모델·설정 선택 출발점 |\n| --- | --- |\n| RAM 16 GB 전후 / VRAM 8 GB 이하 | 실행 미확인입니다. Q2도 맞지 않을 수 있습니다. 아래 고정 GPU 가중치 설명을 먼저 확인하고 CPU 또는 외부 서버도 검토하세요. |\n| RAM 32 GB 전후 / VRAM 8–12 GB | 작은 파일부터 시험하려면 Q2 후보. disk_experts=true, cache=8, pin_experts=false로 시작하고 여유 메모리를 관찰합니다. |\n| RAM 32–64 GB / VRAM 16 GB 전후 | Q3/Q8 또는 Q4/Q4를 비교할 후보. 파일 크기보다 실제 메모리 피크를 보고 선택합니다. |\n| RAM 64 GB 이상 / VRAM 24 GB 이상 | Q4/Q8도 비교할 후보. 여유가 확인된 뒤 전문가 캐시나 문맥을 확대합니다. |\n| CPU·다른 GPU 백엔드 | CPU용 엔진 또는 해당 Metal/Vulkan 빌드의 Drama3 지원을 확인합니다. NVIDIA CUDA 설정을 그대로 적용하지 마세요. 통합 메모리는 RAM과 GPU가 같은 용량을 공유합니다. |\n\n이 프로젝트의 실제 장문 확인은 **RAM 32 GB·VRAM 12 GB의 한 Windows CUDA 구성에서 Q2와 streaming으로 74.7초 TTS 생성**한 범위입니다. 위 표 전체나 장문 Clone의 성공을 의미하지 않습니다. [실행 검증 기록](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md)\n\n### 조정할 설정\n\n설정은 각 설치의 `config.json`에 둡니다. 기존 옵션을 보존하며 필요한 항목을 합쳐 수정하세요. 변경 후 노드 폴더에서 ComfyUI의 Python으로 `python run_server.py --stop`을 실행하면 관리 서버가 다음 생성 때 새 설정으로 시작됩니다.\n\n- **백엔드:** `backend=cuda`는 호환 NVIDIA CUDA 엔진, `cpu`는 CPU 엔진입니다. `metal`·`vulkan`은 해당 빌드 지원을 확인합니다.\n- **session_options:** 메모리가 민감하면 `fish_drama3.disk_experts=true`, `fish_drama3.expert_cache_size=8`, `fish_drama3.pin_experts=false`를 출발점으로 삼습니다. 전체 전문가를 RAM에 고정하는 pin 옵션은 충분한 여유를 실측한 뒤 검토합니다.\n- **GPU가 부족할 때:** `fish_drama3.codec_backend=cpu`와 `fish_drama3.cpu_expert_layers` 증가를 검토합니다(계층 수 0–40). CPU/RAM 사용과 대기 시간이 늘 수 있습니다. 디스크 모드의 전문가 오프로딩은 제한된 전문가 캐시를 옮기는 것으로, attention·공통 backbone·audio tower까지 CPU로 이동시키지는 않습니다. 아주 작은 GPU에서 실행을 보장하지 않습니다.\n- **코덱 메모리:** 관리 config.json의 최상위 `run_mode=streaming`은 지원 런타임에서 코덱을 프레임 단위로 처리하고 완성 WAV를 반환합니다. 기본 `offline`보다 최종 코덱 그래프 메모리를 줄이는 선택지이며, 참조 인코딩이나 모델 전체의 실행을 보장하지는 않습니다. 변경 후 관리 서버를 재시작하세요.\n- **긴 생성:** 기본 `fish_drama3.context_length=4096`은 시작값입니다. 워크플로우의 Max seconds=47은 구간당 예산이고 전체 음성 길이 상한이 아닙니다. 입력·참조·이전 구간·다음 생성 예산이 같은 문맥을 사용합니다. 더 큰 예산에는 더 큰 문맥·작업 메모리가 필요할 수 있습니다. `request_timeout_seconds=0`은 HTTP 응답 대기 제한만 해제합니다.\n- **생성 후 길이·품질:** 한도 도달 경고가 나면 대사 끝을 확인하세요. 문맥 설정과 별개로 모델이 반복·누락할 수 있으며, 같은 시드도 양자화·CPU/GPU 배치를 바꾸면 결과가 달라질 수 있습니다.\n\n### 오류가 나면 확인할 곳\n\n| 메시지·현상 | 먼저 확인 |\n| --- | --- |\n| 문맥 용량 초과 | session_options의 context_length를 늘리고 관리 서버 재시작. 참조·이전 구간의 사용량도 포함합니다. |\n| CUDA/메모리 할당 실패 | 실제 VRAM과 RAM을 함께 확인. Windows에서는 `memory.private_limit_gib`에 걸릴 수도 있습니다. GPU 오프로딩과 private 상한 중 실제 원인을 구분합니다. |\n| RAM 보호로 중단 | 다른 앱 점유와 `memory.working_set_gib`를 확인하고 점유 목표를 줄입니다. 최소 여유 RAM 보호를 없애서 해결하지 않습니다. |\n| 응답 대기 시간 초과 | 서버가 아직 생성 중인지 확인. 필요하면 request_timeout_seconds를 늘리거나 0으로 설정합니다. |\n\nprivate 한도는 실제 RAM 점유 한도와 다릅니다. 필요한 자원 한도는 각 설치에서 선택하며, 이 안내나 워크플로우가 사용자 설정을 자동 변경하지 않습니다.\n\n출처: [이 프로젝트의 검증 기록](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md), [고정 audio.cpp 버전의 Drama3 안내](https://github.com/0xShug0/audio.cpp/blob/ace630deedf60b9c2ff7ec2277a9cdfb1f37f69f/docs/models/fish_drama3.md), [GGUF 배포자의 검증 범위](https://huggingface.co/Jmica/Drama-3-GGUF#validation-limits). 파일 용량은 2026-10-18 공개 메타데이터 기준이며 변경될 수 있습니다."
@@ -715,8 +776,8 @@
       "type": "MarkdownNote",
       "title": "About: Drama3 GGUF / 모델·저장 위치·사용법",
       "pos": [
-        -760,
-        60
+        40,
+        80
       ],
       "size": [
         720,
@@ -726,7 +787,22 @@
       "order": 14,
       "mode": 0,
       "properties": {
-        "Node name for S&R": "MarkdownNote"
+        "Node name for S&R": "MarkdownNote",
+        "drama3Guide": {
+          "version": 1,
+          "role": "about",
+          "locale": "ko",
+          "translations": {
+            "ko": {
+              "title": "About: Drama3 GGUF / 모델·저장 위치·사용법",
+              "text": "# Drama3 GGUF · 시작 안내\n\n텍스트로 음성을 만들거나 참조 녹음으로 목소리를 복제합니다. 이 워크플로우는 **Drama3 지원 audio.cpp 엔진 + GGUF 모델**을 사용합니다. 엔진과 모델은 별도로 준비하세요.\n\n## Model Links · 모델 다운로드\n\n아래에서 **GGUF 하나만** 선택합니다. 원본 TTS 체크포인트와 별도 코덱은 추가로 필요하지 않습니다.\n\n- [Q2 전문가 / Q8 backbone · 15.88 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q2_K.gguf)\n- [Q3 전문가 / Q8 backbone · 18.93 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q3_K_S.gguf)\n- [Q4 전문가 / Q4 backbone · 21.78 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-4bit-experts-Q4_K_S.gguf)\n- [Q4 전문가 / Q8 backbone · 22.91 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q4_K_S.gguf)\n\n파일 크기는 RAM·VRAM 필요량과 다릅니다. 사양별 선택 기준은 **Hardware 노트**에 있습니다.\n\n## Model Storage Location · 저장 폴더\n\n아래는 **권장 배치 예시**입니다. 다른 폴더를 사용해도 config.json의 model_path로 지정할 수 있습니다.\n\n```text\nComfyUI/\n├─ models/\n│  ├─ drama3/\n│  │  └─ <선택한 파일명>.gguf\n│  └─ asr/                     ← 자동 전사 Clone만\n│     └─ qwen3_asr_0.6b_bf16.safetensors\n└─ custom_nodes/\n   ├─ ComfyUI-Drama3-GGUF/\n   │  ├─ config.managed.example.json\n   │  └─ config.json           ← 각 PC의 실행 설정\n   └─ ComfyUI-Drama3/          ← 자동 전사용 노드\n```\n\n**GGUF는 일반 Checkpoint Loader에서 선택하지 않습니다.** config.json의 model_path를 읽는 별도 audio.cpp 서버가 모델을 실행합니다. 워크플로우의 **Model ID=auto**는 서버에 등록된 모델을 고릅니다.\n\n## Engine & Config · 엔진 연결\n\n1. [호환 audio.cpp 빌드·설치 안내](https://github.com/openerai/ComfyUI-Drama3-GGUF#obtain-a-compatible-backend)에 따라 엔진을 준비합니다. CPU·CUDA 등은 해당 엔진의 지원을 확인합니다.\n2. 처음 설치할 때만 config.managed.example.json을 config.json으로 복사합니다. 기존 설정이 있으면 필요한 항목만 수정하세요.\n3. `mode=managed`, `executable=<준비한 엔진 경로>`, `backend=<사용할 백엔드>`를 지정합니다. 위 폴더 예시의 model_path는 다음과 같습니다.\n\n```text\n../../models/drama3/<선택한 파일명>.gguf\n```\n\n상대 경로는 config.json 폴더 기준입니다. 설정 변경 후 노드 폴더에서 ComfyUI Python으로 `python run_server.py --stop`을 실행하면 다음 생성부터 새 설정을 사용합니다. 외부 서버 연결은 **Server URL**을 지정하고 모델을 서버 쪽에 설치합니다.\n\n## How to Use · 사용 순서\n\n1. **일반 TTS:** Script & Direction이 있으면 그곳의 New speech text에, 없는 기본 버전은 Generate / Voice Clone의 New speech text에 읽을 대사를 적습니다.\n2. **Clone:** Load Reference Audio → Trim으로 참조 구간을 고르고, Reference transcript에 **그 구간에서 실제로 말한 내용**을 적습니다.\n3. **자동 전사 Clone만:** [ASR 모델 파일 목록](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/tree/main)에서 위 0.6B 파일(약 1.6 GB)을 받고 [Qwen3-ASR 노드](https://github.com/PedroMarinhoDev/ComfyUI-Drama3)를 설치합니다. ASR Model에서 선택한 뒤 Reference Transcript만 **Run Branch**로 실행해 전사를 확인합니다.\n4. Script & Direction이 있으면 감정·말투를 Direction에 입력합니다. 없는 기본 버전은 새 대사 앞에 `[친근한 말투로]`처럼 직접 적습니다. 참조 전사문에는 연기 지시를 넣지 않습니다. 상단 **Run**으로 생성하고 Save Audio에서 결과를 확인합니다.\n5. Controls 버전은 생성 후 속도·볼륨·음량 정규화도 조절합니다. FFmpeg가 필요한 설정과 감정 예시는 **Guide 노트**를 보세요.\n\n긴 생성·문맥·메모리 설정은 **Hardware 노트**, 전체 설치 설명은 **Setup 노트**에 있습니다. [전체 모델·사양 안내](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_KO.md)\n\n2026-10-18 확인. 사양별 안내는 선택 출발점이며 모든 환경의 실행을 보장하지 않습니다."
+            },
+            "en": {
+              "title": "About: Drama3 GGUF / Start Here",
+              "text": "# Drama3 GGUF · Start Here\n\nGenerate speech from text or clone a voice from a reference recording. This workflow uses a **Drama3-capable audio.cpp engine and a GGUF package**, obtained separately.\n\n## Model Links\n\nChoose **one GGUF**. The original TTS checkpoint and a separate codec download are not required.\n\n- [Q2 experts / Q8 backbone · 15.88 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q2_K.gguf)\n- [Q3 experts / Q8 backbone · 18.93 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q3_K_S.gguf)\n- [Q4 experts / Q4 backbone · 21.78 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-4bit-experts-Q4_K_S.gguf)\n- [Q4 experts / Q8 backbone · 22.91 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q4_K_S.gguf)\n\nThese are disk sizes, not RAM or VRAM requirements. See the **Hardware** note for starting suggestions.\n\n## Model Storage Location\n\nSuggested layout; another folder is fine when specified by model_path in config.json.\n\n```text\nComfyUI/\n├─ models/\n│  ├─ drama3/\n│  │  └─ <selected-file>.gguf\n│  └─ asr/                     <- auto-transcript Clone only\n│     └─ qwen3_asr_0.6b_bf16.safetensors\n└─ custom_nodes/\n   ├─ ComfyUI-Drama3-GGUF/\n   │  ├─ config.managed.example.json\n   │  └─ config.json           <- settings for this installation\n   └─ ComfyUI-Drama3/          <- optional ASR nodes\n```\n\n**Do not select the GGUF in a normal Checkpoint Loader.** A separate audio.cpp server loads model_path. **Model ID=auto** selects a model registered on that server.\n\n## Engine & Config\n\n1. Prepare the engine using the [compatible backend guide](https://github.com/openerai/ComfyUI-Drama3-GGUF#obtain-a-compatible-backend). CPU, CUDA and other backends depend on your build.\n2. On first install, copy config.managed.example.json to config.json. Merge changes into an existing configuration rather than replacing it.\n3. Set `mode=managed`, `executable=<engine-path>` and `backend=<supported-backend>`. For the suggested layout, model_path is:\n\n```text\n../../models/drama3/<selected-file>.gguf\n```\n\nRelative paths start from the config.json folder. After changes, run `python run_server.py --stop` with ComfyUI's Python from the node folder; the next request starts the updated server. For an external server, set **Server URL** and install/register the model on that server.\n\n## How to Use\n\n1. **TTS:** enter new dialogue in Script & Direction if present; in a basic workflow, enter it directly in Generate / Voice Clone's New speech text.\n2. **Clone:** choose Load Reference Audio, trim a clean segment, and enter the **exact words spoken in that segment** as Reference transcript.\n3. **Auto-transcript Clone only:** download the 0.6B file above (about 1.6 GB) from the [ASR model files](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/tree/main) and install the [Qwen3-ASR nodes](https://github.com/PedroMarinhoDev/ComfyUI-Drama3). Select ASR Model, then use **Run Branch** on Reference Transcript to review recognition.\n4. Put emotion/delivery instructions in Direction if available. In basic workflows, prepend a bracket instruction such as `[friendly delivery]` to the new dialogue. Keep acting instructions out of the reference transcript. Click **Run**, then preview/save the output.\n5. Controls variants also adjust speed, gain and loudness after generation. See **Guide** for FFmpeg requirements and emotion examples.\n\nSee **Hardware** for long-form/context/memory settings and **Setup** for full installation details. [Model and hardware guide](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_EN.md)\n\nChecked 2026-10-18. Hardware suggestions are starting points, not a guarantee of execution on every system."
+            }
+          }
+        }
       },
       "widgets_values": [
         "# Drama3 GGUF · 시작 안내\n\n텍스트로 음성을 만들거나 참조 녹음으로 목소리를 복제합니다. 이 워크플로우는 **Drama3 지원 audio.cpp 엔진 + GGUF 모델**을 사용합니다. 엔진과 모델은 별도로 준비하세요.\n\n## Model Links · 모델 다운로드\n\n아래에서 **GGUF 하나만** 선택합니다. 원본 TTS 체크포인트와 별도 코덱은 추가로 필요하지 않습니다.\n\n- [Q2 전문가 / Q8 backbone · 15.88 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q2_K.gguf)\n- [Q3 전문가 / Q8 backbone · 18.93 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q3_K_S.gguf)\n- [Q4 전문가 / Q4 backbone · 21.78 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-4bit-experts-Q4_K_S.gguf)\n- [Q4 전문가 / Q8 backbone · 22.91 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q4_K_S.gguf)\n\n파일 크기는 RAM·VRAM 필요량과 다릅니다. 사양별 선택 기준은 **Hardware 노트**에 있습니다.\n\n## Model Storage Location · 저장 폴더\n\n아래는 **권장 배치 예시**입니다. 다른 폴더를 사용해도 config.json의 model_path로 지정할 수 있습니다.\n\n```text\nComfyUI/\n├─ models/\n│  ├─ drama3/\n│  │  └─ <선택한 파일명>.gguf\n│  └─ asr/                     ← 자동 전사 Clone만\n│     └─ qwen3_asr_0.6b_bf16.safetensors\n└─ custom_nodes/\n   ├─ ComfyUI-Drama3-GGUF/\n   │  ├─ config.managed.example.json\n   │  └─ config.json           ← 각 PC의 실행 설정\n   └─ ComfyUI-Drama3/          ← 자동 전사용 노드\n```\n\n**GGUF는 일반 Checkpoint Loader에서 선택하지 않습니다.** config.json의 model_path를 읽는 별도 audio.cpp 서버가 모델을 실행합니다. 워크플로우의 **Model ID=auto**는 서버에 등록된 모델을 고릅니다.\n\n## Engine & Config · 엔진 연결\n\n1. [호환 audio.cpp 빌드·설치 안내](https://github.com/openerai/ComfyUI-Drama3-GGUF#obtain-a-compatible-backend)에 따라 엔진을 준비합니다. CPU·CUDA 등은 해당 엔진의 지원을 확인합니다.\n2. 처음 설치할 때만 config.managed.example.json을 config.json으로 복사합니다. 기존 설정이 있으면 필요한 항목만 수정하세요.\n3. `mode=managed`, `executable=<준비한 엔진 경로>`, `backend=<사용할 백엔드>`를 지정합니다. 위 폴더 예시의 model_path는 다음과 같습니다.\n\n```text\n../../models/drama3/<선택한 파일명>.gguf\n```\n\n상대 경로는 config.json 폴더 기준입니다. 설정 변경 후 노드 폴더에서 ComfyUI Python으로 `python run_server.py --stop`을 실행하면 다음 생성부터 새 설정을 사용합니다. 외부 서버 연결은 **Server URL**을 지정하고 모델을 서버 쪽에 설치합니다.\n\n## How to Use · 사용 순서\n\n1. **일반 TTS:** Script & Direction이 있으면 그곳의 New speech text에, 없는 기본 버전은 Generate / Voice Clone의 New speech text에 읽을 대사를 적습니다.\n2. **Clone:** Load Reference Audio → Trim으로 참조 구간을 고르고, Reference transcript에 **그 구간에서 실제로 말한 내용**을 적습니다.\n3. **자동 전사 Clone만:** [ASR 모델 파일 목록](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/tree/main)에서 위 0.6B 파일(약 1.6 GB)을 받고 [Qwen3-ASR 노드](https://github.com/PedroMarinhoDev/ComfyUI-Drama3)를 설치합니다. ASR Model에서 선택한 뒤 Reference Transcript만 **Run Branch**로 실행해 전사를 확인합니다.\n4. Script & Direction이 있으면 감정·말투를 Direction에 입력합니다. 없는 기본 버전은 새 대사 앞에 `[친근한 말투로]`처럼 직접 적습니다. 참조 전사문에는 연기 지시를 넣지 않습니다. 상단 **Run**으로 생성하고 Save Audio에서 결과를 확인합니다.\n5. Controls 버전은 생성 후 속도·볼륨·음량 정규화도 조절합니다. FFmpeg가 필요한 설정과 감정 예시는 **Guide 노트**를 보세요.\n\n긴 생성·문맥·메모리 설정은 **Hardware 노트**, 전체 설치 설명은 **Setup 노트**에 있습니다. [전체 모델·사양 안내](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_KO.md)\n\n2026-10-18 확인. 사양별 안내는 선택 출발점이며 모든 환경의 실행을 보장하지 않습니다."
@@ -823,10 +899,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.75,
+      "scale": 0.38,
       "offset": [
-        880,
-        100
+        160,
+        300
       ]
     }
   },

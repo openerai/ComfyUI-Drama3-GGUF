@@ -412,3 +412,32 @@ resolved the basic-versus-Controls instruction difference before publication.
 A fresh ComfyUI preview of the final TTS graph displayed the left note and folder
 tree immediately, without panning or locating a node. The adjusted margin keeps
 the note clear of the left toolbar. This presentation change ran no inference.
+
+## Aligned layout and bilingual workflow guides (0.1.9)
+
+The three distributed and six local workflows now arrange the start guide on
+the left, execution nodes in the middle, and Setup/Hardware notes on the right.
+All nine files were compared with recovery copies: excluding node positions,
+sizes, initial viewport and bilingual note metadata, their JSON is unchanged.
+Scripts, reference selections, links, generation settings and the private local
+configuration were preserved. Geometry checks found no overlapping node boxes.
+
+The frontend-only Guide language selector changes the marked core MarkdownNote
+bodies and titles between Korean and English. It adds no inference node or
+prompt input. Its choice belongs to each saved workflow; ordinary unmarked
+notes and speech text are untouched. Five JavaScript tests cover language
+switching, saved selection, graph isolation, unsupported locales and preservation
+of edited note bodies, including an empty body saved without toggling first.
+All 37 existing Python tests, Ruff and whitespace/public-data checks also passed.
+An independent Gravitas review checked the preservation comparisons, translations
+and the edited-body fix.
+
+Actual UI checks used ComfyUI 0.41.0 with frontend 1.55.18 and Vue nodes enabled.
+The selector changed all five notes in a TTS Controls preview to English while
+leaving its Korean speech unchanged. Saving and reopening that file in a fresh
+ComfyUI browser tab restored English. A Korean/English round trip also passed,
+and the control was hidden on an ordinary blank workflow. The final screenshot
+showed the aligned English guides. Existing browser tabs may retain old frontend
+code or graph content; reopen the ComfyUI page after updating, then open the
+saved workflow. This presentation change ran no new inference and does not
+extend the hardware or audio-quality claims above.

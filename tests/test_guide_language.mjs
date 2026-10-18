@@ -1,0 +1,63 @@
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import { restoreGuideLanguage, setGuideLanguage } from "../web/guide-language.js";
+
+function note(role = "setup") {
+    return {type: "MarkdownNote", title: "한국어 제목", widgets: [{name: "text", value: "한국어 설명"}],
+        properties: {drama3Guide: {role, locale: "ko", translations: {
+            ko: {title: "한국어 제목", text: "한국어 설명"}, en: {title: "English title", text: "English guide"}}}}};
+}
+
+test("switches all marked guides without changing speech or ordinary notes", () => {
+    const first = note(), second = note("hardware");
+    const speech = {type: "Drama3GGUFGenerate", widgets: [{name: "text", value: "Keep my dialogue"}]};
+    const ordinary = {type: "MarkdownNote", widgets: [{name: "text", value: "My personal note"}]};
+    const untouched = JSON.stringify([speech, ordinary]);
+    const graph = {_nodes: [first, second, speech, ordinary]};
+    setGuideLanguage(graph, "en");
+    assert.equal(first.widgets[0].value, "English guide");
+    assert.equal(second.title, "English title");
+    assert.equal(JSON.stringify([speech, ordinary]), untouched);
+    setGuideLanguage(graph, "ko");
+    assert.equal(first.widgets[0].value, "한국어 설명");
+});
+
+test("preserves edited text across toggles and restores saved language", () => {
+    const original = note();
+    const graph = {_nodes: [original]};
+    original.widgets[0].value = "Edited Korean guide";
+    setGuideLanguage(graph, "en");
+    const saved = JSON.parse(JSON.stringify(original));
+    restoreGuideLanguage({_nodes: [saved]});
+    assert.equal(saved.widgets[0].value, "English guide");
+    setGuideLanguage({_nodes: [saved]}, "ko");
+    assert.equal(saved.widgets[0].value, "Edited Korean guide");
+});
+
+test("preserves a visible edit saved without toggling first, including an empty body", () => {
+    for (const text of ["My saved edit", ""]) {
+        const edited = note();
+        edited.widgets[0].value = text;
+        const reloaded = JSON.parse(JSON.stringify(edited));
+        const graph = {_nodes: [reloaded]};
+        restoreGuideLanguage(graph);
+        assert.equal(reloaded.widgets[0].value, text);
+        setGuideLanguage(graph, "en");
+        setGuideLanguage(graph, "ko");
+        assert.equal(reloaded.widgets[0].value, text);
+    }
+});
+
+test("language selection is local to each graph", () => {
+    const first = {_nodes: [note()]}, second = {_nodes: [note()]};
+    setGuideLanguage(first, "en");
+    assert.equal(first._nodes[0].properties.drama3Guide.locale, "en");
+    assert.equal(second._nodes[0].properties.drama3Guide.locale, "ko");
+});
+
+test("rejects unsupported locales without mutation", () => {
+    const graph = {_nodes: [note()]};
+    const before = JSON.stringify(graph);
+    setGuideLanguage(graph, "fr");
+    assert.equal(JSON.stringify(graph), before);
+});

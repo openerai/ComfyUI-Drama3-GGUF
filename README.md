@@ -31,7 +31,7 @@ Open `example_workflows/Drama3_GGUF_TTS.json` for text-to-speech, or
 The node ID `Drama3GGUFGenerate` is retained for older local workflows.
 The example uses ComfyUI's built-in `SaveAudioAdvanced` node, verified with ComfyUI 0.41.0.
 
-Each example includes Korean **Setup / 모델 다운로드·설치** and
+Each example includes bilingual **Setup / 모델 다운로드·설치** and
 **Hardware / 사양별 설정·문제 해결** notes with model links, file sizes, storage paths,
 optional ASR dependencies and hardware guidance. The same text is available in the
 [model setup guide](docs/model_setup_KO.md). Hardware tiers are suggestions, not
@@ -40,6 +40,15 @@ tested minimum requirements or a guarantee that a model fits.
 The initial view also shows a left-hand **About: Drama3 GGUF** note with model
 links, a storage-folder tree, engine/configuration instructions and usage steps.
 See the same [start guide](docs/workflow_start_KO.md) outside ComfyUI.
+
+The supplied workflows use three columns: Start Here, execution nodes, and
+Setup/Hardware notes. **Guide language** at the top switches all marked notes
+between Korean and English; saving the workflow remembers that selection.
+Speech inputs and generation settings are unaffected. Edits to either language's
+guide body are retained. Unmarked personal notes are not translated.
+After updating this node, reopen the ComfyUI frontend to load the new control.
+English guides: [Start Here](docs/workflow_start_EN.md),
+[models/hardware](docs/model_setup_EN.md), [controls](docs/controls_EN.md).
 
 ## Choose how to run audio.cpp
 
