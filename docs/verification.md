@@ -441,3 +441,28 @@ showed the aligned English guides. Existing browser tabs may retain old frontend
 code or graph content; reopen the ComfyUI page after updating, then open the
 saved workflow. This presentation change ran no new inference and does not
 extend the hardware or audio-quality claims above.
+
+## Japanese and Simplified Chinese guides (0.1.10)
+
+All three distributed and six local workflows now also embed Japanese and
+Simplified Chinese translations of their marked guide notes. A comparison with
+recovery copies found only the added translations.ja and translations.zh:
+existing Korean/English text, selected language, layout, scripts, references,
+links and generation settings are unchanged. The private configuration hash is
+unchanged. An independent Gravitas review checked all six translated documents,
+their numbers, commands, limits and links, and the 84 added note translations.
+
+Guide language offers the translations available in every marked note of the
+current graph. Older bilingual files keep their Korean/English choices instead
+of offering unavailable translations. Eight JavaScript tests passed, including
+Japanese/Chinese saved language and edited-body preservation, mixed older files
+and all four translations in the distributed templates. The 37 existing Python
+tests, Ruff, whitespace and public-data checks also passed.
+
+The actual ComfyUI interface rendered the Japanese and Chinese guides in a
+separate TTS Controls preview. The language control offered all four choices.
+Saving with Chinese selected and opening a fresh frontend restored Chinese.
+The saved preview's execution widgets match its source workflow, including its
+Korean dialogue and inline emphasis tag. Screenshots recorded both new languages.
+This change adds documentation and frontend selection only; it ran no new audio
+inference and makes no additional speech-language or hardware claims.

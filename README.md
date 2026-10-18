@@ -31,7 +31,7 @@ Open `example_workflows/Drama3_GGUF_TTS.json` for text-to-speech, or
 The node ID `Drama3GGUFGenerate` is retained for older local workflows.
 The example uses ComfyUI's built-in `SaveAudioAdvanced` node, verified with ComfyUI 0.41.0.
 
-Each example includes bilingual **Setup / 모델 다운로드·설치** and
+Each example includes multilingual **Setup / 모델 다운로드·설치** and
 **Hardware / 사양별 설정·문제 해결** notes with model links, file sizes, storage paths,
 optional ASR dependencies and hardware guidance. The same text is available in the
 [model setup guide](docs/model_setup_KO.md). Hardware tiers are suggestions, not
@@ -43,12 +43,18 @@ See the same [start guide](docs/workflow_start_KO.md) outside ComfyUI.
 
 The supplied workflows use three columns: Start Here, execution nodes, and
 Setup/Hardware notes. **Guide language** at the top switches all marked notes
-between Korean and English; saving the workflow remembers that selection.
-Speech inputs and generation settings are unaffected. Edits to either language's
+between Korean, English, Japanese and Simplified Chinese; saving the workflow
+remembers that selection. Speech inputs and generation settings are unaffected. Edits to each language's
 guide body are retained. Unmarked personal notes are not translated.
 After updating this node, reopen the ComfyUI frontend to load the new control.
 English guides: [Start Here](docs/workflow_start_EN.md),
 [models/hardware](docs/model_setup_EN.md), [controls](docs/controls_EN.md).
+日本語: [はじめに](docs/workflow_start_JA.md)、[モデル・ハードウェア](docs/model_setup_JA.md)、
+[演技・調整](docs/controls_JA.md)。
+简体中文：[使用入门](docs/workflow_start_ZH.md)、[模型与硬件](docs/model_setup_ZH.md)、
+[表演与调节](docs/controls_ZH.md)。
+Older saved files show only the translations already embedded in them. Reopen
+an updated supplied workflow to access all four languages.
 
 ## Choose how to run audio.cpp
 

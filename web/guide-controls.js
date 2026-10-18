@@ -1,5 +1,5 @@
 import { app } from "../../scripts/app.js";
-import { guideNodes, restoreGuideLanguage, setGuideLanguage } from "./guide-language.js?v=0.1.9";
+import { guideNodes, guideLanguages, restoreGuideLanguage, setGuideLanguage } from "./guide-language.js?v=0.1.10";
 
 let toolbar;
 let select;
@@ -19,12 +19,6 @@ function updateToolbar() {
         select.setAttribute("aria-label", "Drama3 guide language / 설명 언어");
         select.style.cssText = "background:#34383f;color:#fff;border:1px solid #777;"
             + "border-radius:4px;padding:3px 6px;font:13px sans-serif;";
-        for (const [value, text] of [["ko", "한국어"], ["en", "English"]]) {
-            const option = document.createElement("option");
-            option.value = value;
-            option.textContent = text;
-            select.append(option);
-        }
         select.addEventListener("change", event => {
             event.stopPropagation();
             setGuideLanguage(app.rootGraph, select.value);
@@ -33,6 +27,12 @@ function updateToolbar() {
         toolbar.append(label, select);
         document.body.append(toolbar);
     }
+    select.replaceChildren(...guideLanguages(graph).map(([value, text]) => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = text;
+        return option;
+    }));
     toolbar.style.display = nodes.length ? "flex" : "none";
     const about = nodes.find(node => node.properties.drama3Guide.role === "about") ?? nodes[0];
     if (about) select.value = about.properties.drama3Guide.locale;

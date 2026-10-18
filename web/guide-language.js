@@ -1,6 +1,16 @@
+export const GUIDE_LANGUAGES = [
+    ["ko", "한국어"], ["en", "English"], ["ja", "日本語"], ["zh", "中文（简体）"],
+];
+
 export function guideNodes(graph) {
     return (graph?._nodes ?? []).filter(node => node.type === "MarkdownNote"
         && node.properties?.drama3Guide?.translations);
+}
+
+export function guideLanguages(graph) {
+    const nodes = guideNodes(graph);
+    return nodes.length ? GUIDE_LANGUAGES.filter(([locale]) => nodes.every(
+        node => node.properties.drama3Guide.translations[locale])) : [];
 }
 
 function textWidget(node) {
@@ -19,7 +29,7 @@ function renderGuide(node, locale) {
 }
 
 export function setGuideLanguage(graph, locale) {
-    if (locale !== "ko" && locale !== "en") return;
+    if (!guideLanguages(graph).some(([value]) => value === locale)) return;
     const nodes = guideNodes(graph);
     graph.beforeChange?.();
     for (const node of nodes) {
@@ -37,7 +47,8 @@ export function setGuideLanguage(graph, locale) {
 export function restoreGuideLanguage(graph) {
     for (const node of guideNodes(graph)) {
         const guide = node.properties.drama3Guide;
-        const locale = guide.locale === "en" ? "en" : "ko";
+        const locale = GUIDE_LANGUAGES.some(([value]) => value === guide.locale)
+            && guide.translations[guide.locale] ? guide.locale : "ko";
         const widget = textWidget(node);
         // The saved visible body includes edits made without using the selector.
         if (widget && typeof widget.value === "string") guide.translations[locale].text = widget.value;

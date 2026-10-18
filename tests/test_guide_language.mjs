@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { restoreGuideLanguage, setGuideLanguage } from "../web/guide-language.js";
+import { guideLanguages, restoreGuideLanguage, setGuideLanguage } from "../web/guide-language.js";
 
 function note(role = "setup") {
     return {type: "MarkdownNote", title: "한국어 제목", widgets: [{name: "text", value: "한국어 설명"}],
         properties: {drama3Guide: {role, locale: "ko", translations: {
-            ko: {title: "한국어 제목", text: "한국어 설명"}, en: {title: "English title", text: "English guide"}}}}};
+            ko: {title: "한국어 제목", text: "한국어 설명"}, en: {title: "English title", text: "English guide"},
+            ja: {title: "日本語の見出し", text: "日本語の説明"}, zh: {title: "中文标题", text: "中文说明"}}}}};
 }
 
 test("switches all marked guides without changing speech or ordinary notes", () => {
@@ -60,4 +62,53 @@ test("rejects unsupported locales without mutation", () => {
     const before = JSON.stringify(graph);
     setGuideLanguage(graph, "fr");
     assert.equal(JSON.stringify(graph), before);
+});
+
+test("Japanese and Chinese survive saving, reopening and edits in either language", () => {
+    let graph = {_nodes: [note()]};
+    for (const [locale, body] of [["ja", "日本語の説明"], ["zh", "中文说明"]]) {
+        setGuideLanguage(graph, locale);
+        assert.equal(graph._nodes[0].widgets[0].value, body);
+        graph._nodes[0].widgets[0].value = body + " edited";
+        graph = JSON.parse(JSON.stringify(graph));
+        restoreGuideLanguage(graph);
+        assert.equal(graph._nodes[0].properties.drama3Guide.locale, locale);
+        setGuideLanguage(graph, "en");
+        setGuideLanguage(graph, locale);
+        assert.equal(graph._nodes[0].widgets[0].value, body + " edited");
+    }
+});
+
+test("older and mixed workflows offer only translations present in every marked note", () => {
+    const old = note();
+    delete old.properties.drama3Guide.translations.ja;
+    delete old.properties.drama3Guide.translations.zh;
+    const graph = {_nodes: [note(), old]};
+    assert.deepEqual(guideLanguages(graph).map(([locale]) => locale), ["ko", "en"]);
+    const before = JSON.stringify(graph);
+    setGuideLanguage(graph, "ja");
+    assert.equal(JSON.stringify(graph), before);
+    setGuideLanguage(graph, "en");
+    assert.equal(old.widgets[0].value, "English guide");
+    assert.deepEqual(guideLanguages({_nodes: []}), []);
+});
+
+test("distributed workflow notes contain all four languages and localized guide links", () => {
+    for (const name of ["TTS", "Voice_Clone", "Voice_Clone_Auto_Transcript"]) {
+        const workflow = JSON.parse(readFileSync(new URL(`../example_workflows/Drama3_GGUF_${name}.json`, import.meta.url)));
+        const notes = workflow.nodes.filter(node => node.properties?.drama3Guide);
+        assert.equal(notes.length, 5);
+        for (const node of notes) {
+            const guide = node.properties.drama3Guide;
+            assert.deepEqual(Object.keys(guide.translations).sort(), ["en", "ja", "ko", "zh"]);
+            assert.equal(node.widgets_values[0], guide.translations[guide.locale].text);
+            for (const translation of Object.values(guide.translations)) {
+                assert.ok(translation.title.trim());
+                assert.ok(translation.text.trim());
+            }
+        }
+        const about = notes.find(node => node.properties.drama3Guide.role === "about").properties.drama3Guide;
+        assert.ok(about.translations.ja.text.includes("docs/model_setup_JA.md"));
+        assert.ok(about.translations.zh.text.includes("docs/model_setup_ZH.md"));
+    }
 });
