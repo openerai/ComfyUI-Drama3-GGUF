@@ -98,7 +98,7 @@ defects in the revised version. This review is not a certification or a guarante
 - Real inference on GPUs other than the listed RTX 3080 Ti, or on 16 GiB RAM systems.
 - Real CPU, Vulkan, Metal, Linux, or macOS inference.
 - Other GGUF quantizations, long-form reliability, concurrent requests, or performance at scale.
-- End-to-end reference voice cloning and quality across speakers or languages.
+- Perceptual voice similarity, and cloning quality across speakers or languages.
 
 The shared workflow contains no GPU model, RAM capacity, user directory, or fixed
 quantization filename. Each installation supplies its backend/model/memory settings.
@@ -113,7 +113,8 @@ The existing TTS node rejects a transcript without audio. Multiple audio batches
 empty/silent references, NaN/Inf, invalid sample rates, and references over the
 default 15-second limit are rejected before an HTTP generation request.
 
-All 21 client/runtime/input-boundary unit tests and Ruff passed locally on Windows.
+All 22 client/runtime/input-boundary unit tests and Ruff passed locally on Windows,
+including configuration of the streaming execution mode.
 The node boundary tests isolate ComfyUI/Torch imports; they are not model inference.
 A real ComfyUI submission with a missing reference returned HTTP 400 before inference.
 
@@ -130,5 +131,39 @@ The recording, its path, and its transcript are not included in this repository.
 Initial full-generation attempts on the listed 12 GiB GPU failed with CUDA allocation
 errors, including allocation of a 511.88 MiB codec decode graph. Ordinary TTS success
 does not prove that a reference-conditioned request fits the same resource settings.
-No completed clone-generation or perceptual voice-similarity claim is made by these
-input and preview checks.
+An offline retry with 16 CPU expert layers still failed when allocating a
+624.95 MiB codec decode graph. Increasing the process memory limit was not needed
+for the successful streaming test below.
+
+### Completed reference-conditioned generation
+
+Using the same model and pinned backend, the full clone graph completed with
+local `run_mode=streaming`. The pinned server runs the streaming model internally,
+decodes one codec frame at a time, and returns a final WAV to the existing HTTP
+client. This avoids allocating the offline whole-utterance codec decode graph;
+it is not an SSE client or live playback implementation.
+
+The successful installation used CUDA, 4 threads, disk experts, an expert cache
+of 8, 16 CPU expert layers, a 1024-token context, and `codec_backend=same`.
+The Windows limits remained a 3 GiB working set, 10 GiB private commit, and
+3 GiB minimum available system RAM. These are test conditions, not shared
+workflow requirements or recommendations for every PC.
+
+- The 7.75-second private Korean reference and its locally extracted transcript
+  were supplied to the dedicated clone node. The target was a different sentence.
+- The full ComfyUI request succeeded in 110.81 seconds of request wall time
+  and saved 5.15483 seconds of 44,100 Hz FLAC audio. Samples were finite
+  and non-silent (RMS 0.10266).
+- Twenty-five samples taken approximately four seconds apart recorded 9,850 MiB
+  peak total GPU use, 9.773 GiB peak server private commit, 3.00 GiB peak server
+  RSS, and 5.684 GiB minimum available system RAM. Sampling can miss short peaks;
+  total GPU use includes other processes.
+- Local Qwen3-ASR 0.6B recovered the target sentence, differing only in word
+  spacing. This checks speech content, not voice identity or perceptual quality.
+- Running the same graph in the browser reused the generated audio cache and
+  displayed the reference and generated-audio players. This was not a second
+  independent inference or a long-running stability test.
+
+This establishes one successful reference-conditioned Korean request on the
+listed PC. Voice resemblance still needs listening assessment. No recording,
+personal transcript, private path, or generated audio is published here.

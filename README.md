@@ -123,6 +123,10 @@ Use the upstream guide and verify your own settings. Split long text into short 
 Cloning also encodes the reference, so a configuration that fits ordinary TTS can
 still run out of VRAM during cloning. Adjust CPU expert offload and codec settings
 locally; the example workflow does not select these settings for other machines.
+For a compatible backend, managed `run_mode=streaming` decodes one codec frame at
+a time and still returns a complete WAV through this node. `offline` is the default.
+This can reduce the final codec graph allocation; it does not guarantee that the
+model fits. Restart the managed server after changing `run_mode`.
 Managed mode releases ComfyUI's cached models before using the local backend by default;
 set `release_comfy_models=false` to keep them, provided enough resources remain.
 

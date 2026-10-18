@@ -4,6 +4,7 @@
   "executable": "../audio.cpp/build/windows-cuda-release/bin/audiocpp_server.exe",
   "model_path": "../../models/drama3/drama-3-backbone-8bit-experts-Q2_K.gguf",
   "model_id": "drama3",
+  "run_mode": "offline",
   "backend": "cuda",
   "device": 0,
   "threads": 0,

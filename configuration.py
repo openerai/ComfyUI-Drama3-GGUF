@@ -83,6 +83,9 @@ def managed_server_config(config):
     backend = config.get("backend", "cuda")
     if backend not in {"cuda", "cpu", "vulkan", "metal"}:
         raise ValueError("backend must be cuda, cpu, vulkan, or metal, supported by your audio.cpp build.")
+    run_mode = config.get("run_mode", "offline")
+    if run_mode not in {"offline", "streaming"}:
+        raise ValueError("run_mode must be offline or streaming, supported by your audio.cpp model.")
     threads = int(config.get("threads", 0))
     if threads == 0:
         threads = min(8, psutil.cpu_count(logical=False) or 1)
@@ -105,7 +108,7 @@ def managed_server_config(config):
         "lazy_load": True, "max_loaded_models": 1, "idle_unload_ms": 60000, "ui": True,
         "model_spec_override": str(ROOT / "specs" / "fish_drama3.json"),
         "models": [{"id": config.get("model_id", "drama3"), "family": "fish_drama3",
-                    "path": str(model), "task": "tts", "mode": "offline",
+                    "path": str(model), "task": "tts", "mode": run_mode,
                     "session_options": session,
                     "default_request_options": {"temperature": 1.0, "top_p": 0.9, "top_k": 30, "seed": 123}}],
     }

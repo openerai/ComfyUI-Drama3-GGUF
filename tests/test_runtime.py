@@ -71,6 +71,17 @@ class PortableClientTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             configuration.memory_limits({"memory": {"working_set_gib": float("nan")}})
 
+    def test_managed_run_mode_can_use_framewise_streaming_without_changing_client_format(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "weights.gguf").write_bytes(b"GGUF")
+            config = {"server_url": "http://127.0.0.1:8035", "_path": str(root / "config.json"),
+                      "executable": sys.executable, "model_path": "weights.gguf", "run_mode": "streaming"}
+            self.assertEqual(configuration.managed_server_config(config)["models"][0]["mode"], "streaming")
+            config["run_mode"] = "unknown"
+            with self.assertRaises(ValueError):
+                configuration.managed_server_config(config)
+
     def test_explicit_missing_config_does_not_fall_back_to_another_server(self):
         with tempfile.TemporaryDirectory() as temporary:
             with self.assertRaises(FileNotFoundError):
