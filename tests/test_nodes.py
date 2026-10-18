@@ -42,7 +42,8 @@ class CloneInputTests(unittest.TestCase):
         with patch.object(nodes.client, "generate") as generate:
             with self.assertRaises(ValueError):
                 nodes.Drama3GGUFGenerate().generate("Words.", 123, float("nan"))
-            with patch.object(nodes, "load_config", return_value={"mode": "managed", "server_url": "http://127.0.0.1:8035"}):
+            with patch.object(nodes, "load_config", return_value={"mode": "managed", "server_url": "http://127.0.0.1:8035",
+                              "session_options": {"fish_drama3.context_length": 1024}}):
                 with self.assertRaisesRegex(RuntimeError, "문맥 용량 초과"):
                     nodes.Drama3GGUFGenerate().generate("Words.", 123, 60)
             generate.assert_not_called()

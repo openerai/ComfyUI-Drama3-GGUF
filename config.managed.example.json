@@ -20,7 +20,7 @@
     "fish_drama3.pin_experts": false,
     "fish_drama3.expert_cache_size": 8,
     "fish_drama3.cpu_expert_layers": 0,
-    "fish_drama3.context_length": 1024,
+    "fish_drama3.context_length": 4096,
     "fish_drama3.codec_backend": "same"
   }
 }

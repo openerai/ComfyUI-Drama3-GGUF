@@ -317,3 +317,38 @@ backend, memory limit or timeout setting was automatically expanded.
 Long-form generation near the theoretical ceiling, other hardware, and its
 perceptual quality remain unverified. Each deployment chooses its context and
 resource settings; the shared workflow does not impose this PC's settings.
+
+## Longer default context and actual long-form generation (0.1.5)
+
+The managed default context and its preflight check now share a 4096-position
+default. Explicit context values in existing configurations are preserved, as
+are the memory defaults. The managed example and English/Korean guides explain
+how to merge long-form settings without replacing other session options.
+All 37 unit tests, Ruff and the whitespace check passed. An independent Gravitas
+review also exercised explicit-context preservation and checked the final diff.
+
+A local Windows CUDA ComfyUI request used a 441-character Korean acting script,
+seed 123, default sampling, no reference, and a 47-second budget per text chunk.
+It completed successfully in approximately 589 seconds of observed request/poll
+time and saved 74.67537 seconds of mono 44,100 Hz FLAC audio. Reopening the file
+confirmed finite, non-silent samples (RMS 0.1011, peak 0.8758). The native log
+recorded three completed chunks of 745, 724 and 139 codec frames, with no
+`max_tokens reached` warning; their sum matches the saved duration.
+
+This run explicitly used context 4096, disk experts with 8 cache slots, 16 CPU
+expert layers, codec on the CUDA backend, and no HTTP read timeout. Its local
+Windows limits were working set 2 GiB, private commit 12 GiB and minimum available
+RAM 3 GiB. These are observed test settings, not shared defaults or requirements.
+Sampled minimum available RAM was 4.56 GiB and the process lifetime private peak
+was about 10.03 GiB. The available-RAM guard did not stop this successful run.
+
+Earlier attempts with context 4096 were stopped by the available-RAM guard or
+failed to allocate the second chunk's tower prefill graph under a 10 GiB private
+limit. A later sample showed free VRAM alongside a private peak close to that
+limit. The successful run after adjusting the private limit demonstrates why
+context, resident RAM, private commit and VRAM must be checked separately.
+
+Local Qwen3-ASR recognized speech across the full output and its final sentence.
+Some words differed in recognition; this is not a listening-quality assessment
+or a guarantee of exact pronunciation, acting, longer scripts or other hardware.
+The private script, audio, configuration and local paths are not published.

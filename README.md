@@ -91,7 +91,7 @@ for your resources. The model filename is not stored in the shared workflow.
 
 In managed mode, backend and device are explicit settings (`cuda`, `cpu`, `vulkan`,
 or `metal`, if supported by your audio.cpp build). There is no silent backend fallback.
-The default session uses disk-backed experts, 8 cache slots, a 1024-token context,
+The default session uses disk-backed experts, 8 cache slots, a 4096-position context,
 and the selected backend for the codec. These trade memory for speed.
 
 On Windows, the launcher applies a Job Object private-memory limit and a hard
@@ -151,7 +151,7 @@ References must contain finite, non-silent samples and one audio batch. The defa
 reference limit is 15 seconds, checked before encoding or starting the server.
 Change `reference_max_seconds` in your local config only if your server's context
 capacity supports the longer reference plus the generation budget. The default
-1024-token context can be exhausted by a long reference even when the file is small.
+4096-position context can be exhausted by a long reference even when the file is small.
 
 The existing TTS node still supports optional references. It now rejects a transcript
 without reference audio. References are sent as PCM16 WAV base64 so server-side local
@@ -226,3 +226,31 @@ memory limits. Default generation budget remains 12 seconds.
 HTTP read waiting is separately configurable through `request_timeout_seconds`
 in the installation's config (default 600; 0 means no read timeout). A timeout
 does not cancel server inference. Review server status before retrying.
+
+### Long-form context (0.1.5)
+
+Managed servers now default to 4096 context positions. An existing explicit
+`fish_drama3.context_length` value is preserved; updates do not rewrite private
+configuration. For long-form use, merge these settings into your existing config
+without removing its paths, backend, memory settings or other session options:
+
+```json
+{
+  "request_timeout_seconds": 0,
+  "session_options": {
+    "fish_drama3.context_length": 4096
+  }
+}
+```
+
+Stop the managed server with `python run_server.py --stop`; the next request
+starts it with the new settings. A 47-second generation budget reserves 1013
+frames per text chunk. The native runtime splits long text and conditions each
+continuation on its preceding generated chunk, so the final audio can exceed
+47 seconds. Input, references and that preceding chunk still need context;
+4096 is a starting value, not the model maximum or a duration guarantee.
+
+On Windows, allocation can also fail when the Job Object private-memory limit
+is reached even with free VRAM. Check `memory.private_limit_gib` alongside GPU
+usage; raising context does not raise this limit. Adjust local limits deliberately
+and retain an available-RAM guard. Shared workflows do not change these limits.

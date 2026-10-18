@@ -9,6 +9,7 @@ import psutil
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_URL = "http://127.0.0.1:8035"
+DEFAULT_CONTEXT_LENGTH = 4096
 GIB = 1024 ** 3
 
 
@@ -96,7 +97,7 @@ def managed_server_config(config):
         "fish_drama3.pin_experts": False,
         "fish_drama3.expert_cache_size": 8,
         "fish_drama3.cpu_expert_layers": 0,
-        "fish_drama3.context_length": 1024,
+        "fish_drama3.context_length": DEFAULT_CONTEXT_LENGTH,
         "fish_drama3.codec_backend": "same",
         "fish_drama3.backbone_prefill_cache_mb": 0,
         "fish_drama3.tower_prefill_cache_mb": 0,

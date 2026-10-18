@@ -119,6 +119,10 @@ class PortableClientTests(unittest.TestCase):
             native = configuration.managed_server_config(config)
             self.assertEqual(native["models"][0]["path"], str((root / "weights.gguf").resolve()))
             self.assertEqual(native["model_spec_override"], str(ROOT / "specs/fish_drama3.json"))
+            self.assertEqual(native["models"][0]["session_options"]["fish_drama3.context_length"], 4096)
+            client.check_generation_capacity(config, config["server_url"], 1292)
+            with self.assertRaisesRegex(RuntimeError, "context_length=4096"):
+                client.check_generation_capacity(config, config["server_url"], 4096)
 
     def test_ram_policy_scales_and_explicit_settings_win(self):
         self.assertEqual(configuration.memory_limits({}, 16 * 1024**3)["working_set_gib"], 2)

@@ -14,7 +14,7 @@ import soundfile
 import psutil
 import numpy as np
 
-from .configuration import ROOT, managed_server_config, memory_limits, resolve_path, server_url, state_directory
+from .configuration import DEFAULT_CONTEXT_LENGTH, ROOT, managed_server_config, memory_limits, resolve_path, server_url, state_directory
 
 MAX_CONTEXT_TOKENS = 262144
 AUDIO_FRAMES_PER_SECOND = 44100 / 2048
@@ -38,7 +38,7 @@ def context_capacity_error(max_tokens, detail):
 
 def check_generation_capacity(config, url, max_tokens):
     if config["mode"] == "managed" and url == config["server_url"]:
-        context = int(config.get("session_options", {}).get("fish_drama3.context_length", 1024))
+        context = int(config.get("session_options", {}).get("fish_drama3.context_length", DEFAULT_CONTEXT_LENGTH))
         if max_tokens >= context:
             raise context_capacity_error(max_tokens, f"Configured context_length={context}; no model was started.")
 
