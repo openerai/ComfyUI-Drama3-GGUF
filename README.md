@@ -159,6 +159,32 @@ paths are not required, including for an external server. The inline WAV limit i
 5 MiB. Audio and text are sent to the server URL you configure. Voice-cloning quality
 has not been validated across speakers/languages by this project.
 
+### Automatic reference transcription
+
+Open `example_workflows/Drama3_GGUF_Voice_Clone_Auto_Transcript.json` to connect
+the selected audio segment to local Qwen3-ASR, then Reference Transcript and the
+clone's `reference_text`. This optional example additionally requires
+[ComfyUI-Drama3](https://github.com/PedroMarinhoDev/ComfyUI-Drama3)'s
+`Qwen3ASRLoader` / `Qwen3ASRTranscribe` and a compatible converted Qwen3-ASR model
+in `models/asr`. Select your model in ASR Model. This project does not install
+or download an ASR engine or weights. The manual clone example remains independent
+of that optional dependency.
+
+Right-click only **Reference Transcript → Run Branch** to transcribe and review
+before cloning. Uploading a file alone does not run inference; the main **Run**
+executes transcription and cloning in sequence. ASR receives the same trimmed
+audio as the clone. Leave **Correction** blank to use ASR, or enter the full exact
+transcript to replace it. **Clear Correction and review again whenever the file
+or trim changes.** Used reference transcript displays the actual text sent on.
+
+The clone's **Reference transcript** means the words spoken in the reference
+recording; **New speech text** means the new sentence to generate. Internal
+`reference_text` / `text` names remain unchanged for saved workflows and API clients.
+
+`UNKNOWN` widgets with red node errors can indicate a missing node definition.
+Check startup/import errors and node registration, then refresh the browser after
+the server is ready. Presentation labels do not repair or hide missing nodes.
+
 ## Validation and limits
 
 See [verification](docs/verification.md) for executed checks and unverified cases.

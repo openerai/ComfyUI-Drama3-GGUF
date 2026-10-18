@@ -1,5 +1,6 @@
 """Fast input-boundary checks; real ComfyUI/Torch inference is checked separately."""
 import importlib
+import json
 from pathlib import Path
 import sys
 import types
@@ -52,6 +53,31 @@ class CloneInputTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "one reference"):
                 nodes.Drama3GGUFClone().clone(audio, "Reference words.", "New words.", 123, 12)
             generate.assert_not_called()
+
+    def test_reference_transcript_uses_asr_or_explicit_full_correction(self):
+        node = nodes.Drama3GGUFReferenceText()
+        self.assertEqual(node.prepare(" recognized words ")["result"], ("recognized words",))
+        corrected = node.prepare("wrong words", " exact reference words ")
+        self.assertEqual(corrected["result"], ("exact reference words",))
+        self.assertEqual(corrected["ui"]["text"], ["exact reference words"])
+
+    def test_empty_recognition_cannot_reach_clone_without_a_correction(self):
+        node = nodes.Drama3GGUFReferenceText()
+        with self.assertRaisesRegex(ValueError, "No reference speech"):
+            node.prepare(" \n", " ")
+        self.assertEqual(node.prepare("", "spoken words")["result"], ("spoken words",))
+
+    def test_auto_workflow_transcribes_the_same_selected_audio_used_by_clone(self):
+        workflow = json.loads((ROOT / "example_workflows/Drama3_GGUF_Voice_Clone_Auto_Transcript.json").read_text(encoding="utf-8"))
+        by_id = {node["id"]: node for node in workflow["nodes"]}
+        links = {link[0]: link for link in workflow["links"]}
+        clone = next(node for node in by_id.values() if node["type"] == "Drama3GGUFClone")
+        asr = next(node for node in by_id.values() if node["type"] == "Qwen3ASRTranscribe")
+        clone_audio = links[clone["inputs"][0]["link"]][1:3]
+        asr_audio = links[asr["inputs"][1]["link"]][1:3]
+        self.assertEqual(clone_audio, asr_audio)
+        self.assertEqual(by_id[clone_audio[0]]["type"], "PreviewAudio")
+        self.assertEqual(links[clone["inputs"][1]["link"]][-1], "STRING")
 
 
 if __name__ == "__main__":

@@ -71,3 +71,26 @@ class Drama3GGUFClone(Drama3GGUFGenerate):
         if reference_audio is None or not reference_text.strip():
             raise ValueError("Voice Clone requires reference_audio and the exact reference_text for that audio segment.")
         return self.generate(text, seed, max_seconds, reference_audio, reference_text, server_url, model_id)
+
+
+class Drama3GGUFReferenceText:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "transcript": ("STRING", {"forceInput": True, "tooltip": "Speech recognition of the same trimmed audio used for cloning."}),
+            "correction": ("STRING", {"multiline": True, "default": "",
+                                       "tooltip": "Leave blank to use speech recognition. Otherwise enter the full corrected transcript. Clear this when changing the reference audio or trim."}),
+        }}
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("reference_text",)
+    FUNCTION = "prepare"
+    OUTPUT_NODE = True
+    CATEGORY = "audio/drama3"
+    DESCRIPTION = "Preview the reference transcript sent to Voice Clone. An optional full correction replaces ASR text."
+
+    def prepare(self, transcript, correction=""):
+        text = correction.strip() or transcript.strip()
+        if not text:
+            raise ValueError("No reference speech was recognized. Check the selected audio or enter its exact transcript in correction.")
+        return {"ui": {"text": [text]}, "result": (text,)}

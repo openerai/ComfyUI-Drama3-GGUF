@@ -81,5 +81,30 @@ ComfyUI 0.41.0 / frontend 1.55.17에서 실제 확인했습니다.
 참조는 설정한 서버에 WAV base64로 전송되며 5MiB 제한이 있습니다.
 여러 화자·언어의 복제 품질은 아직 검증하지 않았습니다.
 
+### 참조 대사 자동 전사
+
+`example_workflows/Drama3_GGUF_Voice_Clone_Auto_Transcript.json`은 선택한 음성
+구간을 **로컬 Qwen3-ASR → Reference Transcript → reference_text**로 연결합니다.
+추가로 [ComfyUI-Drama3](https://github.com/PedroMarinhoDev/ComfyUI-Drama3)의
+`Qwen3ASRLoader`·`Qwen3ASRTranscribe` 노드와 호환되는 Qwen3-ASR 모델이
+`models/asr`에 필요합니다. ASR 모델은 ASR Model에서 직접 선택하세요.
+이 저장소가 ASR 엔진이나 모델을 자동 설치·다운로드하지는 않습니다.
+기존 수동 복제 워크플로우는 이 추가 의존성 없이 사용할 수 있습니다.
+
+오디오 파일과 Trim 구간을 고른 뒤 **Reference Transcript만 우클릭 → Run Branch**로
+전사를 확인합니다. 파일 업로드만으로는 전사를 실행하지 않습니다. 전체 **Run**에서는
+전사와 복제가 차례로 실행됩니다. ASR과 복제는 동일한 잘린 음성을 사용합니다.
+`Correction`은 빈칸이면 자동 인식을 사용하며, 내용을 적으면 정확한 전체 대사를
+대신 사용합니다. **파일이나 구간을 바꾸면 Correction을 비우고 다시 확인하세요.**
+`Used reference transcript`는 복제에 실제로 전달되는 대사입니다.
+
+복제 노드의 `Reference transcript`는 **참조 녹음에서 실제로 한 말**이고,
+`New speech text`는 **그 목소리로 새로 생성할 문장**입니다. 내부 입력 이름은
+기존 `reference_text`·`text`를 유지해 저장된 워크플로우와 API가 호환됩니다.
+
+`UNKNOWN`과 빨간 오류가 함께 보이면 노드 정의를 불러오지 못한 상태일 수 있습니다.
+ComfyUI 시작 로그에서 import 오류와 노드 등록을 확인하고, 서버가 준비된 뒤
+브라우저를 새로고침하세요. 라벨만 바꾸어 누락된 노드 오류를 숨기지는 않습니다.
+
 코드 라이선스는 MIT입니다. audio.cpp와 모델에는 별도 조건이 적용됩니다.
 [원본과 라이선스 안내](THIRD_PARTY_NOTICES.md)

@@ -1,0 +1,555 @@
+{
+  "id": "7d4827a9-3e22-4acf-abd2-4a53eb6843f8",
+  "revision": 0,
+  "last_node_id": 15,
+  "last_link_id": 8,
+  "nodes": [
+    {
+      "id": 10,
+      "type": "LoadAudio",
+      "pos": [
+        40,
+        80
+      ],
+      "size": [
+        380,
+        170
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "COMBO",
+          "widget": {
+            "name": "audio"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "title": "1 · Load Reference Audio"
+    },
+    {
+      "id": 11,
+      "type": "TrimAudioDuration",
+      "pos": [
+        40,
+        310
+      ],
+      "size": [
+        380,
+        150
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 1
+        },
+        {
+          "name": "start_index",
+          "type": "FLOAT",
+          "widget": {
+            "name": "start_index"
+          },
+          "link": null
+        },
+        {
+          "name": "duration",
+          "type": "FLOAT",
+          "widget": {
+            "name": "duration"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            2
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "TrimAudioDuration"
+      },
+      "widgets_values": [
+        0,
+        10
+      ],
+      "title": "2 · Select Reference Segment (seconds)"
+    },
+    {
+      "id": 12,
+      "type": "PreviewAudio",
+      "pos": [
+        40,
+        520
+      ],
+      "size": [
+        380,
+        150
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            3,
+            6
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewAudio"
+      },
+      "widgets_values": [],
+      "title": "3 · Reference Preview"
+    },
+    {
+      "id": 13,
+      "type": "Qwen3ASRLoader",
+      "pos": [
+        40,
+        760
+      ],
+      "size": [
+        380,
+        100
+      ],
+      "flags": {},
+      "mode": 0,
+      "order": 3,
+      "inputs": [
+        {
+          "name": "model_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "model_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "QWEN3_ASR_MODEL",
+          "type": "QWEN3_ASR_MODEL",
+          "links": [
+            5
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Qwen3ASRLoader"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "title": "ASR Model / 음성 인식 모델"
+    },
+    {
+      "id": 14,
+      "type": "Qwen3ASRTranscribe",
+      "pos": [
+        480,
+        80
+      ],
+      "size": [
+        500,
+        230
+      ],
+      "flags": {},
+      "mode": 0,
+      "order": 4,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "QWEN3_ASR_MODEL",
+          "link": 5
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 6
+        },
+        {
+          "name": "language",
+          "type": "COMBO",
+          "widget": {
+            "name": "language"
+          },
+          "link": null
+        },
+        {
+          "name": "context",
+          "type": "STRING",
+          "widget": {
+            "name": "context"
+          },
+          "link": null
+        },
+        {
+          "name": "max_new_tokens",
+          "type": "INT",
+          "widget": {
+            "name": "max_new_tokens"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "links": [
+            7
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "language",
+          "type": "STRING",
+          "links": null,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Qwen3ASRTranscribe"
+      },
+      "widgets_values": [
+        "auto",
+        "",
+        256
+      ],
+      "title": "4a · Speech to Text / 선택 구간 자동 전사"
+    },
+    {
+      "id": 15,
+      "type": "Drama3GGUFReferenceText",
+      "pos": [
+        480,
+        380
+      ],
+      "size": [
+        500,
+        390
+      ],
+      "flags": {},
+      "mode": 0,
+      "order": 5,
+      "inputs": [
+        {
+          "name": "transcript",
+          "type": "STRING",
+          "link": 7
+        },
+        {
+          "name": "correction",
+          "type": "STRING",
+          "widget": {
+            "name": "correction"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "reference_text",
+          "type": "STRING",
+          "links": [
+            8
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Drama3GGUFReferenceText"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "title": "4b · Reference Transcript / 참조 대사 확인"
+    },
+    {
+      "id": 1,
+      "type": "Drama3GGUFClone",
+      "pos": [
+        1080,
+        80
+      ],
+      "size": [
+        540,
+        530
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "reference_audio",
+          "type": "AUDIO",
+          "link": 3
+        },
+        {
+          "name": "reference_text",
+          "type": "STRING",
+          "widget": {
+            "name": "reference_text"
+          },
+          "link": 8
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "name": "max_seconds",
+          "type": "FLOAT",
+          "widget": {
+            "name": "max_seconds"
+          },
+          "link": null
+        },
+        {
+          "name": "server_url",
+          "type": "STRING",
+          "widget": {
+            "name": "server_url"
+          },
+          "link": null
+        },
+        {
+          "name": "model_id",
+          "type": "STRING",
+          "widget": {
+            "name": "model_id"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            4
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Drama3GGUFClone"
+      },
+      "widgets_values": [
+        "",
+        "반갑습니다. 이 문장은 참조 음성을 사용한 복제 테스트입니다.",
+        123,
+        "fixed",
+        12.0,
+        "",
+        "auto"
+      ],
+      "title": "5 · Voice Clone / 새 문장 생성"
+    },
+    {
+      "id": 2,
+      "type": "SaveAudioAdvanced",
+      "pos": [
+        1700,
+        80
+      ],
+      "size": [
+        430,
+        210
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 4
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        },
+        {
+          "name": "format",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "format"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveAudioAdvanced"
+      },
+      "widgets_values": [
+        "drama3_gguf/Clone",
+        "flac"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "MarkdownNote",
+      "pos": [
+        1700,
+        360
+      ],
+      "size": [
+        540,
+        430
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "## Automatic reference transcript · 참조 대사 자동 입력\n\n1. Load Reference Audio에서 파일을 선택하고 Trim에서 5~10초의 깨끗한 구간을 고릅니다.\n2. ASR Model에서 models/asr 안의 Qwen3-ASR 모델을 선택합니다. 이 워크플로우는 ComfyUI-Drama3의 Qwen3-ASR 노드가 추가로 필요합니다.\n3. Reference Transcript 노드만 우클릭 → Run Branch를 선택하면 잘린 음성의 대사가 자동 표시됩니다. 복제는 아직 실행하지 않습니다.\n4. Used reference transcript는 복제에 실제로 연결된 대사입니다. 잘못 인식했다면 Correction에 선택 구간의 정확한 전체 대사를 입력하세요. 빈칸이면 자동 인식을 사용합니다.\n5. Voice Clone의 New speech text에는 새로 말하게 할 문장을 적고 상단 Run을 누릅니다.\n\n음성 파일이나 Trim 구간을 바꾸면 Correction을 비우고 전사 미리보기를 다시 실행하세요. ASR은 원본 전체가 아닌 복제와 동일한 잘린 구간을 인식합니다. 파일만 업로드한 시점에는 전사를 실행하지 않습니다.\n\n모델과 실행 환경은 각 PC에서 설정합니다. 전사는 로컬에서 수행되며 참조 음성과 대사는 config.json에 지정된 복제 서버로 전송됩니다. 이 템플릿에는 사용자 파일과 전사문이 없습니다.\n"
+      ],
+      "color": "#234",
+      "bgcolor": "#345"
+    }
+  ],
+  "links": [
+    [
+      1,
+      10,
+      0,
+      11,
+      0,
+      "AUDIO"
+    ],
+    [
+      2,
+      11,
+      0,
+      12,
+      0,
+      "AUDIO"
+    ],
+    [
+      3,
+      12,
+      0,
+      1,
+      0,
+      "AUDIO"
+    ],
+    [
+      4,
+      1,
+      0,
+      2,
+      0,
+      "AUDIO"
+    ],
+    [
+      5,
+      13,
+      0,
+      14,
+      0,
+      "QWEN3_ASR_MODEL"
+    ],
+    [
+      6,
+      12,
+      0,
+      14,
+      1,
+      "AUDIO"
+    ],
+    [
+      7,
+      14,
+      0,
+      15,
+      0,
+      "STRING"
+    ],
+    [
+      8,
+      15,
+      0,
+      1,
+      1,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.5,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}

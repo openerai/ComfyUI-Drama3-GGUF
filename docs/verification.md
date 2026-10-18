@@ -167,3 +167,45 @@ workflow requirements or recommendations for every PC.
 This establishes one successful reference-conditioned Korean request on the
 listed PC. Voice resemblance still needs listening assessment. No recording,
 personal transcript, private path, or generated audio is published here.
+
+## Automatic reference transcript and labels (0.1.2)
+
+The optional auto-transcript workflow was tested in the same Windows/ComfyUI
+installation with the already installed Qwen3-ASR 0.6B model and the ASR nodes
+from ComfyUI-Drama3. No ASR implementation or weights were copied into this
+package. The manual clone example is unchanged and needs no ASR dependency.
+
+- A reference-only request completed in 8.41 seconds of observed request wall
+  time. The detected Korean transcript matched the previously checked 7.75-second
+  reference segment. Both ASR and Voice Clone receive Preview Audio's same output.
+- The subsequent full graph used the cached transcript and completed a fresh
+  clone generation: 127.585 seconds of Comfy execution, with 5.15483 seconds of
+  finite, non-silent 44,100 Hz FLAC output. This is not a benchmark of a single
+  cold-start ASR-plus-clone request.
+- Immediately after cloning, changing the ASR token cap forced another ASR
+  inference while the native server still held its model. It succeeded in
+  6.33 seconds of observed request wall time and recovered the same transcript.
+  Four samples of that phase observed total GPU use up to 11,423 MiB and
+  available system RAM down to about 4.11 GiB. This verifies one repeat on this
+  PC, not that every ASR/model combination can coexist in VRAM.
+- A browser Run Branch on Reference Transcript displayed the recognized text
+  without running Voice Clone. Blank Correction uses ASR; a nonblank full
+  correction replaces it. Empty recognition without a correction is rejected.
+  Changing audio/trim requires clearing any old manual correction and reviewing
+  again, as stated in the node tooltip and both READMEs.
+- The real frontend displayed distinct bilingual labels for the reference
+  transcript and new speech text, with the original input/API names preserved.
+  `UNKNOWN` fallback widgets are not relabeled to hide missing node definitions.
+- After displaying a private transcript and saving through the frontend, the
+  Reference Transcript node stored only its blank Correction. The generated
+  preview text was absent from both widget values and the saved workflow text.
+  Both `widget.serialize` and `widget.options.serialize` are disabled on that
+  display widget; a saved reference filename or an intentional correction still
+  belongs to the user's workflow.
+
+All 25 unit tests, Ruff, and the JavaScript syntax check passed locally. Gravitas
+independent review identified the separate frontend workflow/API serialization
+flags; both were fixed before publication. The readonly preview uses the
+frontend's `read_only` option; its Correction field is the editable input.
+Real ASR/clone inference on other hardware and long-running repeats remain
+unverified.
