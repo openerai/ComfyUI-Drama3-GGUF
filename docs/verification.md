@@ -352,3 +352,20 @@ Local Qwen3-ASR recognized speech across the full output and its final sentence.
 Some words differed in recognition; this is not a listening-quality assessment
 or a guarantee of exact pronunciation, acting, longer scripts or other hardware.
 The private script, audio, configuration and local paths are not published.
+
+## Saved long-form workflow defaults (0.1.6)
+
+The three distributed workflows now save a 47-second generation budget per text
+chunk and include a Korean long-form note. The six existing local variants were
+updated separately with recovery copies. Named widget values, when present,
+match the positional values. A file comparison against those copies found only
+the intended budget and note changes; scripts, references, links and layout
+were preserved. The local private configuration was unchanged.
+
+The updated auto-transcript Clone workflow was reopened through ComfyUI's
+workflow browser. Both its node and properties panel displayed 47, and the new
+note was present. An already-open workflow can retain its old values, so users
+should reopen the saved file. This file/UI check does not claim a new long-form
+Clone inference run; the 74.7-second test above used ordinary TTS with the same
+47-second per-chunk budget. A newly added node still defaults to 12 seconds,
+and its model-based input ceiling remains 12,173 seconds.

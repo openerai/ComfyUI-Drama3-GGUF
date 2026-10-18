@@ -1,6 +1,6 @@
 [project]
 name = "comfyui-drama3-gguf"
-version = "0.1.5"
+version = "0.1.6"
 description = "ComfyUI audio nodes for Drama3 GGUF through a configurable audio.cpp server"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }

@@ -221,7 +221,9 @@ with a theoretical input ceiling of 12,173 seconds per text chunk. This is not
 a supported output-duration or quality guarantee: prompts, references and history
 also occupy context. Each server configures its own `fish_drama3.context_length`;
 the bridge reports context, memory or timeout failures without expanding local
-memory limits. Default generation budget remains 12 seconds.
+memory limits. Newly added nodes default to 12 seconds; the supplied workflows
+start at 47 seconds per chunk as of 0.1.6. This starting value can be adjusted
+within the model-based input range.
 
 HTTP read waiting is separately configurable through `request_timeout_seconds`
 in the installation's config (default 600; 0 means no read timeout). A timeout
