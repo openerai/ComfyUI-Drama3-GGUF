@@ -31,6 +31,22 @@ does not measure every transient allocation or VRAM usage. Timing and available
 RAM depend on concurrent applications, storage, backend build, and model settings.
 This checks successful audio production; it is not a perceptual speech-quality score.
 
+### Repeated UI run and local RAM tuning
+
+A subsequent run from the ComfyUI browser hit the available-RAM guard with the
+4 GiB cache target: sampled available RAM fell to approximately 2.87 GiB, below
+the configured 3 GiB threshold. The launcher stopped its server as intended.
+This demonstrates that a target based on total RAM alone cannot account for
+other running applications.
+
+Only this installation's private configuration was then changed to
+`memory.working_set_gib=3`; the 3 GiB available-RAM threshold and public defaults
+were retained. A new browser run with blank `server_url` and `model_id=auto`
+completed successfully: 44,100 Hz FLAC, 3.8545 seconds of audio, and 57.479 seconds
+of execution including server startup. Windows hard limits were applied, with
+approximately 3.00 GiB peak server RSS and 5.01 GiB minimum sampled available RAM.
+This is a successful short repeat, not a long-running stability guarantee.
+
 The tested model was separately downloaded from revision
 `17a5b40c5dc2c2be986f5371a7e650108b828e29`, with SHA-256
 `041be86fbb53bf4002d59bf7d5f0c99c321e0b21f5aa3b53fec380eec6f892d3`.

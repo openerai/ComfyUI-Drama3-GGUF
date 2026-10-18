@@ -99,6 +99,9 @@ working-set limit. Automatic working-set targets are 2 GiB for 16 GiB RAM,
 not hardware requirements or proof that a model fits**. Override `memory` locally.
 The launcher also stops its child if system available RAM falls below your threshold.
 Non-Windows managed mode has the monitored RAM/RSS stop checks, not Windows hard limits.
+Automatic targets use total RAM; other running applications may require a lower
+local `working_set_gib`. If the available-RAM guard stops generation, lower that
+cache target and restart the managed server before retrying.
 
 | `memory` setting | Default |
 | --- | --- |
