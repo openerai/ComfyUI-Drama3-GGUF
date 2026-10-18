@@ -61,6 +61,17 @@ class CloneInputTests(unittest.TestCase):
         self.assertEqual(corrected["result"], ("exact reference words",))
         self.assertEqual(corrected["ui"]["text"], ["exact reference words"])
 
+    def test_script_preserves_inline_tags_and_places_direction_before_new_speech(self):
+        node = nodes.Drama3GGUFScript()
+        text = "오늘은 <emphasis>중요한</emphasis> 날입니다."
+        self.assertEqual(node.prepare(text, "차분하게", "none"), ("[차분하게] " + text,))
+        self.assertEqual(node.prepare("조용히 말해요.", "", "whisper"), ("<whisper>조용히 말해요.</whisper>",))
+        self.assertEqual(node.prepare(text), (text,))
+        with self.assertRaises(ValueError):
+            node.prepare("말해요.", "[차분하게]")
+        with self.assertRaises(ValueError):
+            node.prepare("아" * 180, "조용히" * 15, "whisper")
+
     def test_empty_recognition_cannot_reach_clone_without_a_correction(self):
         node = nodes.Drama3GGUFReferenceText()
         with self.assertRaisesRegex(ValueError, "No reference speech"):

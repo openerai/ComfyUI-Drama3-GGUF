@@ -1,19 +1,19 @@
 {
   "id": "39ac7996-e656-45f9-a9a4-990ec8e21437",
   "revision": 0,
-  "last_node_id": 3,
-  "last_link_id": 1,
+  "last_node_id": 22,
+  "last_link_id": 3,
   "nodes": [
     {
       "id": 1,
       "type": "Drama3GGUFGenerate",
       "pos": [
-        40,
-        40
+        550,
+        60
       ],
       "size": [
-        510,
-        505
+        500,
+        560
       ],
       "flags": {},
       "order": 0,
@@ -25,7 +25,7 @@
           "widget": {
             "name": "text"
           },
-          "link": null
+          "link": 2
         },
         {
           "name": "seed",
@@ -71,6 +71,30 @@
             "name": "model_id"
           },
           "link": null
+        },
+        {
+          "name": "temperature",
+          "type": "FLOAT",
+          "widget": {
+            "name": "temperature"
+          },
+          "link": null
+        },
+        {
+          "name": "top_p",
+          "type": "FLOAT",
+          "widget": {
+            "name": "top_p"
+          },
+          "link": null
+        },
+        {
+          "name": "top_k",
+          "type": "INT",
+          "widget": {
+            "name": "top_k"
+          },
+          "link": null
         }
       ],
       "outputs": [
@@ -87,13 +111,16 @@
         "Node name for S&R": "Drama3GGUFGenerate"
       },
       "widgets_values": [
-        "안녕하세요. 오늘도 좋은 하루 보내세요.",
+        "",
         123,
         "fixed",
         12.0,
         "",
         "",
-        "auto"
+        "auto",
+        1.0,
+        0.9,
+        30
       ],
       "title": "Drama3 GGUF · Generate Audio"
     },
@@ -101,8 +128,8 @@
       "id": 2,
       "type": "SaveAudioAdvanced",
       "pos": [
-        620,
-        40
+        1600,
+        60
       ],
       "size": [
         430,
@@ -115,7 +142,7 @@
         {
           "name": "audio",
           "type": "AUDIO",
-          "link": 1
+          "link": 3
         },
         {
           "name": "filename_prefix",
@@ -153,12 +180,12 @@
       "id": 3,
       "type": "MarkdownNote",
       "pos": [
-        620,
-        300
+        1600,
+        380
       ],
       "size": [
-        510,
-        465
+        500,
+        360
       ],
       "flags": {},
       "order": 2,
@@ -167,16 +194,190 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "## Drama3 GGUF · Text to Speech\n\n1. text에 짧은 문장을 입력하고 실행합니다.\n2. Save Audio에서 재생하거나 저장합니다.\n\n서버 주소를 server_url에 넣으세요. 비워 두면 이 PC의 config.json 또는 localhost:8035를 사용합니다.\nmodel_id=auto는 서버에 등록된 Drama3 모델이 하나일 때 선택합니다. 여러 모델이면 ID를 지정하세요.\n\nGPU 종류, backend, 모델 파일, 메모리 제한은 각 PC의 config.json에서 설정합니다. 공유 워크플로우는 모든 PC에서 동일합니다.\n\n참조 음성: Load Audio를 reference_audio에 연결하고 reference_text에 정확한 전사문을 입력하세요. 참조는 설정한 서버로 전송됩니다.\n\nmax_seconds는 문장 블록당 생성 상한입니다. 긴 글은 짧은 문장으로 나누세요.\n\nRequires a Drama3-capable audio.cpp server and a compatible GGUF package. Setup and hardware compatibility must be checked on each machine.\n"
+        "## Drama3 GGUF · Text to Speech\n\n1. Script & Direction의 New speech text에 짧은 문장을 입력하고 실행합니다.\n2. Save Audio에서 재생하거나 저장합니다.\n\n서버 주소를 server_url에 넣으세요. 비워 두면 이 PC의 config.json 또는 localhost:8035를 사용합니다.\nmodel_id=auto는 서버에 등록된 Drama3 모델이 하나일 때 선택합니다. 여러 모델이면 ID를 지정하세요.\n\nGPU 종류, backend, 모델 파일, 메모리 제한은 각 PC의 config.json에서 설정합니다. 공유 워크플로우는 모든 PC에서 동일합니다.\n\n참조 음성: Load Audio를 reference_audio에 연결하고 reference_text에 정확한 전사문을 입력하세요. 참조는 설정한 서버로 전송됩니다.\n\nmax_seconds는 문장 블록당 생성 상한입니다. 긴 글은 짧은 문장으로 나누세요.\n\nRequires a Drama3-capable audio.cpp server and a compatible GGUF package. Setup and hardware compatibility must be checked on each machine.\n\n\n새 대사는 Script & Direction에 입력하고, 생성 후 속도·볼륨은 Audio Controls (Local)에서 조절하세요. 자세한 사용법은 Guide 노트에 있습니다.\n"
       ],
       "color": "#234",
       "bgcolor": "#345"
+    },
+    {
+      "id": 20,
+      "type": "Drama3GGUFScript",
+      "title": "Script & Direction / 새 문장·연기 지시",
+      "pos": [
+        40,
+        60
+      ],
+      "size": [
+        460,
+        390
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "properties": {
+        "Node name for S&R": "Drama3GGUFScript"
+      },
+      "widgets_values": [
+        "안녕하세요. 오늘도 좋은 하루 보내세요.",
+        "",
+        "none"
+      ],
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        },
+        {
+          "name": "direction",
+          "type": "STRING",
+          "widget": {
+            "name": "direction"
+          },
+          "link": null
+        },
+        {
+          "name": "delivery",
+          "type": "COMBO",
+          "widget": {
+            "name": "delivery"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "script",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "type": "Drama3GGUFAudioControls",
+      "title": "Audio Controls (Local) / 출력 속도·음량",
+      "pos": [
+        1100,
+        60
+      ],
+      "size": [
+        420,
+        300
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "properties": {
+        "Node name for S&R": "Drama3GGUFAudioControls"
+      },
+      "widgets_values": [
+        1.0,
+        0.0,
+        false,
+        -16.0
+      ],
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 1
+        },
+        {
+          "name": "speed",
+          "type": "FLOAT",
+          "widget": {
+            "name": "speed"
+          },
+          "link": null
+        },
+        {
+          "name": "volume_db",
+          "type": "FLOAT",
+          "widget": {
+            "name": "volume_db"
+          },
+          "link": null
+        },
+        {
+          "name": "normalize_loudness",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "normalize_loudness"
+          },
+          "link": null
+        },
+        {
+          "name": "target_lufs",
+          "type": "FLOAT",
+          "widget": {
+            "name": "target_lufs"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "slot_index": 0,
+          "links": [
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "type": "MarkdownNote",
+      "title": "Guide / 연기·샘플링·오디오 조절법",
+      "pos": [
+        40,
+        610
+      ],
+      "size": [
+        1450,
+        620
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## Drama3 조절 가이드 · 이 노트를 클릭하고 . 키로 확대\n\n### 1. Script & Direction · 새로 말할 문장과 연기\nNew speech text에는 새로 생성할 대사만 적습니다. Direction은 '차분하고 또렷한 안내 말투로'처럼 괄호 없이 적으면 [연기 지시]가 앞에 붙습니다. Delivery tag는 문장 전체에 적용합니다.\n한 단어만 바꾸려면 Delivery=none으로 두고 본문에 직접 쓰세요: `오늘은 <emphasis>새로운</emphasis> 시작입니다.` `<whisper>조용히 말해요.</whisper>`도 가능합니다. [한숨] 같은 소리 지시는 본문의 해당 위치에 씁니다.\n태그가 음색·연기 품질을 보장하지는 않습니다. 짧은 문장부터 비교하세요. 기본 200자 청크를 넘어가면 지시·쌍 태그의 범위가 이어지지 않을 수 있습니다.\n참조 전사문에는 연기 태그를 추가하지 마세요. 그 칸은 녹음에서 실제로 한 말을 위한 입력입니다.\n\n### 2. Generate / Voice Clone · 모델 샘플링\n기본 Temperature=1.0 / Top P=0.9 / Top K=30으로 시작합니다. Temperature는 생성 변화량, Top P·K는 후보 선택 범위를 바꿉니다. 지나치게 낮추면 침묵·반복이 생길 수 있습니다. 이 로컬 서버는 Top K=0과 Top P=0을 지원하지 않습니다.\nSeed를 고정하면 같은 설정을 비교하기 쉽습니다. Temperature=0도 모든 반복 방지 경로가 완전 결정적인 것은 아닙니다. Max seconds는 문장 블록당 생성 상한입니다.\n\n### 3. Audio Controls (Local) · 생성 후 출력 조절\nSpeed=1.0이 원래 속도, 1.2는 빠르게, 0.8은 느리게입니다. FFmpeg atempo로 음정을 유지합니다. Volume은 dB 단위: 0은 유지, -6은 줄이기, +3은 키우기입니다.\nNormalize loudness를 켜면 EBU R128 음량 정규화를 적용합니다. Target LUFS 기본 -16은 이 노드의 목표값이며 Fish 웹앱과 같은 알고리즘/설정이라는 뜻은 아닙니다. 순서는 속도 → 정규화 → 볼륨 → 피크 제한(0.98)입니다. 따라서 볼륨을 추가로 올리면 최종 LUFS도 달라집니다.\n속도·볼륨·정규화만 바꾸면 같은 그래프에서 생성 음성을 재사용할 수 있습니다. Run Branch로 전사만 따로 실행한 뒤에는 ComfyUI 캐시가 생성 결과를 비울 수 있습니다. FFmpeg가 PATH에 필요하며 config.json의 ffmpeg_path로도 지정할 수 있습니다. 기본 1x/0dB/정규화 끔은 무가공입니다.\n\n### 4. Fish 웹앱과 다른 부분\n확인한 웹앱에서 Drama3는 볼륨·속도, S2.1 Pro는 음량 정규화·텍스트 정규화·태그 호환 모드도 표시합니다. 이 노드의 속도·음량 조절은 로컬 후처리입니다. 사이트의 숫자/날짜 읽기용 텍스트 정규화, 자동 태그, 태그 호환 모드를 그대로 구현한 기능은 아닙니다. 읽기 어려운 숫자·단위는 원하는 발음대로 직접 적으세요.\n공식 안내: https://docs.fish.audio/features/text-to-speech/drama-3\n"
+      ],
+      "inputs": [],
+      "outputs": []
     }
   ],
   "links": [
     [
       1,
       1,
+      0,
+      21,
+      0,
+      "AUDIO"
+    ],
+    [
+      2,
+      20,
+      0,
+      1,
+      0,
+      "STRING"
+    ],
+    [
+      3,
+      21,
       0,
       2,
       0,
@@ -187,7 +388,7 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.75,
+      "scale": 0.55,
       "offset": [
         0,
         0

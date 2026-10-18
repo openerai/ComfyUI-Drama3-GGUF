@@ -1,8 +1,8 @@
 {
   "id": "d655eef0-b42b-4ef4-8fcd-f06f46025b4e",
   "revision": 0,
-  "last_node_id": 12,
-  "last_link_id": 4,
+  "last_node_id": 22,
+  "last_link_id": 6,
   "nodes": [
     {
       "id": 10,
@@ -143,12 +143,12 @@
       "id": 1,
       "type": "Drama3GGUFClone",
       "pos": [
-        500,
-        80
+        1030,
+        60
       ],
       "size": [
-        560,
-        660
+        500,
+        560
       ],
       "flags": {},
       "order": 3,
@@ -173,7 +173,7 @@
           "widget": {
             "name": "text"
           },
-          "link": null
+          "link": 5
         },
         {
           "name": "seed",
@@ -206,6 +206,30 @@
             "name": "model_id"
           },
           "link": null
+        },
+        {
+          "name": "temperature",
+          "type": "FLOAT",
+          "widget": {
+            "name": "temperature"
+          },
+          "link": null
+        },
+        {
+          "name": "top_p",
+          "type": "FLOAT",
+          "widget": {
+            "name": "top_p"
+          },
+          "link": null
+        },
+        {
+          "name": "top_k",
+          "type": "INT",
+          "widget": {
+            "name": "top_k"
+          },
+          "link": null
         }
       ],
       "outputs": [
@@ -223,12 +247,15 @@
       },
       "widgets_values": [
         "",
-        "반갑습니다. 이 문장은 참조 음성을 사용한 복제 테스트입니다.",
+        "",
         123,
         "fixed",
         12.0,
         "",
-        "auto"
+        "auto",
+        1.0,
+        0.9,
+        30
       ],
       "title": "Drama3 GGUF · Voice Clone"
     },
@@ -236,8 +263,8 @@
       "id": 2,
       "type": "SaveAudioAdvanced",
       "pos": [
-        1140,
-        80
+        2100,
+        60
       ],
       "size": [
         430,
@@ -250,7 +277,7 @@
         {
           "name": "audio",
           "type": "AUDIO",
-          "link": 4
+          "link": 6
         },
         {
           "name": "filename_prefix",
@@ -288,12 +315,12 @@
       "id": 3,
       "type": "MarkdownNote",
       "pos": [
-        1140,
-        350
+        2100,
+        380
       ],
       "size": [
-        520,
-        480
+        500,
+        360
       ],
       "flags": {},
       "order": 5,
@@ -302,10 +329,168 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "## Drama3 GGUF · Voice Clone\n\n1. Load Audio에서 참조 음성을 선택하거나 업로드합니다.\n2. Trim Audio Duration으로 한 사람의 깨끗한 말소리 구간을 선택합니다. start_index와 duration의 단위는 초입니다. 기본 10초, 5~10초 정도의 짧은 구간을 권장합니다.\n3. Reference Preview만 우클릭 → Run Branch로 잘린 구간을 먼저 듣습니다. 이 실행은 복제 노드를 실행하지 않습니다.\n4. reference_text에는 선택한 구간에서 실제 말한 대사만 정확히 적습니다.\n5. text에는 새로 생성할 다른 문장을 적고 실행합니다.\n\n복제 노드는 참조 음성과 전사문이 모두 필수입니다. 참조가 빠지면 일반 TTS로 대신 실행하지 않습니다.\n기본 참조 상한은 15초입니다. 긴 파일은 구간을 잘라 사용하고, 자른 구간에 맞게 전사문도 수정하세요.\n\nserver_url이 비어 있으면 이 PC의 config.json을 사용합니다. model_id=auto는 서버에 Drama3 모델이 하나일 때 선택합니다. GPU·모델 파일·메모리 설정은 PC별 config.json에서 관리합니다.\n\n참조 음성은 설정한 서버로 전송됩니다. 공유 파일에는 참조 녹음이 포함되지 않습니다. 음색 유사도는 녹음·언어·모델에 따라 달라집니다.\n"
+        "## Drama3 GGUF · Voice Clone\n\n1. Load Audio에서 참조 음성을 선택하거나 업로드합니다.\n2. Trim Audio Duration으로 한 사람의 깨끗한 말소리 구간을 선택합니다. start_index와 duration의 단위는 초입니다. 기본 10초, 5~10초 정도의 짧은 구간을 권장합니다.\n3. Reference Preview만 우클릭 → Run Branch로 잘린 구간을 먼저 듣습니다. 이 실행은 복제 노드를 실행하지 않습니다.\n4. reference_text에는 선택한 구간에서 실제 말한 대사만 정확히 적습니다.\n5. text에는 새로 생성할 다른 문장을 적고 실행합니다.\n\n복제 노드는 참조 음성과 전사문이 모두 필수입니다. 참조가 빠지면 일반 TTS로 대신 실행하지 않습니다.\n기본 참조 상한은 15초입니다. 긴 파일은 구간을 잘라 사용하고, 자른 구간에 맞게 전사문도 수정하세요.\n\nserver_url이 비어 있으면 이 PC의 config.json을 사용합니다. model_id=auto는 서버에 Drama3 모델이 하나일 때 선택합니다. GPU·모델 파일·메모리 설정은 PC별 config.json에서 관리합니다.\n\n참조 음성은 설정한 서버로 전송됩니다. 공유 파일에는 참조 녹음이 포함되지 않습니다. 음색 유사도는 녹음·언어·모델에 따라 달라집니다.\n\n\n새 대사는 Script & Direction에 입력하고, 생성 후 속도·볼륨은 Audio Controls (Local)에서 조절하세요. 자세한 사용법은 Guide 노트에 있습니다.\n"
       ],
       "color": "#234",
       "bgcolor": "#345"
+    },
+    {
+      "id": 20,
+      "type": "Drama3GGUFScript",
+      "title": "Script & Direction / 새 문장·연기 지시",
+      "pos": [
+        500,
+        810
+      ],
+      "size": [
+        460,
+        390
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "properties": {
+        "Node name for S&R": "Drama3GGUFScript"
+      },
+      "widgets_values": [
+        "반갑습니다. 이 문장은 참조 음성을 사용한 복제 테스트입니다.",
+        "",
+        "none"
+      ],
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        },
+        {
+          "name": "direction",
+          "type": "STRING",
+          "widget": {
+            "name": "direction"
+          },
+          "link": null
+        },
+        {
+          "name": "delivery",
+          "type": "COMBO",
+          "widget": {
+            "name": "delivery"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "script",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": [
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "type": "Drama3GGUFAudioControls",
+      "title": "Audio Controls (Local) / 출력 속도·음량",
+      "pos": [
+        1600,
+        60
+      ],
+      "size": [
+        420,
+        300
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "properties": {
+        "Node name for S&R": "Drama3GGUFAudioControls"
+      },
+      "widgets_values": [
+        1.0,
+        0.0,
+        false,
+        -16.0
+      ],
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 4
+        },
+        {
+          "name": "speed",
+          "type": "FLOAT",
+          "widget": {
+            "name": "speed"
+          },
+          "link": null
+        },
+        {
+          "name": "volume_db",
+          "type": "FLOAT",
+          "widget": {
+            "name": "volume_db"
+          },
+          "link": null
+        },
+        {
+          "name": "normalize_loudness",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "normalize_loudness"
+          },
+          "link": null
+        },
+        {
+          "name": "target_lufs",
+          "type": "FLOAT",
+          "widget": {
+            "name": "target_lufs"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "slot_index": 0,
+          "links": [
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "type": "MarkdownNote",
+      "title": "Guide / 연기·샘플링·오디오 조절법",
+      "pos": [
+        1030,
+        690
+      ],
+      "size": [
+        1500,
+        620
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "properties": {
+        "Node name for S&R": "MarkdownNote"
+      },
+      "widgets_values": [
+        "## Drama3 조절 가이드 · 이 노트를 클릭하고 . 키로 확대\n\n### 1. Script & Direction · 새로 말할 문장과 연기\nNew speech text에는 새로 생성할 대사만 적습니다. Direction은 '차분하고 또렷한 안내 말투로'처럼 괄호 없이 적으면 [연기 지시]가 앞에 붙습니다. Delivery tag는 문장 전체에 적용합니다.\n한 단어만 바꾸려면 Delivery=none으로 두고 본문에 직접 쓰세요: `오늘은 <emphasis>새로운</emphasis> 시작입니다.` `<whisper>조용히 말해요.</whisper>`도 가능합니다. [한숨] 같은 소리 지시는 본문의 해당 위치에 씁니다.\n태그가 음색·연기 품질을 보장하지는 않습니다. 짧은 문장부터 비교하세요. 기본 200자 청크를 넘어가면 지시·쌍 태그의 범위가 이어지지 않을 수 있습니다.\n참조 전사문에는 연기 태그를 추가하지 마세요. 그 칸은 녹음에서 실제로 한 말을 위한 입력입니다.\n\n### 2. Generate / Voice Clone · 모델 샘플링\n기본 Temperature=1.0 / Top P=0.9 / Top K=30으로 시작합니다. Temperature는 생성 변화량, Top P·K는 후보 선택 범위를 바꿉니다. 지나치게 낮추면 침묵·반복이 생길 수 있습니다. 이 로컬 서버는 Top K=0과 Top P=0을 지원하지 않습니다.\nSeed를 고정하면 같은 설정을 비교하기 쉽습니다. Temperature=0도 모든 반복 방지 경로가 완전 결정적인 것은 아닙니다. Max seconds는 문장 블록당 생성 상한입니다.\n\n### 3. Audio Controls (Local) · 생성 후 출력 조절\nSpeed=1.0이 원래 속도, 1.2는 빠르게, 0.8은 느리게입니다. FFmpeg atempo로 음정을 유지합니다. Volume은 dB 단위: 0은 유지, -6은 줄이기, +3은 키우기입니다.\nNormalize loudness를 켜면 EBU R128 음량 정규화를 적용합니다. Target LUFS 기본 -16은 이 노드의 목표값이며 Fish 웹앱과 같은 알고리즘/설정이라는 뜻은 아닙니다. 순서는 속도 → 정규화 → 볼륨 → 피크 제한(0.98)입니다. 따라서 볼륨을 추가로 올리면 최종 LUFS도 달라집니다.\n속도·볼륨·정규화만 바꾸면 같은 그래프에서 생성 음성을 재사용할 수 있습니다. Run Branch로 전사만 따로 실행한 뒤에는 ComfyUI 캐시가 생성 결과를 비울 수 있습니다. FFmpeg가 PATH에 필요하며 config.json의 ffmpeg_path로도 지정할 수 있습니다. 기본 1x/0dB/정규화 끔은 무가공입니다.\n\n### 4. Fish 웹앱과 다른 부분\n확인한 웹앱에서 Drama3는 볼륨·속도, S2.1 Pro는 음량 정규화·텍스트 정규화·태그 호환 모드도 표시합니다. 이 노드의 속도·음량 조절은 로컬 후처리입니다. 사이트의 숫자/날짜 읽기용 텍스트 정규화, 자동 태그, 태그 호환 모드를 그대로 구현한 기능은 아닙니다. 읽기 어려운 숫자·단위는 원하는 발음대로 직접 적으세요.\n공식 안내: https://docs.fish.audio/features/text-to-speech/drama-3\n"
+      ],
+      "inputs": [],
+      "outputs": []
     }
   ],
   "links": [
@@ -337,6 +522,22 @@
       4,
       1,
       0,
+      21,
+      0,
+      "AUDIO"
+    ],
+    [
+      5,
+      20,
+      0,
+      1,
+      2,
+      "STRING"
+    ],
+    [
+      6,
+      21,
+      0,
       2,
       0,
       "AUDIO"
@@ -346,7 +547,7 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.65,
+      "scale": 0.55,
       "offset": [
         0,
         0

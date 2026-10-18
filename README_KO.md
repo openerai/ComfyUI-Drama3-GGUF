@@ -108,3 +108,13 @@ ComfyUI 시작 로그에서 import 오류와 노드 등록을 확인하고, 서�
 
 코드 라이선스는 MIT입니다. audio.cpp와 모델에는 별도 조건이 적용됩니다.
 [원본과 라이선스 안내](THIRD_PARTY_NOTICES.md)
+
+## 연기·속도·음량 조절 (0.1.3)
+
+예제의 **Script & Direction**에서 새 대사와 자연어 연기 지시·쌍 태그를 지정합니다.
+Generate / Voice Clone에는 `temperature`·`top_p`·`top_k`를 추가했습니다.
+**Audio Controls (Local)**은 생성 후 속도·볼륨·음량 정규화를 처리합니다.
+후처리에는 FFmpeg가 PATH에 필요하며, `config.json`의 `ffmpeg_path`로도 지정할 수 있습니다.
+기본 설정은 음성을 그대로 통과시키므로 FFmpeg가 없어도 기존 생성은 가능합니다.
+각 워크플로우의 한국어 Guide 노트와 [조절 가이드](docs/controls_KO.md)에
+기본값, 태그 예시, 캐시 재사용, Fish 웹앱과 다른 적용 범위를 적었습니다.

@@ -160,10 +160,14 @@ class PortableClientTests(unittest.TestCase):
         try:
             url = f"http://127.0.0.1:{server.server_port}"
             reference = client.reference_payload(np.sin(np.arange(1000, dtype=np.float32) * 0.1)[:, None] * 0.2, 16000, "Reference words.")
-            audio, rate = client.generate({"mode": "external", "server_url": url}, "안녕하세요.", 7, 65, reference=reference)
+            text = "[차분하게] 안녕하세요. <emphasis>반갑습니다.</emphasis>"
+            audio, rate = client.generate({"mode": "external", "server_url": url}, text, 7, 65, reference=reference,
+                                          temperature=0.8, top_p=0.85, top_k=20)
             self.assertEqual((len(audio), rate), (1600, 16000))
             self.assertEqual(FakeAudioServer.received["model"], "custom-quant")
-            self.assertEqual(FakeAudioServer.received["input"], "안녕하세요.")
+            self.assertEqual(FakeAudioServer.received["input"], text)
+            self.assertEqual({name: FakeAudioServer.received[name] for name in ("temperature", "top_p", "top_k")},
+                             {"temperature": 0.8, "top_p": 0.85, "top_k": 20})
             self.assertEqual(FakeAudioServer.received["voice_ref"]["type"], "base64")
             self.assertEqual(FakeAudioServer.received["reference_text"], "Reference words.")
             self.assertNotIn("path", FakeAudioServer.received["voice_ref"])
@@ -171,6 +175,14 @@ class PortableClientTests(unittest.TestCase):
             server.shutdown()
             server.server_close()
             thread.join()
+
+    def test_sampling_bounds_reject_unsupported_values_before_server_contact(self):
+        with patch.object(client, "ensure_server") as connect:
+            for values in ((float("nan"), 0.9, 30), (1, 0, 30), (1, 0.9, 0), (1, 0.9, 1.5)):
+                with self.subTest(values=values), self.assertRaises(ValueError):
+                    client.generate({}, "Speech.", 123, 100, temperature=values[0], top_p=values[1], top_k=values[2])
+            connect.assert_not_called()
+        self.assertEqual(client.sampling_options(0, 1, 1), {"temperature": 0, "top_p": 1, "top_k": 1})
 
     def test_reference_requires_transcript_and_stays_under_server_limit(self):
         with self.assertRaises(ValueError):

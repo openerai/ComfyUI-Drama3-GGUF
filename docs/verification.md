@@ -209,3 +209,64 @@ flags; both were fixed before publication. The readonly preview uses the
 frontend's `read_only` option; its Correction field is the editable input.
 Real ASR/clone inference on other hardware and long-running repeats remain
 unverified.
+
+## Direction, sampling and local audio controls (0.1.3)
+
+The actual anonymous Fish web app was inspected on 2026-10-18. With Drama3
+selected, its settings showed volume and speed. S2.1 Pro additionally showed
+loudness normalization, text normalization and tag compatibility. The supplied
+screenshot had S2.1 Pro selected. The Drama3 tag menu and
+[official guide](https://docs.fish.audio/features/text-to-speech/drama-3)
+support natural-language bracket directions and the paired tags whisper,
+emphasis, soft, fast, slow, stress and forceful. This implementation passes
+those directions/tags to the local backend; it does not call Fish's cloud API.
+
+All 32 unit tests and Ruff passed locally on Windows, including real FFmpeg
+tests of pitch-preserving 1.25x tempo, stereo channel preservation, dB gain,
+normalization, limiting and original sample-rate restoration. JavaScript syntax
+checking passed. DSP tests that need FFmpeg are skipped when it is unavailable;
+the portable CI jobs are not model inference tests. An independent Gravitas
+reviewer inspected the new code and ran all five audio-control tests with FFmpeg.
+Nondefault sampling values and literal direction/tag text were also checked
+through a loopback HTTP fixture; that fixture is not actual model inference.
+
+The installed ComfyUI then completed a fresh real TTS request on the same PC,
+model and streaming backend described above. Script & Direction supplied
+`[차분하고 또렷한 안내 말투로] 안녕하세요. <emphasis>오늘도</emphasis> 좋은 하루 보내세요.`
+with sampling defaults 1.0 / 0.9 / 30. Generate fed both a raw preview and the
+new Audio Controls node, then Save Audio. The real request completed in 75.507
+seconds of Comfy execution, about 76.14 seconds of observed request/poll wall time.
+
+| Actual output | Duration | Sample rate | Sample peak |
+| --- | --- | --- | --- |
+| Raw generated audio | 4.73687 s | 44,100 Hz | — |
+| Speed 1.2, normalization on, -16 LUFS target, gain -3 dB | 3.95345 s | 44,100 Hz | 0.59476 |
+| Speed 0.8, normalization off, gain -6 dB | 5.90202 s | 44,100 Hz | 0.38641 |
+
+All three files were reopened and their samples were finite and non-silent.
+Local Qwen3-ASR 0.6B recovered the intended spoken sentence from the raw output,
+without the acting direction or tag syntax, in 5.5 seconds of observed ASR
+inference time. This is an ASR content check, not a listening assessment.
+The second full-graph request changed only Audio Controls. Its history listed
+Script and Generate as cached, with no new model generation. Comfy execution
+took 0.142 seconds; observed request/poll wall time was about 2 seconds. The
+independent reviewer reopened the files, recalculated durations and inspected
+the history cache entries. This confirms tag-containing TTS and local output
+processing, not a listening assessment of the acting/emphasis effect, a fresh
+clone-path test with the new controls, or equivalence to Fish cloud processing.
+
+The first attempt hit the 3 GiB available-RAM guard. After closing the completed
+research tab, only this installation's working-set target was reduced from
+3 to 2 GiB before the successful retry. The 3 GiB available-RAM threshold and
+automatic 10 GiB private-memory cap were retained; the derived RSS guard became
+stricter. These private settings are test conditions, not public defaults or a
+recommendation for every PC. Concurrent applications still affect whether a
+request fits memory.
+
+The actual frontend displayed distinct labels for direction, delivery, the
+three sampling inputs and four audio controls. Korean Guide notes were added
+to all three example workflows, with inline tag examples rendered as code so
+Markdown does not hide the angle brackets. Existing node IDs and input names
+were preserved, and optional sampling widgets were appended after existing
+widgets. See the [control guide](controls_KO.md) for short-script/chunk limits
+and the cloud-only features that are not implemented.

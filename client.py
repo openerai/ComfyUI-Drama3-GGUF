@@ -125,14 +125,26 @@ def ensure_server(config, url, interrupted=lambda: None):
     raise RuntimeError(f"audio.cpp did not start. Check {state_dir / 'launcher.log'} and server.log.")
 
 
-def generate(config, text, seed, max_tokens, *, url="", model_id="auto", reference=None, interrupted=lambda: None):
+def sampling_options(temperature, top_p, top_k):
+    if not math.isfinite(temperature) or not 0 <= temperature <= 2:
+        raise ValueError("temperature must be between 0 and 2.")
+    if not math.isfinite(top_p) or not 0 < top_p <= 1:
+        raise ValueError("top_p must be greater than 0 and at most 1.")
+    if not isinstance(top_k, Integral) or not 1 <= top_k <= 4096:
+        raise ValueError("top_k must be an integer between 1 and 4096.")
+    return {"temperature": temperature, "top_p": top_p, "top_k": top_k}
+
+
+def generate(config, text, seed, max_tokens, *, url="", model_id="auto", reference=None, interrupted=lambda: None,
+             temperature=1.0, top_p=0.9, top_k=30):
+    sampling = sampling_options(temperature, top_p, top_k)
     url = server_url(url or config["server_url"])
     document = ensure_server(config, url, interrupted)
     model = select_model(document, model_id)
     if config["mode"] == "managed" and url == config["server_url"] and model != config.get("model_id", "drama3"):
         raise RuntimeError("Managed mode uses the model_id in config.json. Use external mode to select another registered model.")
     payload = {"model": model, "input": text, "seed": seed,
-               "max_tokens": max_tokens, "response_format": "wav"}
+               "max_tokens": max_tokens, "response_format": "wav", **sampling}
     if reference:
         payload.update(reference)
     try:

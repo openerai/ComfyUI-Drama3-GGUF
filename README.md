@@ -197,3 +197,18 @@ python -m unittest discover -s tests -v
 
 GitHub distribution is provided here; a Comfy Registry listing is not included in this release.
 Bridge code is MIT licensed. See [third-party notices](THIRD_PARTY_NOTICES.md) for audio.cpp and weights.
+
+## Direction and audio controls (0.1.3)
+
+The examples now include Script & Direction for optional bracket instructions and
+paired delivery tags, plus `temperature` / `top_p` / `top_k` on both generation nodes.
+Defaults remain 1.0 / 0.9 / 30. Audio Controls (Local) applies pitch-preserving tempo,
+optional EBU R128 normalization, dB gain and a 0.98 peak limiter **after generation**.
+These controls are local processing, not native model speed or Fish cloud parity.
+
+Non-neutral audio processing requires FFmpeg on PATH, or `ffmpeg_path` in your local
+config. Neutral 1x / 0dB / normalization-off preserves samples without FFmpeg.
+Sample rate and channels are preserved; only one audio batch is supported.
+The workflow's Korean Guide note and [detailed guide](docs/controls_KO.md) explain
+tag placement, chunk limits, sampling bounds, and cache reuse. Cloud text-number
+normalization, automatic tagging and S2.1 tag compatibility mode are not implemented.
