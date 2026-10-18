@@ -2,6 +2,9 @@
 
 2026-10-18 확인. 아래 두 안내는 TTS·Clone 워크플로우의 Setup / Hardware 노트에도 들어 있습니다.
 
+처음 설치한다면 워크플로우 왼쪽의 **About: Drama3 GGUF** 또는
+[폴더 구조·사용 순서 안내](workflow_start_KO.md)부터 보세요.
+
 ## 1. 모델 다운로드·설치
 
 ### GGUF 모델 하나 선택

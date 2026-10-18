@@ -20,6 +20,10 @@ Windows 빌드 명령과 원본 다운로드 링크는 [영문 설치 안내](RE
 사양별 선택과 오류 대처법은 [모델 설치 가이드](docs/model_setup_KO.md)에서도 볼 수 있습니다.
 사양표는 실측 최소 사양이나 실행 보장이 아닌 선택 출발점입니다.
 
+처음 여는 화면의 왼쪽 **About: Drama3 GGUF** 노트에는 모델 링크,
+**Model Storage Location 폴더 트리**, 엔진·config.json 설정과 사용 순서를 넣었습니다.
+[시작 안내](docs/workflow_start_KO.md)에서도 같은 내용을 볼 수 있습니다.
+
 ## 각 PC의 설정
 
 - **기존 서버 연결:** 기본 동작입니다. 노드의 `server_url`에 서버 주소를 넣습니다.

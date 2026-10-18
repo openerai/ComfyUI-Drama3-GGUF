@@ -395,3 +395,20 @@ No new node package or server restart is needed for these core notes. This
 documentation-only change did not run new inference or validate additional
 hardware tiers; the earlier long-form test used streaming on one Windows CUDA
 configuration.
+
+## Visible left-hand start guide (0.1.8)
+
+The initial view now includes an additional About note on the left of the graph.
+It shows model links, a Model Storage Location folder tree, engine/configuration
+setup and usage steps. The text distinguishes basic workflows with direct text
+inputs from variants with Script & Direction, and optional ASR from ordinary TTS.
+The existing Setup, Hardware and acting notes remain available.
+
+The three public and six local files were compared with recovery copies. Apart
+from the new unconnected core note, last_node_id and initial viewport, their
+JSON is unchanged, including every existing node position, input and link.
+Private configuration was preserved. An independent Gravitas check found and
+resolved the basic-versus-Controls instruction difference before publication.
+A fresh ComfyUI preview of the final TTS graph displayed the left note and folder
+tree immediately, without panning or locating a node. The adjusted margin keeps
+the note clear of the left toolbar. This presentation change ran no inference.

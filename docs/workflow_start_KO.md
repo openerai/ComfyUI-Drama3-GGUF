@@ -1,0 +1,58 @@
+# Drama3 GGUF · 시작 안내
+
+텍스트로 음성을 만들거나 참조 녹음으로 목소리를 복제합니다. 이 워크플로우는 **Drama3 지원 audio.cpp 엔진 + GGUF 모델**을 사용합니다. 엔진과 모델은 별도로 준비하세요.
+
+## Model Links · 모델 다운로드
+
+아래에서 **GGUF 하나만** 선택합니다. 원본 TTS 체크포인트와 별도 코덱은 추가로 필요하지 않습니다.
+
+- [Q2 전문가 / Q8 backbone · 15.88 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q2_K.gguf)
+- [Q3 전문가 / Q8 backbone · 18.93 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q3_K_S.gguf)
+- [Q4 전문가 / Q4 backbone · 21.78 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-4bit-experts-Q4_K_S.gguf)
+- [Q4 전문가 / Q8 backbone · 22.91 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q4_K_S.gguf)
+
+파일 크기는 RAM·VRAM 필요량과 다릅니다. 사양별 선택 기준은 **Hardware 노트**에 있습니다.
+
+## Model Storage Location · 저장 폴더
+
+아래는 **권장 배치 예시**입니다. 다른 폴더를 사용해도 config.json의 model_path로 지정할 수 있습니다.
+
+```text
+ComfyUI/
+├─ models/
+│  ├─ drama3/
+│  │  └─ <선택한 파일명>.gguf
+│  └─ asr/                     ← 자동 전사 Clone만
+│     └─ qwen3_asr_0.6b_bf16.safetensors
+└─ custom_nodes/
+   ├─ ComfyUI-Drama3-GGUF/
+   │  ├─ config.managed.example.json
+   │  └─ config.json           ← 각 PC의 실행 설정
+   └─ ComfyUI-Drama3/          ← 자동 전사용 노드
+```
+
+**GGUF는 일반 Checkpoint Loader에서 선택하지 않습니다.** config.json의 model_path를 읽는 별도 audio.cpp 서버가 모델을 실행합니다. 워크플로우의 **Model ID=auto**는 서버에 등록된 모델을 고릅니다.
+
+## Engine & Config · 엔진 연결
+
+1. [호환 audio.cpp 빌드·설치 안내](https://github.com/openerai/ComfyUI-Drama3-GGUF#obtain-a-compatible-backend)에 따라 엔진을 준비합니다. CPU·CUDA 등은 해당 엔진의 지원을 확인합니다.
+2. 처음 설치할 때만 config.managed.example.json을 config.json으로 복사합니다. 기존 설정이 있으면 필요한 항목만 수정하세요.
+3. `mode=managed`, `executable=<준비한 엔진 경로>`, `backend=<사용할 백엔드>`를 지정합니다. 위 폴더 예시의 model_path는 다음과 같습니다.
+
+```text
+../../models/drama3/<선택한 파일명>.gguf
+```
+
+상대 경로는 config.json 폴더 기준입니다. 설정 변경 후 노드 폴더에서 ComfyUI Python으로 `python run_server.py --stop`을 실행하면 다음 생성부터 새 설정을 사용합니다. 외부 서버 연결은 **Server URL**을 지정하고 모델을 서버 쪽에 설치합니다.
+
+## How to Use · 사용 순서
+
+1. **일반 TTS:** Script & Direction이 있으면 그곳의 New speech text에, 없는 기본 버전은 Generate / Voice Clone의 New speech text에 읽을 대사를 적습니다.
+2. **Clone:** Load Reference Audio → Trim으로 참조 구간을 고르고, Reference transcript에 **그 구간에서 실제로 말한 내용**을 적습니다.
+3. **자동 전사 Clone만:** [ASR 모델 파일 목록](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/tree/main)에서 위 0.6B 파일(약 1.6 GB)을 받고 [Qwen3-ASR 노드](https://github.com/PedroMarinhoDev/ComfyUI-Drama3)를 설치합니다. ASR Model에서 선택한 뒤 Reference Transcript만 **Run Branch**로 실행해 전사를 확인합니다.
+4. Script & Direction이 있으면 감정·말투를 Direction에 입력합니다. 없는 기본 버전은 새 대사 앞에 `[친근한 말투로]`처럼 직접 적습니다. 참조 전사문에는 연기 지시를 넣지 않습니다. 상단 **Run**으로 생성하고 Save Audio에서 결과를 확인합니다.
+5. Controls 버전은 생성 후 속도·볼륨·음량 정규화도 조절합니다. FFmpeg가 필요한 설정과 감정 예시는 **Guide 노트**를 보세요.
+
+긴 생성·문맥·메모리 설정은 **Hardware 노트**, 전체 설치 설명은 **Setup 노트**에 있습니다. [전체 모델·사양 안내](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_KO.md)
+
+2026-10-18 확인. 사양별 안내는 선택 출발점이며 모든 환경의 실행을 보장하지 않습니다.

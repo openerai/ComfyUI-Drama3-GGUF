@@ -37,6 +37,10 @@ optional ASR dependencies and hardware guidance. The same text is available in t
 [model setup guide](docs/model_setup_KO.md). Hardware tiers are suggestions, not
 tested minimum requirements or a guarantee that a model fits.
 
+The initial view also shows a left-hand **About: Drama3 GGUF** note with model
+links, a storage-folder tree, engine/configuration instructions and usage steps.
+See the same [start guide](docs/workflow_start_KO.md) outside ComfyUI.
+
 ## Choose how to run audio.cpp
 
 **External server (default):** start your own Drama3 audio.cpp server, then set
