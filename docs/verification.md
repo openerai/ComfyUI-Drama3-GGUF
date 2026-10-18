@@ -369,3 +369,29 @@ should reopen the saved file. This file/UI check does not claim a new long-form
 Clone inference run; the 74.7-second test above used ordinary TTS with the same
 47-second per-chunk budget. A newly added node still defaults to 12 seconds,
 and its model-based input ceiling remains 12,173 seconds.
+
+## Model download and hardware notes (0.1.7)
+
+All three distributed workflows include two additional core MarkdownNote nodes:
+Setup and Hardware. Their Korean guide links to the standalone GGUF packages,
+lists file sizes checked against the publisher's metadata on 2026-10-18, and
+separates optional automatic-transcription weights and nodes from ordinary TTS
+and manual cloning. Hardware tiers are explicitly untested starting suggestions,
+not measured minimum requirements. The guide distinguishes file size, resident
+RAM, private commit and VRAM, and explains CPU offload, streaming codec processing,
+context, restart and timeout settings without changing installation configuration.
+
+The six local workflow variants were also updated with recovery copies. Comparing
+the nine actual saved files against those copies, after removing the two new
+notes and restoring last_node_id, recovered exactly the original JSON. Existing
+scripts, references, nodes, links, layout and generation budgets were preserved.
+The private config hash was unchanged. All 37 unit tests, Ruff, whitespace and
+public-data/portable-settings checks passed. An independent Gravitas review
+checked the sources, final notes and preservation comparison.
+
+A fresh ComfyUI preview loaded a byte-identical copy of the saved automatic
+Clone Controls graph. Both new notes rendered as tables and clickable links.
+No new node package or server restart is needed for these core notes. This
+documentation-only change did not run new inference or validate additional
+hardware tiers; the earlier long-form test used streaming on one Windows CUDA
+configuration.

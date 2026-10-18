@@ -4,7 +4,8 @@
 
 Generate speech in ComfyUI using a **Drama3-capable audio.cpp server** and a
 [Drama3 GGUF package](https://huggingface.co/Jmica/Drama-3-GGUF).
-The workflow has no GPU model, RAM size, local username, or quantization baked into it.
+Generation settings do not force a GPU model, RAM size, local path, or quantization.
+The Setup and Hardware notes list download options and suggested starting settings.
 
 This is an HTTP bridge and an optional managed launcher. It does not implement
 the model itself. **A compatible audio.cpp executable and model are separate prerequisites.**
@@ -29,6 +30,12 @@ Open `example_workflows/Drama3_GGUF_TTS.json` for text-to-speech, or
 `example_workflows/Drama3_GGUF_Voice_Clone.json` for reference voice cloning.
 The node ID `Drama3GGUFGenerate` is retained for older local workflows.
 The example uses ComfyUI's built-in `SaveAudioAdvanced` node, verified with ComfyUI 0.41.0.
+
+Each example includes Korean **Setup / 모델 다운로드·설치** and
+**Hardware / 사양별 설정·문제 해결** notes with model links, file sizes, storage paths,
+optional ASR dependencies and hardware guidance. The same text is available in the
+[model setup guide](docs/model_setup_KO.md). Hardware tiers are suggestions, not
+tested minimum requirements or a guarantee that a model fits.
 
 ## Choose how to run audio.cpp
 
@@ -85,7 +92,8 @@ This recipe requires a source build; it is not a one-click backend installer.
 
 Download your selected model separately from [Jmica](https://huggingface.co/Jmica/Drama-3-GGUF).
 The Q2 package is a smaller starting option; set `model_path` to the package appropriate
-for your resources. The model filename is not stored in the shared workflow.
+for your resources. Model filenames appear only as documentation in the shared workflow,
+not as generation settings.
 
 ## Hardware and memory
 

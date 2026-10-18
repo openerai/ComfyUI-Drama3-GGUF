@@ -1,7 +1,8 @@
 # ComfyUI Drama3 GGUF
 
 Drama3 GGUF를 실행하는 audio.cpp 서버와 ComfyUI를 연결하는 노드입니다.
-공유 워크플로우에는 특정 GPU·RAM 용량·사용자 경로·모델 파일명이 들어 있지 않습니다.
+공유 워크플로우의 생성 설정은 특정 GPU·RAM 용량·사용자 경로·양자화 모델을 강제하지 않습니다.
+Setup·Hardware 노트에는 다운로드 후보와 사양별 선택 출발점을 안내합니다.
 
 ## 설치
 
@@ -13,6 +14,11 @@ Drama3 GGUF를 실행하는 audio.cpp 서버와 ComfyUI를 연결하는 노드�
 **audio.cpp 실행 파일과 GGUF 모델은 별도로 필요합니다.**
 노드만 설치해도 추론 엔진이 자동 설치되는 구성은 아닙니다.
 Windows 빌드 명령과 원본 다운로드 링크는 [영문 설치 안내](README.md#obtain-a-compatible-backend)에 있습니다.
+
+모든 예제에 **Setup / 모델 다운로드·설치**, **Hardware / 사양별 설정·문제 해결**
+노트를 넣었습니다. 모델별 링크·용량·저장 위치, 자동 전사용 ASR 의존성,
+사양별 선택과 오류 대처법은 [모델 설치 가이드](docs/model_setup_KO.md)에서도 볼 수 있습니다.
+사양표는 실측 최소 사양이나 실행 보장이 아닌 선택 출발점입니다.
 
 ## 각 PC의 설정
 
