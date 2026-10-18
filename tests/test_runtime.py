@@ -59,7 +59,7 @@ class PortableClientTests(unittest.TestCase):
             path.write_text(json.dumps({"mode": "managed", "executable": "server.exe", "model_path": "weights.gguf"}))
             config = configuration.load_config(path)
             native = configuration.managed_server_config(config)
-            self.assertEqual(native["models"][0]["path"], str(root / "weights.gguf"))
+            self.assertEqual(native["models"][0]["path"], str((root / "weights.gguf").resolve()))
             self.assertEqual(native["model_spec_override"], str(ROOT / "specs/fish_drama3.json"))
 
     def test_ram_policy_scales_and_explicit_settings_win(self):
