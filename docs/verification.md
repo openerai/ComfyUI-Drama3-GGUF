@@ -1,0 +1,85 @@
+# Verification record
+
+Recorded on 2026-10-18 for the initial 0.1.0 source release.
+These results describe executed checks, not universal hardware compatibility.
+
+## Actual ComfyUI inference
+
+The installed node and the generic `Drama3_GGUF_TTS.json` workflow were exercised
+through ComfyUI's queue API with a real audio.cpp server, not a mock server.
+
+| Item | Observed result |
+| --- | --- |
+| OS | Windows |
+| GPU | NVIDIA GeForce RTX 3080 Ti, 12 GiB VRAM |
+| System RAM | 32 GiB installed |
+| ComfyUI / Python | 0.41.0 / 3.12.9 |
+| PyTorch | 2.10.0, CUDA 13.0 build |
+| audio.cpp | `ace630deedf60b9c2ff7ec2277a9cdfb1f37f69f`, CUDA backend |
+| Model | Jmica Drama-3-GGUF, `drama-3-backbone-8bit-experts-Q2_K.gguf` |
+| Input | `안녕하세요. 오늘도 좋은 하루 보내세요.` |
+| Request settings | seed 123, maximum 12 seconds, automatic model selection |
+| Queue result | Success; FLAC output, 44,100 Hz, 3.855 seconds |
+| Measured wall time | 60.52 seconds, including managed server/model startup |
+| Signal RMS | 0.2782; output was not silent |
+| Applied Windows limits | 4 GiB working set, 10 GiB private memory |
+| Sampled peak server RSS | Approximately 4.00 GiB |
+| Minimum sampled system available RAM | Approximately 3.30 GiB |
+
+The launcher reported that Windows hard memory limits were applied. Sampling
+does not measure every transient allocation or VRAM usage. Timing and available
+RAM depend on concurrent applications, storage, backend build, and model settings.
+This checks successful audio production; it is not a perceptual speech-quality score.
+
+The tested model was separately downloaded from revision
+`17a5b40c5dc2c2be986f5371a7e650108b828e29`, with SHA-256
+`041be86fbb53bf4002d59bf7d5f0c99c321e0b21f5aa3b53fec380eec6f892d3`.
+No model, generated audio, personal configuration, or backend binary is distributed here.
+
+## Client and runtime checks
+
+A separate, clean Python virtual environment on Windows installed
+`requirements.txt`, NumPy, and Ruff. All 14 unittest cases and `ruff check .` passed.
+
+The checks cover relocated configuration paths, automatic/explicit RAM settings,
+missing explicit configuration, managed localhost restrictions, ambiguous and
+unrelated model selection, external mode without process startup, managed process
+and model/configuration identity, inline reference encoding and size/transcript
+validation, cross-process launcher locking, reused-PID rejection, and termination
+of a real child process through a Windows Job Object.
+
+The HTTP audio/reference round-trip test uses an actual loopback HTTP connection
+to a test fixture; it does **not** perform model inference or prove voice cloning.
+The Windows build helper was parsed successfully. The existing pinned CUDA backend
+was used for real inference; a fresh backend build was not repeated for this release.
+
+GitHub Actions is configured to run client/runtime checks on Windows, Linux, and
+macOS. See the repository's [Actions page](https://github.com/openerai/ComfyUI-Drama3-GGUF/actions)
+for the actual status of a given commit. These jobs do not install ComfyUI or run a model.
+The Windows-only Job Object test is skipped on other operating systems.
+
+## Independent review
+
+The Gravitas verification skill was used with a separate reviewer who inspected
+the implementation, workflow, documentation, and executed boundary checks.
+Two issues found during review were fixed before publication:
+
+- Automatic model selection could accept a model without a confirmed Drama3 family.
+  It now requires `fish_drama3`; known other families are also rejected for explicit IDs.
+- Managed mode could connect to an unrelated server already using the configured
+  port. It now verifies the process creation time, executable, configuration, memory
+  settings, and server-reported model before reusing a managed server.
+
+Regression tests cover both cases. The reviewer found no additional publication-blocking
+defects in the revised version. This review is not a certification or a guarantee.
+
+## Not yet verified
+
+- Real inference on GPUs other than the listed RTX 3080 Ti, or on 16 GiB RAM systems.
+- Real CPU, Vulkan, Metal, Linux, or macOS inference.
+- Other GGUF quantizations, long-form reliability, concurrent requests, or performance at scale.
+- End-to-end reference voice cloning and quality across speakers or languages.
+
+The shared workflow contains no GPU model, RAM capacity, user directory, or fixed
+quantization filename. Each installation supplies its backend/model/memory settings.
+That portability is configuration behavior, not evidence that every machine can run Drama3.

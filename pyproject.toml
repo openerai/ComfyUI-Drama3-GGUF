@@ -1,0 +1,18 @@
+[project]
+name = "comfyui-drama3-gguf"
+version = "0.1.0"
+description = "ComfyUI audio nodes for Drama3 GGUF through a configurable audio.cpp server"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+dependencies = ["requests>=2.28", "soundfile>=0.12", "psutil>=5.9"]
+
+[project.urls]
+Repository = "https://github.com/openerai/ComfyUI-Drama3-GGUF"
+Documentation = "https://github.com/openerai/ComfyUI-Drama3-GGUF#readme"
+"Bug Tracker" = "https://github.com/openerai/ComfyUI-Drama3-GGUF/issues"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E9", "F"]

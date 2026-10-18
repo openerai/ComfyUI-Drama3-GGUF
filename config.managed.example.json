@@ -1,0 +1,24 @@
+{
+  "mode": "managed",
+  "server_url": "http://127.0.0.1:8035",
+  "executable": "../audio.cpp/build/windows-cuda-release/bin/audiocpp_server.exe",
+  "model_path": "../../models/drama3/drama-3-backbone-8bit-experts-Q2_K.gguf",
+  "model_id": "drama3",
+  "backend": "cuda",
+  "device": 0,
+  "threads": 0,
+  "library_dirs": [],
+  "release_comfy_models": true,
+  "memory": {
+    "working_set_gib": "auto",
+    "min_available_gib": 3
+  },
+  "session_options": {
+    "fish_drama3.disk_experts": true,
+    "fish_drama3.pin_experts": false,
+    "fish_drama3.expert_cache_size": 8,
+    "fish_drama3.cpu_expert_layers": 0,
+    "fish_drama3.context_length": 1024,
+    "fish_drama3.codec_backend": "same"
+  }
+}

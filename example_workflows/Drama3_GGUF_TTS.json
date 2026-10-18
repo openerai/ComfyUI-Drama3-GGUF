@@ -1,0 +1,198 @@
+{
+  "id": "39ac7996-e656-45f9-a9a4-990ec8e21437",
+  "revision": 0,
+  "last_node_id": 3,
+  "last_link_id": 1,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "Drama3GGUFGenerate",
+      "pos": [
+        40,
+        40
+      ],
+      "size": [
+        510,
+        505
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "name": "max_seconds",
+          "type": "FLOAT",
+          "widget": {
+            "name": "max_seconds"
+          },
+          "link": null
+        },
+        {
+          "name": "reference_audio",
+          "type": "AUDIO",
+          "link": null
+        },
+        {
+          "name": "reference_text",
+          "type": "STRING",
+          "widget": {
+            "name": "reference_text"
+          },
+          "link": null
+        },
+        {
+          "name": "server_url",
+          "type": "STRING",
+          "widget": {
+            "name": "server_url"
+          },
+          "link": null
+        },
+        {
+          "name": "model_id",
+          "type": "STRING",
+          "widget": {
+            "name": "model_id"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Drama3GGUFGenerate"
+      },
+      "widgets_values": [
+        "안녕하세요. 오늘도 좋은 하루 보내세요.",
+        123,
+        "fixed",
+        12.0,
+        "",
+        "",
+        "auto"
+      ],
+      "title": "Drama3 GGUF · Generate Audio"
+    },
+    {
+      "id": 2,
+      "type": "SaveAudioAdvanced",
+      "pos": [
+        620,
+        40
+      ],
+      "size": [
+        430,
+        210
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 1
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        },
+        {
+          "name": "format",
+          "type": "COMFY_DYNAMICCOMBO_V3",
+          "widget": {
+            "name": "format"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveAudioAdvanced"
+      },
+      "widgets_values": [
+        "drama3_gguf/Drama3",
+        "flac"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "MarkdownNote",
+      "pos": [
+        620,
+        300
+      ],
+      "size": [
+        510,
+        465
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "## Drama3 GGUF · Text to Speech\n\n1. text에 짧은 문장을 입력하고 실행합니다.\n2. Save Audio에서 재생하거나 저장합니다.\n\n서버 주소를 server_url에 넣으세요. 비워 두면 이 PC의 config.json 또는 localhost:8035를 사용합니다.\nmodel_id=auto는 서버에 등록된 Drama3 모델이 하나일 때 선택합니다. 여러 모델이면 ID를 지정하세요.\n\nGPU 종류, backend, 모델 파일, 메모리 제한은 각 PC의 config.json에서 설정합니다. 공유 워크플로우는 모든 PC에서 동일합니다.\n\n참조 음성: Load Audio를 reference_audio에 연결하고 reference_text에 정확한 전사문을 입력하세요. 참조는 설정한 서버로 전송됩니다.\n\nmax_seconds는 문장 블록당 생성 상한입니다. 긴 글은 짧은 문장으로 나누세요.\n\nRequires a Drama3-capable audio.cpp server and a compatible GGUF package. Setup and hardware compatibility must be checked on each machine.\n"
+      ],
+      "color": "#234",
+      "bgcolor": "#345"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "AUDIO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.75,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "version": 0.4
+}
