@@ -16,6 +16,32 @@ import numpy as np
 
 from .configuration import ROOT, managed_server_config, memory_limits, resolve_path, server_url, state_directory
 
+MAX_CONTEXT_TOKENS = 262144
+AUDIO_FRAMES_PER_SECOND = 44100 / 2048
+MAX_GENERATION_SECONDS = math.floor(MAX_CONTEXT_TOKENS / AUDIO_FRAMES_PER_SECOND)
+
+
+def generation_frames(seconds):
+    if not math.isfinite(seconds) or not 1 <= seconds <= MAX_GENERATION_SECONDS:
+        raise ValueError(f"max_seconds must be finite and between 1 and {MAX_GENERATION_SECONDS}. "
+                         "This is the model context bound; the server must also fit the prompt and references.")
+    return math.ceil(seconds * AUDIO_FRAMES_PER_SECOND)
+
+
+def context_capacity_error(max_tokens, detail):
+    return RuntimeError(f"Drama3 context capacity exceeded (문맥 용량 초과). Requested generation budget: {max_tokens} frames. "
+                        "Prompt, reference audio and history need additional context. Increase fish_drama3.context_length "
+                        "in the server's session options (managed mode: config.json), then restart that server; "
+                        "or reduce the generation budget/input. A larger context requires more memory. "
+                        f"Server: {detail}")
+
+
+def check_generation_capacity(config, url, max_tokens):
+    if config["mode"] == "managed" and url == config["server_url"]:
+        context = int(config.get("session_options", {}).get("fish_drama3.context_length", 1024))
+        if max_tokens >= context:
+            raise context_capacity_error(max_tokens, f"Configured context_length={context}; no model was started.")
+
 
 def select_model(document, requested="auto"):
     entries = document.get("data", document.get("models", []))
@@ -138,7 +164,13 @@ def sampling_options(temperature, top_p, top_k):
 def generate(config, text, seed, max_tokens, *, url="", model_id="auto", reference=None, interrupted=lambda: None,
              temperature=1.0, top_p=0.9, top_k=30):
     sampling = sampling_options(temperature, top_p, top_k)
+    if not isinstance(max_tokens, Integral) or not 1 <= max_tokens <= MAX_CONTEXT_TOKENS:
+        raise ValueError(f"max_tokens must be an integer between 1 and {MAX_CONTEXT_TOKENS}.")
+    request_timeout = float(config.get("request_timeout_seconds", 600))
+    if not math.isfinite(request_timeout) or request_timeout < 0:
+        raise ValueError("request_timeout_seconds must be finite and nonnegative; 0 disables the read timeout.")
     url = server_url(url or config["server_url"])
+    check_generation_capacity(config, url, max_tokens)
     document = ensure_server(config, url, interrupted)
     model = select_model(document, model_id)
     if config["mode"] == "managed" and url == config["server_url"] and model != config.get("model_id", "drama3"):
@@ -148,7 +180,13 @@ def generate(config, text, seed, max_tokens, *, url="", model_id="auto", referen
     if reference:
         payload.update(reference)
     try:
-        response = requests.post(url + "/v1/audio/speech", json=payload, timeout=(5, 600))
+        response = requests.post(url + "/v1/audio/speech", json=payload, timeout=(5, request_timeout or None))
+    except requests.ConnectTimeout as error:
+        raise RuntimeError("Drama3 server connection timed out (서버 연결 시간 초과). Check the server URL and server status.") from error
+    except requests.Timeout as error:
+        raise RuntimeError("Drama3 server response timed out (응답 대기 시간 초과). "
+                           "For long generation, increase request_timeout_seconds in this installation's config.json, "
+                           "or set it to 0 for no read timeout. The server may still be generating; check it before retrying.") from error
     except requests.ConnectionError as error:
         status_path = state_directory(config) / "server_status.json"
         if config["mode"] == "managed" and url == config["server_url"] and status_path.is_file():
@@ -157,7 +195,15 @@ def generate(config, text, seed, max_tokens, *, url="", model_id="auto", referen
                 raise RuntimeError("Drama3 stopped to preserve system RAM. Close memory-heavy applications or adjust your local memory settings.") from error
         raise RuntimeError("audio.cpp disconnected during generation. Check its server.log.") from error
     if not response.ok:
-        raise RuntimeError(f"audio.cpp HTTP {response.status_code}: {response.text[:1200]}")
+        detail = response.text[:1200]
+        lowered = detail.lower()
+        if "exceeds fish_drama3.context_length" in lowered:
+            raise context_capacity_error(max_tokens, detail)
+        if any(term in lowered for term in ("out of memory", "failed to allocate", "bad_alloc", "insufficient_memory")):
+            raise RuntimeError("Drama3 memory allocation failed (메모리 부족). This server cannot fit the current model/request. "
+                               "Adjust its backend, offload or context settings, or reduce the request. "
+                               f"Server HTTP {response.status_code}: {detail}")
+        raise RuntimeError(f"audio.cpp HTTP {response.status_code}: {detail}")
     audio, sample_rate = soundfile.read(io.BytesIO(response.content), dtype="float32", always_2d=True)
     if not audio.size:
         raise RuntimeError("audio.cpp returned empty audio.")

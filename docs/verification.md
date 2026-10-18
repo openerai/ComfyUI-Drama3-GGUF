@@ -270,3 +270,50 @@ Markdown does not hide the angle brackets. Existing node IDs and input names
 were preserved, and optional sampling widgets were appended after existing
 widgets. See the [control guide](controls_KO.md) for short-script/chunk limits
 and the cloud-only features that are not implemented.
+
+## Model-based generation budget and failure messages (0.1.4)
+
+The device-specific 24-second widget maximum was removed from both Generate and
+Voice Clone. The checkpoint's
+[official configuration](https://huggingface.co/fishaudio/drama-3/blob/main/config.json)
+sets `max_position_embeddings=262144`; the pinned native generator checks the
+same maximum. Its Fish DAC uses 44,100 samples/second and 2,048 samples/frame.
+The input ceiling is therefore floor(262144 / (44100 / 2048)) = 12,173 seconds.
+This is a theoretical context-budget bound per text chunk, not a verified speech
+duration or a quality guarantee. Prompt, references and history share the space.
+
+Seconds now use the exact codec ratio and round up to whole frames: 12 seconds
+reserves 259 frames instead of the previous approximate 258, and 60 seconds
+reserves 1,292. Default widget value remains 12 seconds. A managed request that
+cannot fit even without a prompt is rejected before model startup; external
+servers are not blocked using this installation's local context setting.
+Native capacity failures are also explained without guessing prompt token counts.
+
+All 37 unit tests and Ruff passed locally. An independent Gravitas reviewer
+compared the implementation to the pinned native checks and independently ran
+the five additional boundary/error tests. They cover duration/frame bounds,
+managed versus external capacity, node schemas, timeout configuration, and
+capacity/memory/busy error distinctions. A read timeout does not cancel server
+inference; no automatic retry is added. Configuration can extend the default
+600-second read wait or explicitly disable it with 0; connection timeouts remain
+separate.
+
+The installed ComfyUI was restarted with an empty queue after saving workflow
+recovery copies. Its actual node definitions advertised 12,173 seconds for both
+generation nodes. A 60-second queue submission passed schema validation, then
+returned the expected clear context error in about 1.02 seconds: 1,292 requested
+frames versus this server's unchanged 1,024-position context. It did not start
+model inference for that rejected request.
+In a freshly opened frontend tab, the actual Clone spinbutton exposed
+`aria-valuemax=12173`, accepted 60, and was restored to 12 before saving.
+
+A separate fresh default-budget TTS request completed in about 72.8 seconds of
+observed request/poll wall time and saved finite, non-silent 44,100 Hz FLAC audio
+of 12.02794 seconds (259 codec frames). This verifies audio production and rounded
+duration budgeting, not listening quality or utterance completeness. The private
+configuration was byte-identical before and after these checks: no context,
+backend, memory limit or timeout setting was automatically expanded.
+
+Long-form generation near the theoretical ceiling, other hardware, and its
+perceptual quality remain unverified. Each deployment chooses its context and
+resource settings; the shared workflow does not impose this PC's settings.

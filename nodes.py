@@ -1,4 +1,3 @@
-import math
 import comfy.model_management
 import torch
 
@@ -13,8 +12,8 @@ class Drama3GGUFGenerate:
             "required": {
                 "text": ("STRING", {"multiline": True, "default": "안녕하세요. 오늘도 좋은 하루 보내세요."}),
                 "seed": ("INT", {"default": 123, "min": 0, "max": 2147483647, "control_after_generate": True}),
-                "max_seconds": ("FLOAT", {"default": 12.0, "min": 1.0, "max": 24.0, "step": 0.5,
-                                           "tooltip": "Generation cap per text chunk. Split long text into short sentences."}),
+                "max_seconds": ("FLOAT", {"default": 12.0, "min": 1.0, "max": client.MAX_GENERATION_SECONDS, "step": 0.5,
+                                           "tooltip": "Generation budget per text chunk, not a target duration. The upper bound uses the model's 262144-position context. The server must fit input/references plus generated frames; increase its context_length if needed."}),
             },
             "optional": {
                 "reference_audio": ("AUDIO",),
@@ -39,9 +38,11 @@ class Drama3GGUFGenerate:
                  temperature=1.0, top_p=0.9, top_k=30):
         if not text.strip():
             raise ValueError("text cannot be empty.")
+        max_tokens = client.generation_frames(max_seconds)
         client.sampling_options(temperature, top_p, top_k)
         config = load_config()
         target = server_url.strip() or config["server_url"]
+        client.check_generation_capacity(config, target.rstrip("/"), max_tokens)
         reference = None
         if reference_audio is None and reference_text.strip():
             raise ValueError("Connect reference_audio when providing reference_text. Use the Voice Clone workflow for cloning.")
@@ -56,7 +57,7 @@ class Drama3GGUFGenerate:
         if local_managed and config.get("release_comfy_models", True) and config.get("backend", "cuda") != "cpu":
             comfy.model_management.unload_all_models()
             comfy.model_management.soft_empty_cache()
-        audio, sample_rate = client.generate(config, text, seed, math.ceil(max_seconds * 21.5),
+        audio, sample_rate = client.generate(config, text, seed, max_tokens,
                                             url=target, model_id=model_id, reference=reference,
                                             interrupted=comfy.model_management.throw_exception_if_processing_interrupted,
                                             temperature=temperature, top_p=top_p, top_k=top_k)

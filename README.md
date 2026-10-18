@@ -212,3 +212,17 @@ Sample rate and channels are preserved; only one audio batch is supported.
 The workflow's Korean Guide note and [detailed guide](docs/controls_KO.md) explain
 tag placement, chunk limits, sampling bounds, and cache reuse. Cloud text-number
 normalization, automatic tagging and S2.1 tag compatibility mode are not implemented.
+
+### Generation budget (0.1.4)
+
+`max_seconds` no longer has a device-based 24-second cap. Its input range follows
+the checkpoint's 262,144-position context and codec frame rate (44,100 / 2,048),
+with a theoretical input ceiling of 12,173 seconds per text chunk. This is not
+a supported output-duration or quality guarantee: prompts, references and history
+also occupy context. Each server configures its own `fish_drama3.context_length`;
+the bridge reports context, memory or timeout failures without expanding local
+memory limits. Default generation budget remains 12 seconds.
+
+HTTP read waiting is separately configurable through `request_timeout_seconds`
+in the installation's config (default 600; 0 means no read timeout). A timeout
+does not cancel server inference. Review server status before retrying.

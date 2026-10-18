@@ -34,6 +34,19 @@ class CloneInputTests(unittest.TestCase):
         self.assertIn("reference_text", clone["required"])
         self.assertIn("reference_audio", nodes.Drama3GGUFGenerate.INPUT_TYPES()["optional"])
 
+    def test_both_node_duration_ranges_follow_model_instead_of_a_device_cap(self):
+        for cls in (nodes.Drama3GGUFGenerate, nodes.Drama3GGUFClone):
+            option = cls.INPUT_TYPES()["required"]["max_seconds"][1]
+            self.assertEqual(option["default"], 12)
+            self.assertEqual(option["max"], nodes.client.MAX_GENERATION_SECONDS)
+        with patch.object(nodes.client, "generate") as generate:
+            with self.assertRaises(ValueError):
+                nodes.Drama3GGUFGenerate().generate("Words.", 123, float("nan"))
+            with patch.object(nodes, "load_config", return_value={"mode": "managed", "server_url": "http://127.0.0.1:8035"}):
+                with self.assertRaisesRegex(RuntimeError, "문맥 용량 초과"):
+                    nodes.Drama3GGUFGenerate().generate("Words.", 123, 60)
+            generate.assert_not_called()
+
     def test_clone_missing_audio_or_transcript_never_submits_tts(self):
         with patch.object(nodes.client, "generate") as generate:
             for audio, transcript in ((None, "Reference words."), (object(), "")):

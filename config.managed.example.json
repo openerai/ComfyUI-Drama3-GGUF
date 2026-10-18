@@ -10,6 +10,7 @@
   "threads": 0,
   "library_dirs": [],
   "release_comfy_models": true,
+  "request_timeout_seconds": 600,
   "memory": {
     "working_set_gib": "auto",
     "min_available_gib": 3

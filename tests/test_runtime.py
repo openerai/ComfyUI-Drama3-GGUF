@@ -51,6 +51,63 @@ class FakeAudioServer(BaseHTTPRequestHandler):
 
 
 class PortableClientTests(unittest.TestCase):
+    def test_generation_duration_uses_model_context_and_codec_frame_rate(self):
+        self.assertEqual(client.MAX_CONTEXT_TOKENS, 262144)
+        self.assertEqual(client.MAX_GENERATION_SECONDS, 12173)
+        self.assertEqual(client.generation_frames(60), 1292)
+        self.assertEqual(client.generation_frames(120), 2584)
+        self.assertLessEqual(client.generation_frames(client.MAX_GENERATION_SECONDS), client.MAX_CONTEXT_TOKENS)
+        for value in (0, -1, float("nan"), float("inf"), client.MAX_GENERATION_SECONDS + 0.5):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                client.generation_frames(value)
+
+    def test_managed_impossible_budget_fails_before_server_start_but_external_is_not_guessed(self):
+        config = {"mode": "managed", "server_url": "http://127.0.0.1:8035",
+                  "session_options": {"fish_drama3.context_length": 1024}}
+        with patch.object(client, "ensure_server") as connect:
+            for budget in (1024, 1292):
+                with self.subTest(budget=budget), self.assertRaisesRegex(RuntimeError, "context_length=1024"):
+                    client.generate(config, "Words.", 123, budget)
+            connect.assert_not_called()
+        client.check_generation_capacity(config, config["server_url"], 1023)
+        client.check_generation_capacity(config, "http://different-server:8035", 2584)
+        client.check_generation_capacity({"mode": "external", "server_url": config["server_url"]}, config["server_url"], 2584)
+
+    def test_server_capacity_and_memory_errors_are_actionable_without_hiding_busy(self):
+        config = {"mode": "external", "server_url": "http://127.0.0.1:8035"}
+        models = {"data": [{"id": "drama3", "family": "fish_drama3"}]}
+        cases = [(400, "Drama 3 prompt plus max_tokens exceeds fish_drama3.context_length", "문맥 용량 초과"),
+                 (503, '{"error":{"type":"insufficient_memory"}}', "메모리 부족"),
+                 (500, "CUDA failed to allocate buffer", "메모리 부족"),
+                 (503, '{"error":{"type":"server_busy"}}', "server_busy")]
+        with patch.object(client, "ensure_server", return_value=models):
+            for status, detail, expected in cases:
+                response = unittest.mock.Mock(ok=False, status_code=status, text=detail)
+                with self.subTest(detail=detail), patch.object(client.requests, "post", return_value=response), \
+                        self.assertRaisesRegex(RuntimeError, expected):
+                    client.generate(config, "Words.", 123, 1292)
+
+    def test_read_timeout_is_configurable_and_does_not_claim_server_was_cancelled(self):
+        config = {"mode": "external", "server_url": "http://127.0.0.1:8035"}
+        models = {"data": [{"id": "drama3", "family": "fish_drama3"}]}
+        with patch.object(client, "ensure_server", return_value=models):
+            for value, expected in ((0, None), (3600, 3600.0)):
+                with patch.object(client.requests, "post", side_effect=requests.ReadTimeout) as post:
+                    with self.assertRaisesRegex(RuntimeError, "may still be generating"):
+                        client.generate({**config, "request_timeout_seconds": value}, "Words.", 123, 1292)
+                    self.assertEqual(post.call_args.kwargs["timeout"], (5, expected))
+            with patch.object(client.requests, "post", side_effect=requests.ConnectTimeout):
+                with self.assertRaisesRegex(RuntimeError, "서버 연결 시간 초과"):
+                    client.generate(config, "Words.", 123, 1292)
+        with patch.object(client, "ensure_server") as connect:
+            for value in (-1, float("nan"), float("inf")):
+                with self.assertRaises(ValueError):
+                    client.generate({**config, "request_timeout_seconds": value}, "Words.", 123, 1292)
+            for value in (0, 262145, 2.5):
+                with self.assertRaises(ValueError):
+                    client.generate(config, "Words.", 123, value)
+            connect.assert_not_called()
+
     def test_config_paths_survive_a_different_installation_directory(self):
         with tempfile.TemporaryDirectory(prefix="drama3 moved ") as temporary:
             root = Path(temporary)

@@ -1,4 +1,5 @@
 {
   "mode": "external",
-  "server_url": "http://127.0.0.1:8035"
+  "server_url": "http://127.0.0.1:8035",
+  "request_timeout_seconds": 600
 }
