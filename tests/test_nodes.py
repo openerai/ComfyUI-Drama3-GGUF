@@ -17,6 +17,7 @@ comfy = types.ModuleType("comfy")
 management = types.ModuleType("comfy.model_management")
 management.unload_all_models = Mock()
 management.soft_empty_cache = Mock()
+management.throw_exception_if_processing_interrupted = Mock()
 comfy.model_management = management
 with patch.dict(sys.modules, {"comfy": comfy, "comfy.model_management": management, "torch": types.ModuleType("torch")}):
     nodes = importlib.import_module(package.__name__ + ".nodes")
@@ -57,9 +58,45 @@ class CloneInputTests(unittest.TestCase):
 
     def test_old_tts_transcript_without_audio_does_not_silently_generate(self):
         with patch.object(nodes.client, "generate") as generate:
-            with self.assertRaisesRegex(ValueError, "Connect reference_audio"):
+            with self.assertRaisesRegex(ValueError, "Plain TTS: leave reference_text empty"):
                 nodes.Drama3GGUFGenerate().generate("New words.", 123, 12, reference_text="Reference words.")
             generate.assert_not_called()
+
+    def test_clone_errors_identify_the_missing_reference_input(self):
+        with patch.object(nodes.client, "generate") as generate:
+            with self.assertRaisesRegex(ValueError, "connect reference_audio"):
+                nodes.Drama3GGUFClone().clone(None, "Spoken words.", "New words.", 123, 12)
+            with self.assertRaisesRegex(ValueError, "reference_text is empty"):
+                nodes.Drama3GGUFClone().clone(object(), "  ", "New words.", 123, 12)
+            generate.assert_not_called()
+
+    def test_all_candidates_are_available_on_both_nodes_and_are_the_new_default(self):
+        for cls in (nodes.Drama3GGUFGenerate, nodes.Drama3GGUFClone):
+            option = cls.INPUT_TYPES()["optional"]["top_k"][1]
+            self.assertEqual(option["default"], 4097)
+            self.assertEqual(option["max"], 4097)
+        audio = np.full((1600, 1), 0.1, dtype=np.float32)
+        tensor = Mock()
+        with patch.object(nodes.client, "generate", return_value=(audio, 16000)) as generate, \
+                patch.object(nodes.torch, "from_numpy", return_value=tensor, create=True):
+            result = nodes.Drama3GGUFGenerate().generate("New words.", 123, 12)
+        self.assertEqual(generate.call_args.kwargs["top_k"], 4097)
+        self.assertEqual(result["result"][0]["sample_rate"], 16000)
+        self.assertEqual(result["result"][0]["waveform"], tensor.unsqueeze.return_value)
+        self.assertIn("Raw output:", result["ui"]["text"][0])
+
+    def test_raw_status_distinguishes_low_signal_and_budget_without_rejecting_quiet_audio(self):
+        quiet = np.full((1000, 1), 0.00001, dtype=np.float32)
+        status = nodes.audio_status(quiet, 44100, 259, 30)
+        self.assertIn("Low signal", status)
+        self.assertIn("Top K=4097", status)
+        self.assertNotIn("Output matches", status)
+        capped = np.full((259 * 2048, 1), 0.1, dtype=np.float32)
+        status = nodes.audio_status(capped, 44100, 259, 4097)
+        self.assertIn("Output matches", status)
+        self.assertNotIn("Low signal", status)
+        self.assertNotIn("Try Top K", status)
+        self.assertNotIn("Output matches", nodes.audio_status(capped, 16000, 259, 30))
 
     def test_multiple_references_are_not_silently_truncated_to_first_batch(self):
         audio = {"waveform": np.zeros((2, 1, 100)), "sample_rate": 16000}

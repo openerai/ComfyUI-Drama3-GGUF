@@ -3,11 +3,11 @@ import { ComfyWidgets } from "../../scripts/widgets.js";
 
 const labels = {
     reference_audio: "Reference audio · 참조 음성",
-    reference_text: "Reference transcript · 참조 음성의 실제 대사",
+    reference_text: "Reference transcript · 일반 TTS는 비움 / 복제는 녹음의 실제 대사",
     text: "New speech text · 새로 생성할 문장",
     seed: "Seed · 생성 시드",
     control_after_generate: "Seed after run · 실행 후 시드 변경",
-    max_seconds: "Max seconds · 최대 생성 길이(초)",
+    max_seconds: "Chunk budget (s) · 구간당 생성 한도(목표 길이 아님)",
     server_url: "Server URL · 서버 주소(빈칸: 로컬 설정)",
     model_id: "Model ID · 모델 선택(auto: 자동)",
     transcript: "ASR transcript · 자동 인식한 대사",
@@ -34,9 +34,13 @@ app.registerExtension({
     name: "Drama3GGUF.TranscriptAndLabels",
     nodeCreated(node) {
         labelNode(node);
-        if (node.comfyClass !== "Drama3GGUFReferenceText") return;
-        const preview = ComfyWidgets.STRING(node, "used_reference_text", ["STRING", { multiline: true }], app).widget;
-        preview.label = "Used reference transcript · 실제 복제에 쓰는 대사";
+        const transcript = node.comfyClass === "Drama3GGUFReferenceText";
+        const generation = ["Drama3GGUFGenerate", "Drama3GGUFClone"].includes(node.comfyClass);
+        if (!transcript && !generation) return;
+        const preview = ComfyWidgets.STRING(node, transcript ? "used_reference_text" : "generation_status",
+            ["STRING", { multiline: true }], app).widget;
+        preview.label = transcript ? "Used reference transcript · 실제 복제에 쓰는 대사"
+            : "Raw output check · 원본 출력 확인(재생 필요)";
         preview.serialize = false;
         preview.options.serialize = false;
         preview.options.read_only = true;

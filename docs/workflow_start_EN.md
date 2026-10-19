@@ -56,3 +56,6 @@ Relative paths start from the config.json folder. After changes, run `python run
 See **Hardware** for long-form/context/memory settings and **Setup** for full installation details. [Model and hardware guide](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_EN.md)
 
 Checked 2026-10-18. Hardware suggestions are starting points, not a guarantee of execution on every system.
+
+## Output check · 0.1.11
+Leave reference_text empty for plain TTS; it is not a voice/gender selector. For Voice Clone, enter the actual words in the selected recording. New nodes use Top K=4097, including end-of-speech and all semantic candidates. Older saved values such as 30 are preserved. Read Raw output check after generation and listen to verify speech and the ending. Amplifying silence or noise does not fix generation.

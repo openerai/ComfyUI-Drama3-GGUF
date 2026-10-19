@@ -10,6 +10,8 @@ import psutil
 ROOT = Path(__file__).resolve().parent
 DEFAULT_URL = "http://127.0.0.1:8035"
 DEFAULT_CONTEXT_LENGTH = 4096
+# 4,096 semantic codes and the end-of-speech token; no top-k truncation.
+DRAMA3_CANDIDATE_COUNT = 4097
 GIB = 1024 ** 3
 
 
@@ -111,5 +113,6 @@ def managed_server_config(config):
         "models": [{"id": config.get("model_id", "drama3"), "family": "fish_drama3",
                     "path": str(model), "task": "tts", "mode": run_mode,
                     "session_options": session,
-                    "default_request_options": {"temperature": 1.0, "top_p": 0.9, "top_k": 30, "seed": 123}}],
+                    "default_request_options": {"temperature": 1.0, "top_p": 0.9,
+                                                "top_k": DRAMA3_CANDIDATE_COUNT, "seed": 123}}],
     }

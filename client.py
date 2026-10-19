@@ -14,7 +14,7 @@ import soundfile
 import psutil
 import numpy as np
 
-from .configuration import DEFAULT_CONTEXT_LENGTH, ROOT, managed_server_config, memory_limits, resolve_path, server_url, state_directory
+from .configuration import DEFAULT_CONTEXT_LENGTH, DRAMA3_CANDIDATE_COUNT, ROOT, managed_server_config, memory_limits, resolve_path, server_url, state_directory
 
 MAX_CONTEXT_TOKENS = 262144
 AUDIO_FRAMES_PER_SECOND = 44100 / 2048
@@ -156,13 +156,13 @@ def sampling_options(temperature, top_p, top_k):
         raise ValueError("temperature must be between 0 and 2.")
     if not math.isfinite(top_p) or not 0 < top_p <= 1:
         raise ValueError("top_p must be greater than 0 and at most 1.")
-    if not isinstance(top_k, Integral) or not 1 <= top_k <= 4096:
-        raise ValueError("top_k must be an integer between 1 and 4096.")
+    if not isinstance(top_k, Integral) or not 1 <= top_k <= DRAMA3_CANDIDATE_COUNT:
+        raise ValueError(f"top_k must be an integer between 1 and {DRAMA3_CANDIDATE_COUNT}.")
     return {"temperature": temperature, "top_p": top_p, "top_k": top_k}
 
 
 def generate(config, text, seed, max_tokens, *, url="", model_id="auto", reference=None, interrupted=lambda: None,
-             temperature=1.0, top_p=0.9, top_k=30):
+             temperature=1.0, top_p=0.9, top_k=DRAMA3_CANDIDATE_COUNT):
     sampling = sampling_options(temperature, top_p, top_k)
     if not isinstance(max_tokens, Integral) or not 1 <= max_tokens <= MAX_CONTEXT_TOKENS:
         raise ValueError(f"max_tokens must be an integer between 1 and {MAX_CONTEXT_TOKENS}.")
@@ -207,4 +207,6 @@ def generate(config, text, seed, max_tokens, *, url="", model_id="auto", referen
     audio, sample_rate = soundfile.read(io.BytesIO(response.content), dtype="float32", always_2d=True)
     if not audio.size:
         raise RuntimeError("audio.cpp returned empty audio.")
+    if not np.isfinite(audio).all():
+        raise RuntimeError("audio.cpp returned non-finite audio. Check the backend log before retrying.")
     return audio, sample_rate

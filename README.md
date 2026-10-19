@@ -56,6 +56,31 @@ English guides: [Start Here](docs/workflow_start_EN.md),
 Older saved files show only the translations already embedded in them. Reopen
 an updated supplied workflow to access all four languages.
 
+## Quiet or silent output; upgrading to 0.1.11
+
+New nodes and examples use **Top K=4097**, covering all 4,096 semantic codes and
+end-of-speech. The [official demo's pinned source](https://huggingface.co/spaces/fishaudio/Drama-3/blob/c368729ab9347dda6635c5272ad31e6521114b79/server.py)
+reports silent takes with a top-k cap of 30 and uses all candidates instead.
+This setting reduces the reproduced failure; it is not a speech-quality guarantee.
+Existing saved workflows retain their values. Select 4097 explicitly or open an
+updated example. Do not set zero: this audio.cpp runtime requires a positive count.
+
+Generate Audio and Voice Clone display **Raw output check** after execution:
+duration, RMS level, peak, and notices for low signal or output matching the
+per-chunk budget. These describe the unprocessed audio, before Audio Controls.
+A completed request or a nonzero waveform does not prove intelligible speech.
+Listen to verify the words and ending. Normalization can amplify noise as well
+as speech; it remains optional and off in the supplied workflows.
+
+For plain TTS, leave `reference_text` empty. It is not a voice/gender selector.
+For Voice Clone, connect the recording and enter the words actually spoken in
+the selected segment. Errors now identify which reference input is missing.
+
+When updating managed mode, stop its server with `python run_server.py --stop`,
+then restart ComfyUI and reopen the frontend to load the new widget code.
+Private paths, memory limits and saved dialogue are not migrated automatically.
+See the [controlled reproduction and limits](docs/verification.md#sampling-and-output-diagnostics-0111).
+
 ## Choose how to run audio.cpp
 
 **External server (default):** start your own Drama3 audio.cpp server, then set
@@ -229,7 +254,8 @@ Bridge code is MIT licensed. See [third-party notices](THIRD_PARTY_NOTICES.md) f
 
 The examples now include Script & Direction for optional bracket instructions and
 paired delivery tags, plus `temperature` / `top_p` / `top_k` on both generation nodes.
-Defaults remain 1.0 / 0.9 / 30. Audio Controls (Local) applies pitch-preserving tempo,
+New defaults are 1.0 / 0.9 / 4097 as of 0.1.11; saved values are preserved.
+Audio Controls (Local) applies pitch-preserving tempo,
 optional EBU R128 normalization, dB gain and a 0.98 peak limiter **after generation**.
 These controls are local processing, not native model speed or Fish cloud parity.
 

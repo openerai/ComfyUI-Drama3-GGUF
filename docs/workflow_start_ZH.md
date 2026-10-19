@@ -56,3 +56,6 @@ ComfyUI/
 长文本、上下文、内存设置见 **Hardware**，完整安装步骤见 **Setup**。[模型与硬件指南](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_ZH.md)
 
 核查日期：2026-10-18。硬件建议只是起点，不保证在所有系统上均可运行。
+
+## 输出检查 · 0.1.11
+普通TTS请将 reference_text 留空；它不是声音或性别选择栏。Voice Clone需填写所选参考录音中实际说出的台词。新默认值 Top K=4097 包含结束标记和全部语义候选。旧文件保存的30等值不会自动更改。生成后查看 Raw output check 中的时长、音量和可能达到预算的提示，并试听确认台词和结尾。放大静音或噪声不能修复生成。
