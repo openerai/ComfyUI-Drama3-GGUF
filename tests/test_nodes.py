@@ -134,7 +134,7 @@ class CloneInputTests(unittest.TestCase):
         by_id = {node["id"]: node for node in workflow["nodes"]}
         links = {link[0]: link for link in workflow["links"]}
         clone = next(node for node in by_id.values() if node["type"] == "Drama3GGUFClone")
-        asr = next(node for node in by_id.values() if node["type"] == "Qwen3ASRTranscribe")
+        asr = next(node for node in by_id.values() if node["type"] == "Drama3GGUFASRTranscribe")
         clone_audio = links[clone["inputs"][0]["link"]][1:3]
         asr_audio = links[asr["inputs"][1]["link"]][1:3]
         self.assertEqual(clone_audio, asr_audio)

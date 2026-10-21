@@ -28,6 +28,26 @@ python -m pip install -r ComfyUI-Drama3-GGUF/requirements.txt
 
 Open `example_workflows/Drama3_GGUF_TTS.json` for text-to-speech, or
 `example_workflows/Drama3_GGUF_Voice_Clone.json` for reference voice cloning.
+Automatic reference transcription is the third example:
+`example_workflows/Drama3_GGUF_Voice_Clone_Auto_Transcript.json`.
+It uses this repository's unique ASR nodes and the optional native ASR source
+and converted model described in [portable installation](docs/portable_install.md).
+It does not use another extension's `Qwen3ASRLoader` or timestamp options.
+
+To check this installation and copy **all three** examples into ComfyUI's
+versioned workflow folder, run from `custom_nodes` with ComfyUI's Python:
+
+```sh
+python ComfyUI-Drama3-GGUF/check_install.py
+python ComfyUI-Drama3-GGUF/install_workflows.py
+```
+
+Restart ComfyUI, reload the frontend, then open **Drama3-GGUF-0.2.0** in Workflows.
+An already-open canvas keeps its previous values. The helper preserves user files.
+See the [cross-platform requirements, Desktop paths and ASR model formats](docs/portable_install.md)
+before installing on another machine. Only the Python checks are exercised across
+Windows/Linux/macOS; actual hardware/backend validation is listed separately.
+
 The node ID `Drama3GGUFGenerate` is retained for older local workflows.
 The example uses ComfyUI's built-in `SaveAudioAdvanced` node, verified with ComfyUI 0.41.0.
 

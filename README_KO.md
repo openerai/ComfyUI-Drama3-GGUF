@@ -8,8 +8,24 @@ Setup·Hardware 노트에는 다운로드 후보와 사양별 선택 출발점�
 
 1. ComfyUI의 `custom_nodes` 안에 이 저장소를 clone합니다.
 2. **ComfyUI를 실행하는 Python 환경**으로 `requirements.txt`를 설치하고 ComfyUI를 재시작합니다.
-3. 일반 TTS는 `example_workflows/Drama3_GGUF_TTS.json`, 음성 복제는
-   `example_workflows/Drama3_GGUF_Voice_Clone.json`을 엽니다.
+3. 일반 TTS는 `example_workflows/Drama3_GGUF_TTS.json`, 수동 전사 음성 복제는
+   `example_workflows/Drama3_GGUF_Voice_Clone.json`, 자동 받아쓰기 복제는
+   `example_workflows/Drama3_GGUF_Voice_Clone_Auto_Transcript.json`입니다.
+
+실제 ComfyUI의 `custom_nodes` 폴더에서 ComfyUI Python으로 다음을 실행하면
+설치를 점검하고 **세 예제를 모두** 버전별 워크플로우 폴더에 복사합니다.
+
+```sh
+python ComfyUI-Drama3-GGUF/check_install.py
+python ComfyUI-Drama3-GGUF/install_workflows.py
+```
+
+ComfyUI 재시작·화면 새로고침 후 Workflows의 **Drama3-GGUF-0.2.0** 폴더를 열어주세요.
+열려 있던 이전 화면은 자동 변경되지 않으며, 기존 사용자 파일은 덮어쓰지 않습니다.
+자동 전사에는 이 저장소의 고유 ASR 노드와 선택적인 네이티브 소스·변환 모델을 사용합니다.
+다른 확장의 동명 Qwen 로더나 타임스탬프 옵션과 혼용하지 않습니다.
+**다른 PC에 설치하기 전 [범용 설치 절차·Desktop 경로·ASR 형식 안내](docs/portable_install.md)를 보세요.**
+Windows·Linux·macOS의 Python 검사와 실제 GPU 추론 검증 범위는 구분합니다.
 
 **audio.cpp 실행 파일과 GGUF 모델은 별도로 필요합니다.**
 노드만 설치해도 추론 엔진이 자동 설치되는 구성은 아닙니다.

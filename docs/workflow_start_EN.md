@@ -59,3 +59,8 @@ Checked 2026-10-18. Hardware suggestions are starting points, not a guarantee of
 
 ## Output check · 0.1.11
 Leave reference_text empty for plain TTS; it is not a voice/gender selector. For Voice Clone, enter the actual words in the selected recording. New nodes use Top K=4097, including end-of-speech and all semantic candidates. Older saved values such as 30 are preserved. Read Raw output check after generation and listen to verify speech and the ending. Amplifying silence or noise does not fix generation.
+
+
+## 0.2.0 installation checks and ASR format
+The four GGUFs above are TTS choices; only Q2 has actual inference validation in this project. Qwen3-ASR is a separate transcription model. Put the converted single `qwen3_asr_0.6b_bf16.safetensors` file in `models/asr`, then select it in **Drama3 GGUF · ASR Model (Local File)**. Do not mix it with another extension's raw Hugging Face directory loader. Use the unique `Drama3GGUFASRLoader` → `Drama3GGUFASRTranscribe` nodes. Timestamps and ForcedAligner are not needed.
+Automatic transcription also needs the pinned ComfyUI-Drama3 native ASR source; no edits to that extension are required. Follow [portable installation](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md), then run `python check_install.py` and `python install_workflows.py` with ComfyUI's Python. All three examples are copied to **Drama3-GGUF-0.2.0**. Custom paths use --comfy-root or --workflow-dir. Restart/reload and OPEN the copied file: updating files does not change an open canvas's saved Top K=30. New examples use 4097. Listen to assess the generated speech.

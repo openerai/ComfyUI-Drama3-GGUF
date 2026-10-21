@@ -534,3 +534,43 @@ native backend. The original input at Top K=4097 and a 12 s budget saved a
 7.988 s FLAC with the expected raw-level status. Top K=30 saved the reproduced
 12.028 s low-signal take and displayed both advisory notices and the suggestion
 to try 4097. These two integration requests were additional to the 11 above.
+
+## Portable installation and ASR isolation (0.2.0)
+
+On 2026-10-21, the four original GGUF filenames/sizes and the converted 0.6B ASR
+file were checked against their repositories' revision-pinned metadata. Exact
+byte counts and SHA256 values are in model_catalog.json. Only the Q2 GGUF and
+0.6B ASR model have this project's actual inference validation; this update did
+not test the other GGUF precisions, the 1.7B ASR model or other GPU/OS combinations.
+
+A fresh node copy ran in a separate ComfyUI 0.42.3 base directory on the same
+Windows/RTX 5070 Ti system and Python environment. It used an unmodified
+ComfyUI-Drama3 checkout at 67a733a96890637dc27b1914974ad00c569405fb and also loaded
+the competing comfyui-qwen-asr extension. The latter still owned Qwen3ASRLoader;
+the new Drama3GGUFASRLoader/Transcribe nodes and DRAMA3_GGUF_ASR_MODEL socket
+registered independently. The actual native ASR import used the clean checkout,
+without the earlier local node-alias patch. The native TTS server/model were the
+existing validated installation, not a newly compiled backend or a new machine.
+
+Three actual requests exercised plain TTS, automatic-transcript Clone and manual
+Clone through FLAC saving. TTS used the original trailing-space input above,
+seed 123, 47 s budget and the new default Top K=4097: 7.988 s at -17.73 dBFS,
+with the same decoded PCM hash as the listener-confirmed earlier take. Both
+clone paths used the same 10 s recording segment, recognized transcript and
+new speech; their 1.254 s outputs had identical PCM hashes, at -13.07 dBFS.
+This establishes wiring and execution, not voice similarity or exact pronunciation.
+
+Generated-audio ASR readback matched all words of the plain TTS input. Clone
+readback returned "자 이제 밥 먹으러 가자." for requested "야 이제 밥 먹으러 가자!":
+the opening syllable did not match. No human listening score or speaker-similarity
+metric was added. Installation portability does not guarantee model accuracy;
+listen to outputs and adjust reference/seed as needed.
+
+The copy command installed all three examples and preserved edited files on
+repeat. The read-only checker passed its external-server/workflow probe; a
+missing-dependency run under Python -S produced actionable messages without a
+traceback. Local validation passed 51 Python tests (including FFmpeg), 12
+JavaScript tests, Ruff and whitespace checks. The existing CI runs portable
+client/helper tests on Windows, Linux and macOS; these are not hardware inference
+tests. No new browser visual-inspection claim is made. The independent review's
+dependency-check finding was repaired and covered by the -S regression test.

@@ -30,7 +30,7 @@
 
 ### 자동 전사 Clone에만 추가할 모델
 
-[Qwen3-ASR-ComfyUI 파일 목록](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/tree/main)에서 **qwen3_asr_0.6b_bf16.safetensors**(약 1.6 GB)를 받아 `ComfyUI/models/asr/`에 넣고 ASR Model에서 선택합니다. 이 자동 전사 워크플로우에는 [ComfyUI-Drama3의 Qwen3-ASR 노드](https://github.com/PedroMarinhoDev/ComfyUI-Drama3)도 필요합니다. 수동 전사 Clone과 일반 TTS에는 ASR이 필요 없습니다. ForcedAligner나 원본 TTS 가중치는 이 GGUF 워크플로우 때문에 받을 필요가 없습니다.
+[Qwen3-ASR-ComfyUI 파일 목록](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/tree/main)에서 **qwen3_asr_0.6b_bf16.safetensors**(약 1.6 GB)를 받아 `ComfyUI/models/asr/`에 넣고 ASR Model에서 선택합니다. 이 자동 전사 워크플로우에는 [ComfyUI-Drama3의 네이티브 ASR 소스](https://github.com/PedroMarinhoDev/ComfyUI-Drama3)도 필요합니다. 수동 전사 Clone과 일반 TTS에는 ASR이 필요 없습니다. ForcedAligner나 원본 TTS 가중치는 이 GGUF 워크플로우 때문에 받을 필요가 없습니다.
 
 출처: [GGUF 모델 카드](https://huggingface.co/Jmica/Drama-3-GGUF), [ASR 모델 안내](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI). 모델 배포 라이선스는 해당 모델 카드에서 확인하세요.
 
@@ -73,3 +73,8 @@
 private 한도는 실제 RAM 점유 한도와 다릅니다. 필요한 자원 한도는 각 설치에서 선택하며, 이 안내나 워크플로우가 사용자 설정을 자동 변경하지 않습니다.
 
 출처: [이 프로젝트의 검증 기록](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md), [고정 audio.cpp 버전의 Drama3 안내](https://github.com/0xShug0/audio.cpp/blob/ace630deedf60b9c2ff7ec2277a9cdfb1f37f69f/docs/models/fish_drama3.md), [GGUF 배포자의 검증 범위](https://huggingface.co/Jmica/Drama-3-GGUF#validation-limits). 파일 용량은 2026-10-18 공개 메타데이터 기준이며 변경될 수 있습니다.
+
+
+## 0.2.0 설치 점검 · ASR 파일 형식
+위 네 GGUF는 TTS용 선택 후보이며, Q2만 이 프로젝트에서 실제 추론을 검증했습니다. Qwen3-ASR은 별도의 받아쓰기 모델입니다. 변환된 `qwen3_asr_0.6b_bf16.safetensors` 단일 파일을 `models/asr`에 넣고 **Drama3 GGUF · ASR Model (Local File)**에서 선택합니다. 다른 확장의 원본 HF 폴더형 Qwen 로더와 혼용하지 마세요. 이 저장소의 고유 노드 `Drama3GGUFASRLoader` → `Drama3GGUFASRTranscribe`를 사용하며 타임스탬프·ForcedAligner는 필요 없습니다.
+자동 전사에는 ComfyUI-Drama3의 고정 버전 네이티브 ASR 소스도 필요합니다. 외부 노드를 직접 수정하지 마세요. [범용 설치 절차](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)의 순서대로 준비하고, ComfyUI Python으로 `python check_install.py`와 `python install_workflows.py`를 실행하세요. 세 워크플로우가 **Drama3-GGUF-0.2.0** 폴더에 복사됩니다. 사용자 경로가 다르면 --comfy-root 또는 --workflow-dir를 지정합니다. 재시작·화면 새로고침 후 그 파일을 새로 여세요. 이전 화면의 Top K=30은 파일 업데이트만으로 바뀌지 않습니다. 새 예제는 4097이며 품질은 직접 재생해서 확인합니다.

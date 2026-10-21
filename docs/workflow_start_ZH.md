@@ -59,3 +59,8 @@ ComfyUI/
 
 ## 输出检查 · 0.1.11
 普通TTS请将 reference_text 留空；它不是声音或性别选择栏。Voice Clone需填写所选参考录音中实际说出的台词。新默认值 Top K=4097 包含结束标记和全部语义候选。旧文件保存的30等值不会自动更改。生成后查看 Raw output check 中的时长、音量和可能达到预算的提示，并试听确认台词和结尾。放大静音或噪声不能修复生成。
+
+
+## 0.2.0 安装检查与ASR格式
+上述四个GGUF是TTS候选，本项目仅对Q2进行了实际推理验证。Qwen3-ASR是独立的转写模型。请把转换后的单文件 `qwen3_asr_0.6b_bf16.safetensors` 放入 `models/asr`，并在 **Drama3 GGUF · ASR Model (Local File)** 中选择。不要与其他扩展的原始HF模型文件夹加载器混用。使用独立节点 `Drama3GGUFASRLoader` → `Drama3GGUFASRTranscribe`，无需时间戳或ForcedAligner。
+自动转写还需要固定版本的ComfyUI-Drama3原生ASR源码，无需直接修改外部节点。按[安装步骤](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)准备，然后用ComfyUI的Python执行 `python check_install.py` 和 `python install_workflows.py`。三种示例会复制到 **Drama3-GGUF-0.2.0**。自定义位置用 --comfy-root 或 --workflow-dir 指定。重启并刷新界面后重新打开复制的文件。仅更新文件不会改变已打开画面中的Top K=30，新示例使用4097。请试听确认生成的语音。

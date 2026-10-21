@@ -48,6 +48,17 @@ test("reference transcript preview still works and unrelated nodes are untouched
     assert.equal(ordinary.widgets.length, 0);
 });
 
+test("opening an old graph warns about its saved sampling without changing dialogue or Top K", () => {
+    const node = { comfyClass: "Drama3GGUFGenerate", widgets: [
+        { name: "top_k", value: 30 }, { name: "text", value: "My original words" }],
+        onConfigure() { return "previous callback"; }, setDirtyCanvas() {} };
+    extension().nodeCreated(node);
+    assert.equal(node.onConfigure({}), "previous callback");
+    assert.match(node.widgets.find(w => w.name === "generation_status").value, /Saved Top K=30/);
+    assert.equal(node.widgets[0].value, 30);
+    assert.equal(node.widgets[1].value, "My original words");
+});
+
 test("distributed examples use all candidates without enabling optional FFmpeg processing", () => {
     for (const name of ["TTS", "Voice_Clone", "Voice_Clone_Auto_Transcript"]) {
         const workflow = JSON.parse(readFileSync(new URL(`../example_workflows/Drama3_GGUF_${name}.json`, import.meta.url)));
