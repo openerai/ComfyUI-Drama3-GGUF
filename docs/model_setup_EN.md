@@ -23,7 +23,7 @@ Disk size is not a RAM/VRAM requirement or a ranking of GPU memory use. More bit
 
 ### Optional automatic reference transcription
 
-Only auto-transcript Clone additionally needs **qwen3_asr_0.6b_bf16.safetensors** (about 1.6 GB) from [Qwen3-ASR-ComfyUI](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/tree/main) in `ComfyUI/models/asr/`, plus [ComfyUI-Drama3's Qwen3-ASR nodes](https://github.com/PedroMarinhoDev/ComfyUI-Drama3). Select the file in ASR Model. Ordinary TTS and manual-transcript Clone do not need ASR. A ForcedAligner or original TTS weights are not required by this GGUF workflow.
+Only auto-transcript Clone additionally needs **qwen3_asr_0.6b_bf16.safetensors** (about 1.6 GB) from [Qwen3-ASR-ComfyUI](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/tree/main) in `ComfyUI/models/asr/`, plus [ComfyUI-Drama3 native ASR source](https://github.com/PedroMarinhoDev/ComfyUI-Drama3). Select the file in ASR Model. Ordinary TTS and manual-transcript Clone do not need ASR. A ForcedAligner or original TTS weights are not required by this GGUF workflow.
 
 Sources: [GGUF model card](https://huggingface.co/Jmica/Drama-3-GGUF), [ASR model card](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI). Check each model's own license.
 
@@ -64,3 +64,8 @@ Merge options into the installation's config.json. After changes, run `python ru
 Private commit and resident RAM are different limits. Each installation chooses its own limits; these notes do not automatically change settings.
 
 Sources: [verification](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md), [pinned audio.cpp guide](https://github.com/0xShug0/audio.cpp/blob/ace630deedf60b9c2ff7ec2277a9cdfb1f37f69f/docs/models/fish_drama3.md), [publisher validation limits](https://huggingface.co/Jmica/Drama-3-GGUF#validation-limits). Sizes checked 2026-10-18 and may change.
+
+
+## 0.2.1 installation checks and ASR format
+The four GGUFs above are TTS choices; only Q2 has actual inference validation in this project. Qwen3-ASR is a separate transcription model. Put the converted single `qwen3_asr_0.6b_bf16.safetensors` file in `models/asr`, then select it in **Drama3 GGUF · ASR Model (Local File)**. Do not mix it with another extension's raw Hugging Face directory loader. Use the unique `Drama3GGUFASRLoader` → `Drama3GGUFASRTranscribe` nodes. Timestamps and ForcedAligner are not needed.
+Automatic transcription also needs the pinned ComfyUI-Drama3 native ASR source; no edits to that extension are required. Follow [portable installation](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md), then run `python check_install.py` and `python install_workflows.py` with ComfyUI's Python. All three examples are copied to **Drama3-GGUF-0.2.1**. Custom paths use --comfy-root or --workflow-dir. Restart/reload and OPEN the copied file: updating files does not change an open canvas's saved Top K=30. New examples use 4097. Listen to assess the generated speech.

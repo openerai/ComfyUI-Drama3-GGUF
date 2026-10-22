@@ -22,7 +22,9 @@ The default native chunker uses 200 characters and does not carry a long paired 
 
 ## Generation and sampling
 
-Start with Temperature=1.0 / Top P=0.9 / Top K=30. Change one setting at a time. Very low temperature can produce silence or repetition. This runtime rejects Top P=0 and Top K=0. Temperature=0 is not fully deterministic in every repetition-handling path. A fixed seed helps comparisons within the same configuration, but changing quantization or backend/offload can change output.
+Start with Temperature=1.0 / Top P=0.9 / Top K=4097. Change one setting at a time. Very low temperature can produce silence or repetition. This runtime rejects Top P=0 and Top K=0. Temperature=0 is not fully deterministic in every repetition-handling path. A fixed seed helps comparisons within the same configuration, but changing quantization or backend/offload can change output.
+
+4097 includes end-of-speech and all semantic candidates, matching the official demo's all-candidates setting. Old saved values are preserved. Read the generation node's Raw output check before normalization; low signal and a budget notice are reasons to listen, not proof of missing speech. Do not treat a volume increase or a shorter budget as a general cure for failed generation. See the [controlled comparison](verification.md#sampling-and-output-diagnostics-0111).
 
 Max seconds is a budget for each text chunk. New nodes default to 12; saved workflows start at **47 seconds per chunk**. This is adjustable and not the total output-duration limit. The model-based input ceiling is 12,173 seconds, derived from 262,144 context positions and the codec rate; it is not an output-duration or quality guarantee. Prompts, references and history also use context.
 

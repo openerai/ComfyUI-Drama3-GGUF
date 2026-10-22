@@ -2,36 +2,71 @@
 
 Drama3 GGUF를 실행하는 audio.cpp 서버와 ComfyUI를 연결하는 노드입니다.
 공유 워크플로우의 생성 설정은 특정 GPU·RAM 용량·사용자 경로·양자화 모델을 강제하지 않습니다.
-Setup·Hardware 노트에는 다운로드 후보와 사양별 선택 출발점을 안내합니다.
+왼쪽 모델 안내에 다운로드를 모았고, 자세한 설명은 기본으로 접어 두었습니다.
 
 ## 설치
 
 1. ComfyUI의 `custom_nodes` 안에 이 저장소를 clone합니다.
 2. **ComfyUI를 실행하는 Python 환경**으로 `requirements.txt`를 설치하고 ComfyUI를 재시작합니다.
-3. 일반 TTS는 `example_workflows/Drama3_GGUF_TTS.json`, 음성 복제는
-   `example_workflows/Drama3_GGUF_Voice_Clone.json`을 엽니다.
+3. 일반 TTS는 `example_workflows/Drama3_GGUF_TTS.json`, 수동 전사 음성 복제는
+   `example_workflows/Drama3_GGUF_Voice_Clone.json`, 자동 받아쓰기 복제는
+   `example_workflows/Drama3_GGUF_Voice_Clone_Auto_Transcript.json`입니다.
+
+실제 ComfyUI의 `custom_nodes` 폴더에서 ComfyUI Python으로 다음을 실행하면
+설치를 점검하고 **세 예제를 모두** 버전별 워크플로우 폴더에 복사합니다.
+
+```sh
+python ComfyUI-Drama3-GGUF/check_install.py
+python ComfyUI-Drama3-GGUF/install_workflows.py
+```
+
+ComfyUI 재시작·화면 새로고침 후 Workflows의 **Drama3-GGUF-0.2.1** 폴더를 열어주세요.
+열려 있던 이전 화면은 자동 변경되지 않으며, 기존 사용자 파일은 덮어쓰지 않습니다.
+자동 전사에는 이 저장소의 고유 ASR 노드와 선택적인 네이티브 소스·변환 모델을 사용합니다.
+다른 확장의 동명 Qwen 로더나 타임스탬프 옵션과 혼용하지 않습니다.
+**다른 PC에 설치하기 전 [범용 설치 절차·Desktop 경로·ASR 형식 안내](docs/portable_install.md)를 보세요.**
+Windows·Linux·macOS의 Python 검사와 실제 GPU 추론 검증 범위는 구분합니다.
 
 **audio.cpp 실행 파일과 GGUF 모델은 별도로 필요합니다.**
 노드만 설치해도 추론 엔진이 자동 설치되는 구성은 아닙니다.
 Windows 빌드 명령과 원본 다운로드 링크는 [영문 설치 안내](README.md#obtain-a-compatible-backend)에 있습니다.
 
-모든 예제에 **Setup / 모델 다운로드·설치**, **Hardware / 사양별 설정·문제 해결**
-노트를 넣었습니다. 모델별 링크·용량·저장 위치, 자동 전사용 ASR 의존성,
-사양별 선택과 오류 대처법은 [모델 설치 가이드](docs/model_setup_KO.md)에서도 볼 수 있습니다.
-사양표는 실측 최소 사양이나 실행 보장이 아닌 선택 출발점입니다.
+다운로드 목록은 **왼쪽 모델 안내 한곳**에 모았습니다. **TTS용 GGUF 하나**를 선택하고,
+자동 받아쓰기 복제를 쓸 때만 **변환 ASR 파일 하나**를 추가하면 됩니다.
+실제 실행을 확인한 Q2·ASR 0.6B와 미검증 선택지를 구분합니다.
+[전체 파일명·용량·고급 선택지](docs/model_downloads.md)에서도 확인할 수 있습니다.
+GiB는 디스크 크기이며 RAM·VRAM 요구량이 아닙니다.
 
-처음 여는 화면의 왼쪽 **About: Drama3 GGUF** 노트에는 모델 링크,
-**Model Storage Location 폴더 트리**, 엔진·config.json 설정과 사용 순서를 넣었습니다.
-[시작 안내](docs/workflow_start_KO.md)에서도 같은 내용을 볼 수 있습니다.
-
-워크플로우는 **왼쪽 시작 안내 / 가운데 실행 노드 / 오른쪽 Setup·Hardware**로 정렬했습니다.
-상단 **Guide language**에서 한국어·English·日本語·中文（简体）를 선택하면 해당 워크플로우의 안내가 함께
-바뀝니다. 저장하면 선택한 언어가 유지되며, 안내문을 직접 수정한 내용도 보존합니다.
+실행 순서는 짧게 표시하고, **설치·세부 조절·하드웨어 설명은 기본으로 접어 두었습니다.**
+상단 **자세한 설명 접기/펼치기** 버튼으로 함께 열고 닫거나 개별 노트를 펼칠 수 있습니다.
+**Guide language**에서 한국어·English·日本語·中文（简体）를 고르면 안내가 함께 바뀝니다.
+저장하면 선택한 언어와 접힌 상태가 유지되며, 안내문을 직접 수정한 내용도 보존합니다.
 대사·생성 설정과 표시되지 않은 개인 노트에는 적용하지 않습니다.
-업데이트 후 ComfyUI 화면을 새로 열어 언어 선택 기능을 불러오세요.
+업데이트 후 화면을 새로고침하고 새 버전 폴더의 예제를 열어주세요.
 이전에 저장한 파일은 그 안에 있는 번역만 표시합니다. 네 언어를 사용하려면 업데이트된
 워크플로우를 다시 여세요. [일본어 안내](docs/workflow_start_JA.md)와
 [중국어 간체 안내](docs/workflow_start_ZH.md)도 제공합니다.
+
+## 무음·작은 출력과 0.1.11 업데이트
+
+새 노드와 예제는 **Top K=4097**을 사용합니다. 종료 토큰과 4096개 의미 토큰을 모두
+후보로 둡니다. [공식 데모의 고정 버전 소스](https://huggingface.co/spaces/fishaudio/Drama-3/blob/c368729ab9347dda6635c5272ad31e6521114b79/server.py)도
+Top K=30에서 무음이 이어지는 현상을 보고하고 전체 후보를 사용합니다.
+이 설정으로 재현된 실패가 개선됐지만, 모든 문장·장비의 음성 품질을 보장하지는 않습니다.
+이전에 저장한 파일의 30은 자동 변경하지 않습니다. 직접 4097로 바꾸거나 새 예제를 여세요.
+이 audio.cpp 런타임은 0을 받지 않으므로 4097을 명시합니다.
+
+생성 노드의 **Raw output check**에는 후처리 전 길이·RMS 음량·피크와 작은 신호,
+구간 예산 도달 가능성을 표시합니다. 실행 성공이나 0이 아닌 파형만으로 정상 대사를
+판정하지 않습니다. 직접 듣고 대사와 끝부분을 확인하세요. 음량 정규화는 잡음도 키울 수
+있어 예제에서는 계속 선택 사항이며 기본으로 켜지 않습니다.
+
+일반 TTS의 `reference_text`는 비워둡니다. 목소리·성별 선택 칸이 아닙니다.
+Voice Clone은 참조 녹음과 선택 구간의 실제 대사가 모두 필요하며, 누락된 항목을 따로 안내합니다.
+
+관리 모드 업데이트 시 `python run_server.py --stop`으로 서버를 종료한 뒤
+ComfyUI를 재시작하고 화면도 새로 열어주세요. 개인 경로·메모리 제한·기존 대사는
+자동 변경하지 않습니다. [비교 실행과 미확인 범위](docs/verification.md#sampling-and-output-diagnostics-0111)를 함께 보세요.
 
 ## 각 PC의 설정
 

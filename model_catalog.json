@@ -1,0 +1,85 @@
+{
+  "checked": "2026-10-22",
+  "models": [
+    {
+      "kind": "gguf",
+      "repo": "Jmica/Drama-3-GGUF",
+      "revision": "17a5b40c5dc2c2be986f5371a7e650108b828e29",
+      "filename": "drama-3-backbone-4bit-experts-Q4_K_S.gguf",
+      "bytes": 23386029088,
+      "sha256": "ae65d77b4fe21d5d176cf9bb8123fa21982c65d6e40a32cbed1b85c31390fdb6",
+      "validation": "metadata-only",
+      "profile": "standard"
+    },
+    {
+      "kind": "gguf",
+      "repo": "Jmica/Drama-3-GGUF",
+      "revision": "17a5b40c5dc2c2be986f5371a7e650108b828e29",
+      "filename": "drama-3-backbone-8bit-F32-routers-BF16-embed-head-experts-Q4_K_S.gguf",
+      "bytes": 25634020064,
+      "sha256": "ea8b2e595026e6ec8570606d8633415ed3b016659f8415ba24de315e8ce60aeb",
+      "validation": "metadata-only",
+      "profile": "advanced"
+    },
+    {
+      "kind": "gguf",
+      "repo": "Jmica/Drama-3-GGUF",
+      "revision": "17a5b40c5dc2c2be986f5371a7e650108b828e29",
+      "filename": "drama-3-backbone-8bit-F32-routers-experts-Q4_K_S.gguf",
+      "bytes": 24665234144,
+      "sha256": "2e3da9f7c36f51f1eda7490c110469847757c0f7e715b9bddf65b8aeb95b14d7",
+      "validation": "metadata-only",
+      "profile": "advanced"
+    },
+    {
+      "kind": "gguf",
+      "repo": "Jmica/Drama-3-GGUF",
+      "revision": "17a5b40c5dc2c2be986f5371a7e650108b828e29",
+      "filename": "drama-3-backbone-8bit-experts-Q2_K.gguf",
+      "bytes": 17053639872,
+      "sha256": "041be86fbb53bf4002d59bf7d5f0c99c321e0b21f5aa3b53fec380eec6f892d3",
+      "validation": "local-inference",
+      "profile": "standard"
+    },
+    {
+      "kind": "gguf",
+      "repo": "Jmica/Drama-3-GGUF",
+      "revision": "17a5b40c5dc2c2be986f5371a7e650108b828e29",
+      "filename": "drama-3-backbone-8bit-experts-Q3_K_S.gguf",
+      "bytes": 20325196992,
+      "sha256": "b946a8c9806deba559590b98e37ffc9e0957109263e111513734fa93284db16b",
+      "validation": "metadata-only",
+      "profile": "standard"
+    },
+    {
+      "kind": "gguf",
+      "repo": "Jmica/Drama-3-GGUF",
+      "revision": "17a5b40c5dc2c2be986f5371a7e650108b828e29",
+      "filename": "drama-3-backbone-8bit-experts-Q4_K_S.gguf",
+      "bytes": 24596497888,
+      "sha256": "05af716baf78e7c20863b9ccebb3ebdeca9607dd3ea7d0b72c35079e675b212b",
+      "validation": "metadata-only",
+      "profile": "standard"
+    },
+    {
+      "kind": "asr",
+      "repo": "PedroMarinhoDev/Qwen3-ASR-ComfyUI",
+      "revision": "6ad8c9be026925839479a8d97749068a4202fbe9",
+      "filename": "qwen3_asr_0.6b_bf16.safetensors",
+      "bytes": 1564928184,
+      "sha256": "eb350ce7510a538eb136d8320db470a0761713c47de6e12b0fca090d4fc15ecf",
+      "validation": "local-inference",
+      "profile": "standard"
+    },
+    {
+      "kind": "asr",
+      "repo": "PedroMarinhoDev/Qwen3-ASR-ComfyUI",
+      "revision": "6ad8c9be026925839479a8d97749068a4202fbe9",
+      "filename": "qwen3_asr_1.7b_bf16.safetensors",
+      "bytes": 4076192608,
+      "sha256": "958ac49a7015ad546206e87fbcf390ac567b81d1cc7d613a1255a41033b8345f",
+      "validation": "metadata-only",
+      "profile": "standard"
+    }
+  ]
+}

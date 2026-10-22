@@ -13,6 +13,19 @@ export function guideLanguages(graph) {
         node => node.properties.drama3Guide.translations[locale])) : [];
 }
 
+export function detailGuideNodes(graph) {
+    return guideNodes(graph).filter(node => node.properties.drama3Guide.detail === true);
+}
+
+export function setGuideDetails(graph, expanded) {
+    graph.beforeChange?.();
+    for (const node of detailGuideNodes(graph)) {
+        // LiteGraph collapse() toggles; its argument forces permission, not the target state.
+        if (Boolean(node.flags?.collapsed) === expanded) node.collapse(true);
+    }
+    graph.afterChange?.();
+}
+
 function textWidget(node) {
     return node.widgets?.find(widget => widget.name === "text");
 }

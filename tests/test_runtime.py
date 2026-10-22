@@ -232,6 +232,8 @@ class PortableClientTests(unittest.TestCase):
             self.assertEqual(FakeAudioServer.received["voice_ref"]["type"], "base64")
             self.assertEqual(FakeAudioServer.received["reference_text"], "Reference words.")
             self.assertNotIn("path", FakeAudioServer.received["voice_ref"])
+            client.generate({"mode": "external", "server_url": url}, "Default sampling.", 7, 65)
+            self.assertEqual(FakeAudioServer.received["top_k"], 4097)
         finally:
             server.shutdown()
             server.server_close()
@@ -239,11 +241,23 @@ class PortableClientTests(unittest.TestCase):
 
     def test_sampling_bounds_reject_unsupported_values_before_server_contact(self):
         with patch.object(client, "ensure_server") as connect:
-            for values in ((float("nan"), 0.9, 30), (1, 0, 30), (1, 0.9, 0), (1, 0.9, 1.5)):
+            for values in ((float("nan"), 0.9, 30), (1, 0, 30), (1, 0.9, 0), (1, 0.9, 1.5), (1, 0.9, 4098)):
                 with self.subTest(values=values), self.assertRaises(ValueError):
                     client.generate({}, "Speech.", 123, 100, temperature=values[0], top_p=values[1], top_k=values[2])
             connect.assert_not_called()
         self.assertEqual(client.sampling_options(0, 1, 1), {"temperature": 0, "top_p": 1, "top_k": 1})
+        self.assertEqual(client.sampling_options(1, 0.9, 4097)["top_k"], 4097)
+
+    def test_nonfinite_decoded_audio_is_not_reported_as_success(self):
+        config = {"mode": "external", "server_url": "http://127.0.0.1:8035"}
+        models = {"data": [{"id": "drama3", "family": "fish_drama3"}]}
+        response = unittest.mock.Mock(ok=True, content=b"fixture")
+        for value in (float("nan"), float("inf")):
+            with self.subTest(value=value), patch.object(client, "ensure_server", return_value=models), \
+                    patch.object(client.requests, "post", return_value=response), \
+                    patch.object(client.soundfile, "read", return_value=(np.full((10, 1), value), 44100)), \
+                    self.assertRaisesRegex(RuntimeError, "non-finite audio"):
+                client.generate(config, "Words.", 123, 259)
 
     def test_reference_requires_transcript_and_stays_under_server_limit(self):
         with self.assertRaises(ValueError):

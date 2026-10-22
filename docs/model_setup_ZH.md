@@ -64,3 +64,8 @@
 private commit 与驻留 RAM 是不同的限制。每个安装环境自行选择上限；这些说明不会自动更改配置。
 
 来源：[验证记录](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md)、[固定版本的 audio.cpp 指南](https://github.com/0xShug0/audio.cpp/blob/ace630deedf60b9c2ff7ec2277a9cdfb1f37f69f/docs/models/fish_drama3.md)、[发布者的验证范围](https://huggingface.co/Jmica/Drama-3-GGUF#validation-limits)。大小核查日期：2026-10-18，之后可能变化。
+
+
+## 0.2.1 安装检查与ASR格式
+上述四个GGUF是TTS候选，本项目仅对Q2进行了实际推理验证。Qwen3-ASR是独立的转写模型。请把转换后的单文件 `qwen3_asr_0.6b_bf16.safetensors` 放入 `models/asr`，并在 **Drama3 GGUF · ASR Model (Local File)** 中选择。不要与其他扩展的原始HF模型文件夹加载器混用。使用独立节点 `Drama3GGUFASRLoader` → `Drama3GGUFASRTranscribe`，无需时间戳或ForcedAligner。
+自动转写还需要固定版本的ComfyUI-Drama3原生ASR源码，无需直接修改外部节点。按[安装步骤](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)准备，然后用ComfyUI的Python执行 `python check_install.py` 和 `python install_workflows.py`。三种示例会复制到 **Drama3-GGUF-0.2.1**。自定义位置用 --comfy-root 或 --workflow-dir 指定。重启并刷新界面后重新打开复制的文件。仅更新文件不会改变已打开画面中的Top K=30，新示例使用4097。请试听确认生成的语音。

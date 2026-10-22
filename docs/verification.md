@@ -466,3 +466,134 @@ The saved preview's execution widgets match its source workflow, including its
 Korean dialogue and inline emphasis tag. Screenshots recorded both new languages.
 This change adds documentation and frontend selection only; it ran no new audio
 inference and makes no additional speech-language or hardware claims.
+
+## Sampling and output diagnostics (0.1.11)
+
+Controlled local inference on 2026-10-19 used Windows, RTX 5070 Ti 16 GiB,
+128 GiB host RAM, the same pinned audio.cpp commit and Q2 package/hash listed
+above, CUDA 13.0, streaming mode, disk experts with 8 slots, no CPU expert layers,
+4096 context positions, Temperature=1.0 and Top P=0.9. No normalization or gain
+was applied to these measurements. The local source build used MSVC 19.44;
+host C++ optimization was disabled after compiler-internal errors, while CUDA
+device code retained the upstream release flags. No binary is distributed here.
+
+The original text ended in an ASCII space, without a final period:
+
+```json
+"안녕하세요. 오늘도 좋은 하루 보내세요. 지금은 다른 공간에서 하고 있어요 "
+```
+
+The punctuated variant replaced that final space with `.`. The baseline was
+`안녕하세요. 오늘도 좋은 하루 보내세요.`. Only the named input or sampling/budget
+field changed between paired cases. Seed was 123 except where noted.
+
+| Input | Top K | Chunk budget | Measured output | RMS dBFS | Hit frame budget |
+| --- | --- | --- | --- | --- | --- |
+| Original, repeated twice | 30 | 47 s | 47.044 s | -41.50 | Yes |
+| Original | 30 | 12 s | 12.028 s | -55.52 | Yes |
+| Punctuated | 30 | 47 s and 12 s | 7.430 s, identical PCM | -19.90 | No |
+| Baseline | 30 | 12 s | 3.483 s | -9.98 | No |
+| Original | 4097 | 47 s and 12 s | 7.988 s, identical PCM | -17.73 | No |
+| Punctuated | 4097 | 47 s | 6.594 s | -17.28 | No |
+| Baseline | 4097 | 12 s | 2.972 s | -25.06 | No |
+| Original, seed 42 | 4097 | 47 s | 7.291 s | -16.70 | No |
+
+This was 11 actual requests. The two original/30/47 runs had identical decoded
+PCM hashes. Reducing the budget alone did **not** cure the original low-signal
+take. The native log reported the frame limit for the capped cases.
+A human listener confirmed that the unnormalized original/4097/seed-123 take
+matched the requested text. The other results were measured for
+signal and termination; no ASR accuracy score or broad perceptual score was run.
+
+The [official demo source at c368729](https://huggingface.co/spaces/fishaudio/Drama-3/blob/c368729ab9347dda6635c5272ad31e6521114b79/server.py)
+documents silence under top-k=30 and uses all 4097 candidates: end-of-speech plus
+4096 semantic codes. This bridge previously rejected 4097. New nodes/examples
+now accept and default to it; old explicitly saved sampling values still work.
+
+Hardware, kernels and floating-point evaluation order can affect a sampled
+take; [NVIDIA's floating-point guide](https://docs.nvidia.com/cuda/floating-point/index.html)
+explains why different evaluation paths can round differently. That is a
+possible explanation for cross-machine variation, **not a demonstrated cause
+of the home-versus-other-PC difference**. No paired home-machine run with these
+exact inputs and settings was executed. These results do not establish support
+or identical speech on every GPU, quantization or language.
+
+The new Raw output check reports unprocessed duration, RMS and peak. Below
+-45 dBFS it shows a low-signal notice; exact alignment with a single chunk's
+frame budget shows a possible-limit notice. These are advisory measurements,
+not silence detection, transcription or a quality pass. Quiet audio is returned
+unchanged. Non-finite decoded samples are rejected. No automatic punctuation,
+gain, retry or duration cap is introduced; optional normalization stays off.
+
+Validation passed 41 Python tests (including FFmpeg processing), 11 JavaScript
+tests, Ruff and whitespace checks. JavaScript tests exercise widget callbacks
+and serialization with ComfyUI stubs; this update did not add a visual browser
+inspection claim. A separate ComfyUI 0.42.1 instance loaded the changed package
+and executed Generate Audio -> Save Audio (Advanced) twice against the same
+native backend. The original input at Top K=4097 and a 12 s budget saved a
+7.988 s FLAC with the expected raw-level status. Top K=30 saved the reproduced
+12.028 s low-signal take and displayed both advisory notices and the suggestion
+to try 4097. These two integration requests were additional to the 11 above.
+
+## Portable installation and ASR isolation (0.2.0)
+
+On 2026-10-21, the four original GGUF filenames/sizes and the converted 0.6B ASR
+file were checked against their repositories' revision-pinned metadata. Exact
+byte counts and SHA256 values are in model_catalog.json. Only the Q2 GGUF and
+0.6B ASR model have this project's actual inference validation; this update did
+not test the other GGUF precisions, the 1.7B ASR model or other GPU/OS combinations.
+
+A fresh node copy ran in a separate ComfyUI 0.42.3 base directory on the same
+Windows/RTX 5070 Ti system and Python environment. It used an unmodified
+ComfyUI-Drama3 checkout at 67a733a96890637dc27b1914974ad00c569405fb and also loaded
+the competing comfyui-qwen-asr extension. The latter still owned Qwen3ASRLoader;
+the new Drama3GGUFASRLoader/Transcribe nodes and DRAMA3_GGUF_ASR_MODEL socket
+registered independently. The actual native ASR import used the clean checkout,
+without the earlier local node-alias patch. The native TTS server/model were the
+existing validated installation, not a newly compiled backend or a new machine.
+
+Three actual requests exercised plain TTS, automatic-transcript Clone and manual
+Clone through FLAC saving. TTS used the original trailing-space input above,
+seed 123, 47 s budget and the new default Top K=4097: 7.988 s at -17.73 dBFS,
+with the same decoded PCM hash as the listener-confirmed earlier take. Both
+clone paths used the same 10 s recording segment, recognized transcript and
+new speech; their 1.254 s outputs had identical PCM hashes, at -13.07 dBFS.
+This establishes wiring and execution, not voice similarity or exact pronunciation.
+
+Generated-audio ASR readback matched all words of the plain TTS input. Clone
+readback returned "자 이제 밥 먹으러 가자." for requested "야 이제 밥 먹으러 가자!":
+the opening syllable did not match. No human listening score or speaker-similarity
+metric was added. Installation portability does not guarantee model accuracy;
+listen to outputs and adjust reference/seed as needed.
+
+The copy command installed all three examples and preserved edited files on
+repeat. The read-only checker passed its external-server/workflow probe; a
+missing-dependency run under Python -S produced actionable messages without a
+traceback. Local validation passed 51 Python tests (including FFmpeg), 12
+JavaScript tests, Ruff and whitespace checks. The existing CI runs portable
+client/helper tests on Windows, Linux and macOS; these are not hardware inference
+tests. No new browser visual-inspection claim is made. The independent review's
+dependency-check finding was repaired and covered by the -S regression test.
+
+## Compact workflow help and model catalogue (0.2.1)
+
+On 2026-10-22, the workflow download list was consolidated into one left-hand
+panel. Quick steps remain open; installation, controls and hardware notes start
+collapsed. The toolbar toggles the three detail notes through LiteGraph's native
+collapse method. Language changes preserve saved fold state and edited help.
+All three examples' execution nodes and links are identical to commit 73e855f;
+this update changes guidance and presentation, not inference settings.
+
+The catalogue now records all six GGUF and both converted ASR files found in the
+revision-pinned source metadata. Only Q2 and ASR 0.6B carry local-inference status.
+The other files have metadata-only status; the two advanced F32-router profiles
+have not been tested with the pinned engine. Their availability is not a runtime
+compatibility or quality claim. Exact files, bytes and hashes are in model_catalog.json.
+
+Local validation passed 51 Python tests including FFmpeg, 16 JavaScript tests,
+Ruff and whitespace checks. New tests cover native toggle semantics, mixed fold
+states, saved state, toolbar callbacks and localization, and download links being
+present only in the single model panel. Browser/computer-use tools failed during
+initialization on this Windows host, so no visual browser inspection is claimed.
+The earlier 0.2.0 audio integration results still apply to the unchanged inference
+code; no additional hardware/backend inference validation was added in 0.2.1.

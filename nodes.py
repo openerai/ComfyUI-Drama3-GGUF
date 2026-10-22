@@ -1,8 +1,28 @@
 import comfy.model_management
+import math
+import numpy as np
 import torch
 
 from . import audio_controls, client
 from .configuration import load_config
+
+
+def audio_status(audio, sample_rate, max_tokens, top_k):
+    rms = float(np.sqrt(np.mean(np.square(audio), dtype=np.float64)))
+    peak = float(np.max(np.abs(audio)))
+    dbfs = 20 * math.log10(rms) if rms else -math.inf
+    lines = [f"Raw output: {len(audio) / sample_rate:.2f}s, {sample_rate} Hz, "
+             f"RMS {dbfs:.1f} dBFS, peak {peak:.3f}."]
+    low_signal = dbfs < -45
+    at_budget = sample_rate == 44100 and len(audio) == max_tokens * 2048
+    if low_signal:
+        lines.append("Low signal level / 원본 음량이 작습니다. Listen before amplifying; noise can also be amplified.")
+    if at_budget:
+        lines.append("Output matches the per-chunk budget / 구간 생성 한도에 도달했을 수 있습니다. Check for silence or a cut-off ending.")
+    if (low_signal or at_budget) and top_k < client.DRAMA3_CANDIDATE_COUNT:
+        lines.append("Try Top K=4097 (all candidates) or another seed; old workflows retain their saved settings.")
+    lines.append("Listen to verify speech and words / 재생해서 말소리와 대사를 확인하세요.")
+    return "\n".join(lines)
 
 
 class Drama3GGUFGenerate:
@@ -17,15 +37,16 @@ class Drama3GGUFGenerate:
             },
             "optional": {
                 "reference_audio": ("AUDIO",),
-                "reference_text": ("STRING", {"multiline": True, "default": "", "tooltip": "Exact words in the selected reference segment, not the new text to generate."}),
+                "reference_text": ("STRING", {"multiline": True, "default": "", "tooltip": "Leave empty for ordinary TTS. This is not a voice/gender selector. For cloning, connect reference_audio and enter the exact words spoken in that selected recording."}),
                 "server_url": ("STRING", {"default": "", "tooltip": "Blank uses config.json or localhost:8035. Reference audio is sent to this server."}),
                 "model_id": ("STRING", {"default": "auto", "tooltip": "auto selects the only Drama3 model registered on the server."}),
                 "temperature": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0, "step": 0.05,
                                            "tooltip": "Sampling variation. Start at 1.0; very low values may produce silence."}),
                 "top_p": ("FLOAT", {"default": 0.9, "min": 0.01, "max": 1.0, "step": 0.01,
                                      "tooltip": "Sampling diversity. Native Drama3 default: 0.9; zero is invalid."}),
-                "top_k": ("INT", {"default": 30, "min": 1, "max": 4096,
-                                   "tooltip": "Sampling candidate count. Native Drama3 default: 30; zero is unsupported here."}),
+                "top_k": ("INT", {"default": client.DRAMA3_CANDIDATE_COUNT, "min": 1,
+                                   "max": client.DRAMA3_CANDIDATE_COUNT,
+                                   "tooltip": "4097 keeps all semantic candidates and end-of-speech, matching the official demo's anti-silence setting. Smaller values remain available. This runtime does not accept zero."}),
             },
         }
 
@@ -35,7 +56,7 @@ class Drama3GGUFGenerate:
     DESCRIPTION = "Generate audio with a Drama3 GGUF audio.cpp server. Runtime and memory settings belong to each installation, not the workflow."
 
     def generate(self, text, seed, max_seconds, reference_audio=None, reference_text="", server_url="", model_id="auto",
-                 temperature=1.0, top_p=0.9, top_k=30):
+                 temperature=1.0, top_p=0.9, top_k=client.DRAMA3_CANDIDATE_COUNT):
         if not text.strip():
             raise ValueError("text cannot be empty.")
         max_tokens = client.generation_frames(max_seconds)
@@ -45,7 +66,9 @@ class Drama3GGUFGenerate:
         client.check_generation_capacity(config, target.rstrip("/"), max_tokens)
         reference = None
         if reference_audio is None and reference_text.strip():
-            raise ValueError("Connect reference_audio when providing reference_text. Use the Voice Clone workflow for cloning.")
+            raise ValueError("Plain TTS: leave reference_text empty; it is not a voice/gender selector. "
+                             "For cloning, connect reference_audio and enter its exact transcript. "
+                             "일반 TTS는 reference_text를 비우세요. 음성 복제에는 참조 녹음과 그 녹음의 실제 대사가 필요합니다.")
         if reference_audio is not None:
             waveform = reference_audio["waveform"]
             if waveform.ndim != 3 or waveform.shape[0] != 1:
@@ -61,7 +84,8 @@ class Drama3GGUFGenerate:
                                             url=target, model_id=model_id, reference=reference,
                                             interrupted=comfy.model_management.throw_exception_if_processing_interrupted,
                                             temperature=temperature, top_p=top_p, top_k=top_k)
-        return ({"waveform": torch.from_numpy(audio.T.copy()).unsqueeze(0), "sample_rate": sample_rate},)
+        output = {"waveform": torch.from_numpy(audio.T.copy()).unsqueeze(0), "sample_rate": sample_rate}
+        return {"ui": {"text": [audio_status(audio, sample_rate, max_tokens, top_k)]}, "result": (output,)}
 
 
 class Drama3GGUFClone(Drama3GGUFGenerate):
@@ -78,9 +102,12 @@ class Drama3GGUFClone(Drama3GGUFGenerate):
     DESCRIPTION = "Clone using one short speech reference and its exact transcript. Both are required; no unconditioned TTS fallback."
 
     def clone(self, reference_audio, reference_text, text, seed, max_seconds, server_url="", model_id="auto",
-              temperature=1.0, top_p=0.9, top_k=30):
-        if reference_audio is None or not reference_text.strip():
-            raise ValueError("Voice Clone requires reference_audio and the exact reference_text for that audio segment.")
+              temperature=1.0, top_p=0.9, top_k=client.DRAMA3_CANDIDATE_COUNT):
+        if reference_audio is None:
+            raise ValueError("Voice Clone: connect reference_audio from Load Audio / Trim Audio. 참조 음성을 연결하세요.")
+        if not reference_text.strip():
+            raise ValueError("Voice Clone: reference_text is empty. Enter the exact words spoken in the selected recording. "
+                             "참조 대사가 비어 있습니다. 선택한 녹음 구간에서 실제로 말한 대사를 입력하세요.")
         return self.generate(text, seed, max_seconds, reference_audio, reference_text, server_url, model_id,
                              temperature, top_p, top_k)
 

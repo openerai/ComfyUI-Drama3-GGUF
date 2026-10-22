@@ -5,7 +5,7 @@
 Generate speech in ComfyUI using a **Drama3-capable audio.cpp server** and a
 [Drama3 GGUF package](https://huggingface.co/Jmica/Drama-3-GGUF).
 Generation settings do not force a GPU model, RAM size, local path, or quantization.
-The Setup and Hardware notes list download options and suggested starting settings.
+The left-hand Models note lists downloads; detailed help starts collapsed.
 
 This is an HTTP bridge and an optional managed launcher. It does not implement
 the model itself. **A compatible audio.cpp executable and model are separate prerequisites.**
@@ -28,25 +28,42 @@ python -m pip install -r ComfyUI-Drama3-GGUF/requirements.txt
 
 Open `example_workflows/Drama3_GGUF_TTS.json` for text-to-speech, or
 `example_workflows/Drama3_GGUF_Voice_Clone.json` for reference voice cloning.
+Automatic reference transcription is the third example:
+`example_workflows/Drama3_GGUF_Voice_Clone_Auto_Transcript.json`.
+It uses this repository's unique ASR nodes and the optional native ASR source
+and converted model described in [portable installation](docs/portable_install.md).
+It does not use another extension's `Qwen3ASRLoader` or timestamp options.
+
+To check this installation and copy **all three** examples into ComfyUI's
+versioned workflow folder, run from `custom_nodes` with ComfyUI's Python:
+
+```sh
+python ComfyUI-Drama3-GGUF/check_install.py
+python ComfyUI-Drama3-GGUF/install_workflows.py
+```
+
+Restart ComfyUI, reload the frontend, then open **Drama3-GGUF-0.2.1** in Workflows.
+An already-open canvas keeps its previous values. The helper preserves user files.
+See the [cross-platform requirements, Desktop paths and ASR model formats](docs/portable_install.md)
+before installing on another machine. Only the Python checks are exercised across
+Windows/Linux/macOS; actual hardware/backend validation is listed separately.
+
 The node ID `Drama3GGUFGenerate` is retained for older local workflows.
 The example uses ComfyUI's built-in `SaveAudioAdvanced` node, verified with ComfyUI 0.41.0.
 
-Each example includes multilingual **Setup / 모델 다운로드·설치** and
-**Hardware / 사양별 설정·문제 해결** notes with model links, file sizes, storage paths,
-optional ASR dependencies and hardware guidance. The same text is available in the
-[model setup guide](docs/model_setup_KO.md). Hardware tiers are suggestions, not
-tested minimum requirements or a guarantee that a model fits.
+Each example has **one model-download panel on the left** and short execution steps.
+Choose one TTS GGUF; automatic transcription additionally needs one converted ASR file.
+The panel distinguishes locally exercised files from untested choices. See the
+[complete filenames, advanced profiles and validation scope](docs/model_downloads.md).
+File sizes are disk sizes, not RAM/VRAM requirements.
 
-The initial view also shows a left-hand **About: Drama3 GGUF** note with model
-links, a storage-folder tree, engine/configuration instructions and usage steps.
-See the same [start guide](docs/workflow_start_KO.md) outside ComfyUI.
-
-The supplied workflows use three columns: Start Here, execution nodes, and
-Setup/Hardware notes. **Guide language** at the top switches all marked notes
-between Korean, English, Japanese and Simplified Chinese; saving the workflow
-remembers that selection. Speech inputs and generation settings are unaffected. Edits to each language's
-guide body are retained. Unmarked personal notes are not translated.
-After updating this node, reopen the ComfyUI frontend to load the new control.
+Installation, controls and hardware notes start **collapsed**. Use **Toggle detailed help**
+at the top to expand or collapse them together; each note can also be opened individually.
+**Guide language** switches all marked notes between Korean, English, Japanese and
+Simplified Chinese. Saving remembers the language and collapsed state. Edits to each
+language's guide body are retained. Speech inputs and generation settings are unaffected.
+Unmarked personal notes are not translated. Reload the frontend after updating the node,
+then open the new versioned example to get the compact layout.
 English guides: [Start Here](docs/workflow_start_EN.md),
 [models/hardware](docs/model_setup_EN.md), [controls](docs/controls_EN.md).
 日本語: [はじめに](docs/workflow_start_JA.md)、[モデル・ハードウェア](docs/model_setup_JA.md)、
@@ -55,6 +72,31 @@ English guides: [Start Here](docs/workflow_start_EN.md),
 [表演与调节](docs/controls_ZH.md)。
 Older saved files show only the translations already embedded in them. Reopen
 an updated supplied workflow to access all four languages.
+
+## Quiet or silent output; upgrading to 0.1.11
+
+New nodes and examples use **Top K=4097**, covering all 4,096 semantic codes and
+end-of-speech. The [official demo's pinned source](https://huggingface.co/spaces/fishaudio/Drama-3/blob/c368729ab9347dda6635c5272ad31e6521114b79/server.py)
+reports silent takes with a top-k cap of 30 and uses all candidates instead.
+This setting reduces the reproduced failure; it is not a speech-quality guarantee.
+Existing saved workflows retain their values. Select 4097 explicitly or open an
+updated example. Do not set zero: this audio.cpp runtime requires a positive count.
+
+Generate Audio and Voice Clone display **Raw output check** after execution:
+duration, RMS level, peak, and notices for low signal or output matching the
+per-chunk budget. These describe the unprocessed audio, before Audio Controls.
+A completed request or a nonzero waveform does not prove intelligible speech.
+Listen to verify the words and ending. Normalization can amplify noise as well
+as speech; it remains optional and off in the supplied workflows.
+
+For plain TTS, leave `reference_text` empty. It is not a voice/gender selector.
+For Voice Clone, connect the recording and enter the words actually spoken in
+the selected segment. Errors now identify which reference input is missing.
+
+When updating managed mode, stop its server with `python run_server.py --stop`,
+then restart ComfyUI and reopen the frontend to load the new widget code.
+Private paths, memory limits and saved dialogue are not migrated automatically.
+See the [controlled reproduction and limits](docs/verification.md#sampling-and-output-diagnostics-0111).
 
 ## Choose how to run audio.cpp
 
@@ -229,7 +271,8 @@ Bridge code is MIT licensed. See [third-party notices](THIRD_PARTY_NOTICES.md) f
 
 The examples now include Script & Direction for optional bracket instructions and
 paired delivery tags, plus `temperature` / `top_p` / `top_k` on both generation nodes.
-Defaults remain 1.0 / 0.9 / 30. Audio Controls (Local) applies pitch-preserving tempo,
+New defaults are 1.0 / 0.9 / 4097 as of 0.1.11; saved values are preserved.
+Audio Controls (Local) applies pitch-preserving tempo,
 optional EBU R128 normalization, dB gain and a 0.98 peak limiter **after generation**.
 These controls are local processing, not native model speed or Fish cloud parity.
 
