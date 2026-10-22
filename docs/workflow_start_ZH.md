@@ -1,66 +1,29 @@
-# Drama3 GGUF · 使用入门
+# 需要下载的文件
 
-根据文本生成语音，或使用参考录音克隆声音。本工作流需要另行获取的 **支持 Drama3 的 audio.cpp 引擎和 GGUF 模型包**。
+**TTS：只选一个GGUF。**
 
-## 模型链接
+| 下载 | 磁盘大小 | 本项目验证 |
+| --- | ---: | --- |
+| [Q2 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | 实际推理已验证 |
+| [Q3 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | 未验证选项 |
+| [Q4 / Q4 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | 未验证选项 |
+| [Q4 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | 未验证选项 |
 
-**选择一个 GGUF 文件**即可。本流程不需要原始 TTS 检查点，也无需单独下载编解码器。
+**仅自动转写Clone：另加一个ASR文件。** 普通TTS和手动Clone不需要。
 
-- [Q2 experts / Q8 backbone · 15.88 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q2_K.gguf)
-- [Q3 experts / Q8 backbone · 18.93 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q3_K_S.gguf)
-- [Q4 experts / Q4 backbone · 21.78 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-4bit-experts-Q4_K_S.gguf)
-- [Q4 experts / Q8 backbone · 22.91 GiB](https://huggingface.co/Jmica/Drama-3-GGUF/blob/main/drama-3-backbone-8bit-experts-Q4_K_S.gguf)
+| 下载 | 磁盘大小 | 本项目验证 |
+| --- | ---: | --- |
+| [Qwen3-ASR 0.6B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_0.6b_bf16.safetensors) | 1.46 GiB | 实际推理已验证 |
+| [Qwen3-ASR 1.7B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_1.7b_bf16.safetensors) | 3.80 GiB | 未验证选项 |
 
-以上为磁盘文件大小，并非 RAM 或显存需求。初始配置建议请参阅 **Hardware** 说明。
+**存放位置**
+- GGUF → `models/drama3/`，在config.json的model_path中指定
+- ASR → `models/asr/`，在ASR Model (Local File)中选择
 
-## 模型存储位置
+ASR是**转换后的单个safetensors文件**，不要与其他扩展的原始HF文件夹加载器混用。
 
-建议按以下方式放置；也可以在 config.json 的 model_path 中指定其他目录。
+GiB是磁盘大小，并非RAM/VRAM需求。GGUF已含编解码器；兼容audio.cpp引擎需另行准备。
 
-```text
-ComfyUI/
-├─ models/
-│  ├─ drama3/
-│  │  └─ <selected-file>.gguf
-│  └─ asr/                     <- 仅供参考录音自动转写 Clone 使用
-│     └─ qwen3_asr_0.6b_bf16.safetensors
-└─ custom_nodes/
-   ├─ ComfyUI-Drama3-GGUF/
-   │  ├─ config.managed.example.json
-   │  └─ config.json           <- 当前安装环境的配置
-   └─ ComfyUI-Drama3/          <- 可选的 ASR 节点
-```
+[完整文件名、高级GGUF与哈希](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [模型与硬件](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_ZH.md)
 
-**不要在普通 Checkpoint Loader 中选择 GGUF。** 独立的 audio.cpp 服务器根据 model_path 加载模型。**Model ID=auto** 选择的是该服务器已注册的模型。
-
-## 引擎与配置
-
-1. 按[兼容后端指南](https://github.com/openerai/ComfyUI-Drama3-GGUF#obtain-a-compatible-backend)准备引擎。CPU、CUDA 等后端是否可用取决于构建版本。
-2. 仅在首次安装时，将 config.managed.example.json 复制为 config.json。已有配置请合并修改，不要直接覆盖。
-3. 设置 `mode=managed`、`executable=<engine-path>` 和 `backend=<supported-backend>`。采用上述目录时，model_path 为：
-
-```text
-../../models/drama3/<selected-file>.gguf
-```
-
-相对路径以 config.json 所在目录为基准。修改后，在节点目录使用 ComfyUI 的 Python 执行 `python run_server.py --stop`；下次请求会启动采用新配置的服务器。使用外部服务器时，设置 **Server URL**，并在服务器端安装、注册模型。
-
-## 使用方法
-
-1. **TTS：** 若有 Script & Direction，在该节点输入新台词；基础版则直接填写 Generate / Voice Clone 的 New speech text。
-2. **Clone：** 在 Load Reference Audio 选择录音，裁剪出清晰片段，并在 Reference transcript 中**准确填写该片段实际说出的内容**。
-3. **仅自动转写 Clone：** 从 [ASR 模型文件](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/tree/main)下载上述 0.6B 文件（约 1.6 GB），安装 [Qwen3-ASR 节点](https://github.com/PedroMarinhoDev/ComfyUI-Drama3)。选择 ASR Model，然后对 Reference Transcript 使用 **Run Branch** 检查识别结果。
-4. 若有 Direction，在其中填写情绪和说话方式。基础版可在新台词前添加 `[friendly delivery]` 等方括号指示。参考转写中不要加入表演指示。点击 **Run**，然后试听、保存输出。
-5. Controls 版还可在生成后调整速度、增益和响度。FFmpeg 要求及情绪示例请参阅 **Guide**。
-
-长文本、上下文、内存设置见 **Hardware**，完整安装步骤见 **Setup**。[模型与硬件指南](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_ZH.md)
-
-核查日期：2026-10-18。硬件建议只是起点，不保证在所有系统上均可运行。
-
-## 输出检查 · 0.1.11
-普通TTS请将 reference_text 留空；它不是声音或性别选择栏。Voice Clone需填写所选参考录音中实际说出的台词。新默认值 Top K=4097 包含结束标记和全部语义候选。旧文件保存的30等值不会自动更改。生成后查看 Raw output check 中的时长、音量和可能达到预算的提示，并试听确认台词和结尾。放大静音或噪声不能修复生成。
-
-
-## 0.2.0 安装检查与ASR格式
-上述四个GGUF是TTS候选，本项目仅对Q2进行了实际推理验证。Qwen3-ASR是独立的转写模型。请把转换后的单文件 `qwen3_asr_0.6b_bf16.safetensors` 放入 `models/asr`，并在 **Drama3 GGUF · ASR Model (Local File)** 中选择。不要与其他扩展的原始HF模型文件夹加载器混用。使用独立节点 `Drama3GGUFASRLoader` → `Drama3GGUFASRTranscribe`，无需时间戳或ForcedAligner。
-自动转写还需要固定版本的ComfyUI-Drama3原生ASR源码，无需直接修改外部节点。按[安装步骤](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)准备，然后用ComfyUI的Python执行 `python check_install.py` 和 `python install_workflows.py`。三种示例会复制到 **Drama3-GGUF-0.2.0**。自定义位置用 --comfy-root 或 --workflow-dir 指定。重启并刷新界面后重新打开复制的文件。仅更新文件不会改变已打开画面中的Top K=30，新示例使用4097。请试听确认生成的语音。
+点击上方 **展开/收起详细说明** 查看安装、表演和内存说明。

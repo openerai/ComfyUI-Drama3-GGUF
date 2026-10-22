@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { guideLanguages, restoreGuideLanguage, setGuideLanguage } from "../web/guide-language.js";
+import { runInNewContext } from "node:vm";
+import { detailGuideNodes, guideLanguages, restoreGuideLanguage, setGuideDetails,
+    setGuideLanguage } from "../web/guide-language.js";
 
 function note(role = "setup") {
     return {type: "MarkdownNote", title: "한국어 제목", widgets: [{name: "text", value: "한국어 설명"}],
@@ -111,4 +113,101 @@ test("distributed workflow notes contain all four languages and localized guide 
         assert.ok(about.translations.ja.text.includes("docs/model_setup_JA.md"));
         assert.ok(about.translations.zh.text.includes("docs/model_setup_ZH.md"));
     }
+});
+
+function detailNote(collapsed = true) {
+    const node = note();
+    node.properties.drama3Guide.detail = true;
+    node.flags = {collapsed};
+    // Native LiteGraph collapse(force) toggles; force bypasses collapsible permission.
+    node.collapse = function(force) {
+        assert.equal(force, true);
+        this.flags.collapsed = !this.flags.collapsed;
+    };
+    return node;
+}
+
+test("details toggle only marked help and accept mixed or repeated target states", () => {
+    const first = detailNote(), second = detailNote(false);
+    const ordinary = note("about"), speech = {type: "Drama3GGUFGenerate", flags: {}, widgets: ["My dialogue"]};
+    const before = JSON.stringify([ordinary, speech]);
+    const graph = {_nodes: [first, second, ordinary, speech]};
+    assert.equal(detailGuideNodes(graph).length, 2);
+    for (const expanded of [true, true, false, false, true]) {
+        setGuideDetails(graph, expanded);
+        assert.equal(first.flags.collapsed, !expanded);
+        assert.equal(second.flags.collapsed, !expanded);
+    }
+    assert.equal(JSON.stringify([ordinary, speech]), before);
+});
+
+test("saved fold state survives language switching and restoring", () => {
+    const graph = {_nodes: [detailNote(), detailNote(false)]};
+    setGuideLanguage(graph, "ja");
+    const saved = JSON.parse(JSON.stringify(graph));
+    restoreGuideLanguage(saved);
+    assert.deepEqual(saved._nodes.map(node => node.flags.collapsed), [true, false]);
+    assert.ok(saved._nodes.every(node => node.properties.drama3Guide.locale === "ja"));
+});
+
+test("examples have one download panel, short steps and three folded details", () => {
+    const catalog = JSON.parse(readFileSync(new URL("../model_catalog.json", import.meta.url)));
+    for (const name of ["TTS", "Voice_Clone", "Voice_Clone_Auto_Transcript"]) {
+        const workflow = JSON.parse(readFileSync(new URL(`../example_workflows/Drama3_GGUF_${name}.json`, import.meta.url)));
+        const notes = workflow.nodes.filter(node => node.properties?.drama3Guide);
+        const details = notes.filter(node => node.properties.drama3Guide.detail);
+        assert.deepEqual(details.map(node => node.properties.drama3Guide.role).sort(), ["guide", "hardware", "setup"]);
+        assert.ok(details.every(node => node.flags.collapsed === true));
+        for (const node of notes) {
+            const guide = node.properties.drama3Guide;
+            if (!guide.detail) assert.equal(Boolean(node.flags.collapsed), false);
+            for (const translation of Object.values(guide.translations)) {
+                if (guide.role === "workflow") assert.ok(translation.text.length < 900);
+                const links = [...translation.text.matchAll(/https:\/\/huggingface\.co\/[^\s)]+\.(?:gguf|safetensors)/g)];
+                if (guide.role === "about") assert.equal(links.length, 6);
+                else assert.equal(links.length, 0, `duplicate download links in ${guide.role}`);
+                for (const [url] of links) {
+                    assert.ok(catalog.models.some(model => url.includes(model.revision) && url.endsWith(model.filename)));
+                }
+            }
+        }
+    }
+});
+
+test("toolbar toggles details, localizes and hides controls for older graphs", () => {
+    function element(tag) {
+        return {tag, style: {}, events: {}, children: [], attributes: {},
+            setAttribute(name, value) {this.attributes[name] = value;},
+            addEventListener(name, callback) {this.events[name] = callback;},
+            append(...children) {this.children.push(...children);},
+            replaceChildren(...children) {this.children = children;}};
+    }
+    const document = {createElement: element, body: element("body")};
+    let extension;
+    const app = {rootGraph: {_nodes: [note("about"), detailNote()]},
+        registerExtension(value) {extension = value;}};
+    const source = readFileSync(new URL("../web/guide-controls.js", import.meta.url), "utf8")
+        .replace(/import[\s\S]*?from\s+"[^"\n]+";/g, "");
+    runInNewContext(source, {app, document, guideLanguages, detailGuideNodes,
+        guideNodes: graph => graph._nodes.filter(node => node.properties?.drama3Guide),
+        restoreGuideLanguage, setGuideLanguage, setGuideDetails});
+    extension.setup();
+    const toolbar = document.body.children[0];
+    const [, select, button] = toolbar.children;
+    assert.equal(button.hidden, false);
+    assert.match(button.textContent, /자세한 설명/);
+    const event = {stopPropagation() {}};
+    button.events.click(event);
+    assert.equal(app.rootGraph._nodes[1].flags.collapsed, false);
+    button.events.click(event);
+    assert.equal(app.rootGraph._nodes[1].flags.collapsed, true);
+    select.value = "en";
+    select.events.change(event);
+    assert.equal(button.textContent, "Toggle detailed help");
+    app.rootGraph = {_nodes: [note()]};
+    extension.afterConfigureGraph();
+    assert.equal(button.hidden, true);
+    app.rootGraph = {_nodes: []};
+    extension.afterConfigureGraph();
+    assert.equal(toolbar.style.display, "none");
 });

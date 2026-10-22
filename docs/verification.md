@@ -574,3 +574,26 @@ JavaScript tests, Ruff and whitespace checks. The existing CI runs portable
 client/helper tests on Windows, Linux and macOS; these are not hardware inference
 tests. No new browser visual-inspection claim is made. The independent review's
 dependency-check finding was repaired and covered by the -S regression test.
+
+## Compact workflow help and model catalogue (0.2.1)
+
+On 2026-10-22, the workflow download list was consolidated into one left-hand
+panel. Quick steps remain open; installation, controls and hardware notes start
+collapsed. The toolbar toggles the three detail notes through LiteGraph's native
+collapse method. Language changes preserve saved fold state and edited help.
+All three examples' execution nodes and links are identical to commit 73e855f;
+this update changes guidance and presentation, not inference settings.
+
+The catalogue now records all six GGUF and both converted ASR files found in the
+revision-pinned source metadata. Only Q2 and ASR 0.6B carry local-inference status.
+The other files have metadata-only status; the two advanced F32-router profiles
+have not been tested with the pinned engine. Their availability is not a runtime
+compatibility or quality claim. Exact files, bytes and hashes are in model_catalog.json.
+
+Local validation passed 51 Python tests including FFmpeg, 16 JavaScript tests,
+Ruff and whitespace checks. New tests cover native toggle semantics, mixed fold
+states, saved state, toolbar callbacks and localization, and download links being
+present only in the single model panel. Browser/computer-use tools failed during
+initialization on this Windows host, so no visual browser inspection is claimed.
+The earlier 0.2.0 audio integration results still apply to the unchanged inference
+code; no additional hardware/backend inference validation was added in 0.2.1.

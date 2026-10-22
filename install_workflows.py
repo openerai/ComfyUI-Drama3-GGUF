@@ -32,10 +32,10 @@ def install(destination):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--comfy-root", help="ComfyUI installation, not the Desktop application's executable folder")
-    parser.add_argument("--workflow-dir", help="Custom user/workflow destination; default is user/default/workflows/Drama3-GGUF-0.2.0")
+    parser.add_argument("--workflow-dir", help="Custom user/workflow destination; default is user/default/workflows/Drama3-GGUF-0.2.1")
     args = parser.parse_args()
     destination = Path(args.workflow_dir).expanduser() if args.workflow_dir else (
-        comfy_root(args.comfy_root) / "user/default/workflows/Drama3-GGUF-0.2.0")
+        comfy_root(args.comfy_root) / "user/default/workflows/Drama3-GGUF-0.2.1")
     for action, path in install(destination):
         print(f"{action}: {path}")
     print("Refresh ComfyUI and OPEN a copied workflow. An already-open canvas keeps its old settings.")

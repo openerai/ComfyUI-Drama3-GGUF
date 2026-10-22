@@ -5,7 +5,7 @@
 Generate speech in ComfyUI using a **Drama3-capable audio.cpp server** and a
 [Drama3 GGUF package](https://huggingface.co/Jmica/Drama-3-GGUF).
 Generation settings do not force a GPU model, RAM size, local path, or quantization.
-The Setup and Hardware notes list download options and suggested starting settings.
+The left-hand Models note lists downloads; detailed help starts collapsed.
 
 This is an HTTP bridge and an optional managed launcher. It does not implement
 the model itself. **A compatible audio.cpp executable and model are separate prerequisites.**
@@ -42,7 +42,7 @@ python ComfyUI-Drama3-GGUF/check_install.py
 python ComfyUI-Drama3-GGUF/install_workflows.py
 ```
 
-Restart ComfyUI, reload the frontend, then open **Drama3-GGUF-0.2.0** in Workflows.
+Restart ComfyUI, reload the frontend, then open **Drama3-GGUF-0.2.1** in Workflows.
 An already-open canvas keeps its previous values. The helper preserves user files.
 See the [cross-platform requirements, Desktop paths and ASR model formats](docs/portable_install.md)
 before installing on another machine. Only the Python checks are exercised across
@@ -51,22 +51,19 @@ Windows/Linux/macOS; actual hardware/backend validation is listed separately.
 The node ID `Drama3GGUFGenerate` is retained for older local workflows.
 The example uses ComfyUI's built-in `SaveAudioAdvanced` node, verified with ComfyUI 0.41.0.
 
-Each example includes multilingual **Setup / 모델 다운로드·설치** and
-**Hardware / 사양별 설정·문제 해결** notes with model links, file sizes, storage paths,
-optional ASR dependencies and hardware guidance. The same text is available in the
-[model setup guide](docs/model_setup_KO.md). Hardware tiers are suggestions, not
-tested minimum requirements or a guarantee that a model fits.
+Each example has **one model-download panel on the left** and short execution steps.
+Choose one TTS GGUF; automatic transcription additionally needs one converted ASR file.
+The panel distinguishes locally exercised files from untested choices. See the
+[complete filenames, advanced profiles and validation scope](docs/model_downloads.md).
+File sizes are disk sizes, not RAM/VRAM requirements.
 
-The initial view also shows a left-hand **About: Drama3 GGUF** note with model
-links, a storage-folder tree, engine/configuration instructions and usage steps.
-See the same [start guide](docs/workflow_start_KO.md) outside ComfyUI.
-
-The supplied workflows use three columns: Start Here, execution nodes, and
-Setup/Hardware notes. **Guide language** at the top switches all marked notes
-between Korean, English, Japanese and Simplified Chinese; saving the workflow
-remembers that selection. Speech inputs and generation settings are unaffected. Edits to each language's
-guide body are retained. Unmarked personal notes are not translated.
-After updating this node, reopen the ComfyUI frontend to load the new control.
+Installation, controls and hardware notes start **collapsed**. Use **Toggle detailed help**
+at the top to expand or collapse them together; each note can also be opened individually.
+**Guide language** switches all marked notes between Korean, English, Japanese and
+Simplified Chinese. Saving remembers the language and collapsed state. Edits to each
+language's guide body are retained. Speech inputs and generation settings are unaffected.
+Unmarked personal notes are not translated. Reload the frontend after updating the node,
+then open the new versioned example to get the compact layout.
 English guides: [Start Here](docs/workflow_start_EN.md),
 [models/hardware](docs/model_setup_EN.md), [controls](docs/controls_EN.md).
 日本語: [はじめに](docs/workflow_start_JA.md)、[モデル・ハードウェア](docs/model_setup_JA.md)、
