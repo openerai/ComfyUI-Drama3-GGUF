@@ -31,13 +31,13 @@
 
 以下は **設定の出発点の提案であり、最低要件や動作保証ではありません**。組み合わせの多くは本プロジェクトで実測していません。空きメモリ、他のアプリ、バックエンド、OS、参照音声の長さ、コンテキストが影響します。
 
-| 環境 | 試す際の候補 |
+| PCの構成 | どこから試すか |
 | --- | --- |
-| RAM 約 16 GB / VRAM 8 GB 以下 | 未検証で、Q2 でも収まらない場合があります。下記の固定 GPU 重みに注意し、CPU または外部サーバーを検討してください。 |
-| RAM 約 32 GB / VRAM 8–12 GB | Q2 が最小の候補です。disk experts、cache=8、pin_experts=false から始め、空きメモリを監視します。 |
-| RAM 32–64 GB / VRAM 約 16 GB | ファイル容量だけで判断せず、ピークメモリを実測して Q3/Q8 と Q4/Q4 を比較します。 |
-| RAM 64 GB 以上 / VRAM 24 GB 以上 | Q4/Q8 も候補です。余裕を実測してからキャッシュやコンテキストを増やします。 |
-| CPU / その他の GPU バックエンド | CPU・Metal・Vulkan ビルドの Drama3 対応を確認してください。CUDA の設定をそのままコピーしないでください。統合メモリは CPU と GPU で共有します。 |
+| RAM 16 GB以下 / VRAM 8 GB以下 | この構成では未検証です。Q2でも不足する可能性があり、外部サーバーを先に検討します。 |
+| RAM 32 GB以上 / VRAM 8–12 GB | Q2と短い通常TTSから開始。CPUエキスパートオフロードとstreamingを検討し、RAM・VRAMを測定。8 GBでの実行は未確認です。 |
+| RAM 32–64 GB以上 / VRAM 16 GB | Q2から開始し、音声複製のピークも確認。余裕があればQ3・Q4を比較します。 |
+| RAM 64 GB以上 / VRAM 24 GB以上 | Q3・Q4の比較候補です。長い文脈や参照もメモリを使うため、短い入力から確認します。 |
+| CPU / Apple統合メモリ / その他GPU | 対応ビルドのDrama3サポートが必要です。CUDA設定を流用しません。本プロジェクトでは実推論未検証です。 |
 
 実際の長文テストでは、**RAM 32 GB、VRAM 12 GB の Windows CUDA 環境1台で、streaming モードの Q2 TTS を使い 74.7 秒の音声**を生成しました。すべての環境や長文 Clone の動作を確認したものではありません。[実行記録](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md)
 
@@ -66,6 +66,6 @@ private commit と常駐 RAM は異なる上限です。上限は各環境で設
 出典: [検証記録](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md)、[固定バージョンの audio.cpp ガイド](https://github.com/0xShug0/audio.cpp/blob/ace630deedf60b9c2ff7ec2277a9cdfb1f37f69f/docs/models/fish_drama3.md)、[公開元の検証範囲](https://huggingface.co/Jmica/Drama-3-GGUF#validation-limits)。容量の確認日: 2026-10-18。今後変更される場合があります。
 
 
-## 0.2.1 導入確認とASR形式
+## 0.2.2 導入確認とASR形式
 上の4つのGGUFはTTSの候補で、このプロジェクトで実際に推論を確認したのはQ2だけです。Qwen3-ASRは別の文字起こしモデルです。変換済み単一ファイル `qwen3_asr_0.6b_bf16.safetensors` を `models/asr` に置き、**Drama3 GGUF · ASR Model (Local File)** で選択します。他の拡張の元HFモデルフォルダー用ローダーと混用しないでください。固有ノード `Drama3GGUFASRLoader` → `Drama3GGUFASRTranscribe` を使います。タイムスタンプとForcedAlignerは不要です。
-自動文字起こしには固定版ComfyUI-Drama3のネイティブASRソースも必要です。外部ノードの直接修正は不要です。[導入手順](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)に従い、ComfyUIのPythonで `python check_install.py` と `python install_workflows.py` を実行します。3つの例が **Drama3-GGUF-0.2.1** にコピーされます。独自の場所は --comfy-root または --workflow-dir で指定します。再起動・画面更新後にコピーしたファイルを開き直してください。開いたままのTop K=30はファイル更新だけでは変わりません。新しい例は4097です。音声は実際に聞いて確認します。
+自動文字起こしには固定版ComfyUI-Drama3のネイティブASRソースも必要です。外部ノードの直接修正は不要です。[導入手順](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)に従い、ComfyUIのPythonで `python check_install.py` と `python install_workflows.py` を実行します。3つの例が **Drama3-GGUF-0.2.2** にコピーされます。独自の場所は --comfy-root または --workflow-dir で指定します。再起動・画面更新後にコピーしたファイルを開き直してください。開いたままのTop K=30はファイル更新だけでは変わりません。新しい例は4097です。音声は実際に聞いて確認します。

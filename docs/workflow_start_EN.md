@@ -1,4 +1,7 @@
-# Files to download
+# Models for this audio.cpp setup
+
+These are Jmica packages. Other Drama-3 GGUFs may require a different engine or patch.
+
 
 **TTS: download ONE GGUF.**
 
@@ -26,4 +29,4 @@ GiB means disk size, not RAM/VRAM requirements. The GGUF embeds its codec; a com
 
 [Full filenames, advanced GGUFs and hashes](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [Model/hardware guide](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_EN.md)
 
-Use **Toggle detailed help** above for installation, acting and memory notes.
+Use **Toggle detailed help** above for hardware profiles, acting and memory notes.

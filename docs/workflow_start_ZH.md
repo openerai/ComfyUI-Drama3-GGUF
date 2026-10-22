@@ -1,4 +1,7 @@
-# 需要下载的文件
+# 当前audio.cpp适用模型
+
+本列表为Jmica发行版；其他Drama-3 GGUF可能需要不同引擎或补丁。
+
 
 **TTS：只选一个GGUF。**
 
@@ -26,4 +29,4 @@ GiB是磁盘大小，并非RAM/VRAM需求。GGUF已含编解码器；兼容audio
 
 [完整文件名、高级GGUF与哈希](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [模型与硬件](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_ZH.md)
 
-点击上方 **展开/收起详细说明** 查看安装、表演和内存说明。
+点击上方 **展开/收起详细说明** 查看电脑配置、表演和内存说明。

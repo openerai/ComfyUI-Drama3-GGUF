@@ -597,3 +597,27 @@ present only in the single model panel. Browser/computer-use tools failed during
 initialization on this Windows host, so no visual browser inspection is claimed.
 The earlier 0.2.0 audio integration results still apply to the unchanged inference
 code; no additional hardware/backend inference validation was added in 0.2.1.
+
+## Hardware profiles and compact workflow columns (0.2.2)
+
+The installation/path note is replaced by a four-language RAM/VRAM guide.
+It separates resource-dependent starting suggestions from actual Q2 runs,
+including the earlier 32 GB RAM / 12 GB VRAM TTS record and the 128 GB RAM /
+RTX 5070 Ti 16 GB integration checks above. It does not certify those tiers,
+Q3/Q4 execution, other backends or exact speech quality. Installation commands
+and paths remain in portable_install.md. The model panel explicitly describes
+Jmica packages for this audio.cpp setup rather than all Drama3 GGUF formats.
+
+The three examples place models on the left, references and quick steps in the
+middle, the script beside them and Generate/Audio Controls/Save on the right.
+Three narrow collapsed help notes are stacked below quick steps. Opt-in stack
+metadata lets native collapse callbacks reposition the same-column help notes
+without moving execution nodes, older unmarked notes or guides moved to another
+column. Loading a saved graph does not reset its saved positions or fold state.
+
+The execution inputs and links match 0.2.1 exactly; only positions/sizes and
+guide content/metadata change. Validation includes 19 JavaScript tests covering
+individual/global toggles, resized notes, save/restore and non-overlapping node
+bounds in both folded and fully expanded examples. Browser tool initialization
+still fails on this host, so actual frontend rendering is not visually verified.
+No additional inference run or hardware certification is claimed for this layout update.

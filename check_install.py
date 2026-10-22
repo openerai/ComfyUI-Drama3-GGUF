@@ -19,7 +19,7 @@ def check_workflow(path):
         if kind in {"Drama3GGUFGenerate", "Drama3GGUFClone"} and len(values) >= 10 and values[-1] != 4097:
             issues.append(f"Node {node['id']}: saved Top K={values[-1]}; use 4097 for the reproduced silence issue.")
         if kind in {"Qwen3ASRLoader", "Qwen3ASRTranscribe", "Drama3Qwen3ASRLoader", "Drama3Qwen3ASRTranscribe"}:
-            issues.append(f"Node {node['id']}: old ASR ID {kind}; open the 0.2.1 automatic-transcription example.")
+            issues.append(f"Node {node['id']}: old ASR ID {kind}; open the 0.2.2 automatic-transcription example.")
     return issues
 
 

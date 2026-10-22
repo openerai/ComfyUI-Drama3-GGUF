@@ -1,4 +1,7 @@
-# ダウンロードするファイル
+# 現在のaudio.cpp用モデル
+
+Jmica配布版の一覧です。他のDrama-3 GGUFには別エンジンやパッチが必要な場合があります。
+
 
 **TTS：GGUFを1つだけ選びます。**
 
@@ -26,4 +29,4 @@ GiBはディスク容量で、RAM・VRAM要件ではありません。GGUFには
 
 [全ファイル名・高度なGGUF・ハッシュ](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [モデル・仕様](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_JA.md)
 
-上の **詳しい説明を開閉** で導入・演技・メモリ説明を表示できます。
+上の **詳しい説明を開閉** でPCスペック・演技・メモリ説明を表示できます。

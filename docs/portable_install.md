@@ -1,4 +1,4 @@
-# Portable installation · 범용 설치 (0.2.1)
+# Portable installation · 범용 설치 (0.2.2)
 
 The Python bridge is tested on Windows, Linux and macOS. Actual audio inference
 is verified on the Windows CUDA systems recorded in [verification.md](verification.md).
@@ -40,7 +40,7 @@ Only Q2 has this project's actual TTS inference validation; the other three rema
 documented choices, not equally tested recommendations. The [complete download list](model_downloads.md)
 also includes two advanced GGUF profiles whose compatibility with the pinned runtime
 is unverified, plus both converted ASR sizes. The workflow keeps download links in
-one left-hand panel. Installation, controls and hardware notes start collapsed;
+one left-hand panel. Hardware profiles, controls and memory notes start collapsed;
 use **Toggle detailed help** at the top to open them.
 
 For managed mode copy `config.managed.example.json` to `config.json` only on a
@@ -109,9 +109,9 @@ checks `/v1/models`. `--workflow /path/to/file.json` detects saved old Top K and
 ASR node IDs. Passing checks is not proof of intelligible speech or sufficient GPU memory.
 
 The copy command installs **all three** examples into
-`user/default/workflows/Drama3-GGUF-0.2.1`: TTS, manual Clone, automatic-transcript
+`user/default/workflows/Drama3-GGUF-0.2.2`: TTS, manual Clone, automatic-transcript
 Clone. It preserves existing files. For custom/multi-user storage pass
-`--workflow-dir /path/to/user/workflows/Drama3-GGUF-0.2.1` instead.
+`--workflow-dir /path/to/user/workflows/Drama3-GGUF-0.2.2` instead.
 
 **Restart ComfyUI, reload the frontend, then OPEN the versioned example.** Updating
 a file does not update an already-open canvas. New examples use Top K=4097 and
@@ -136,7 +136,7 @@ audio-quality score.
 
 실제 ComfyUI를 실행하는 Python으로 `check_install.py`를 실행하고,
 `install_workflows.py`로 TTS·수동 복제·자동 받아쓰기 복제 세 파일을 모두 복사하세요.
-ComfyUI 재시작·화면 새로고침 후 **Drama3-GGUF-0.2.1 폴더의 파일을 새로 열어야** 합니다.
+ComfyUI 재시작·화면 새로고침 후 **Drama3-GGUF-0.2.2 폴더의 파일을 새로 열어야** 합니다.
 열려 있던 이전 화면은 자동 변경되지 않습니다. 개인 모델 경로·메모리 설정은 config.json,
 공유 ASR 경로는 extra_model_paths.yaml에 둡니다. 자동 다운로드·드라이버 교체·다른 확장
 비활성화는 하지 않습니다. 다른 운영체제의 Python 검사 통과와 해당 장비의 실제 추론 검증은 구분합니다.

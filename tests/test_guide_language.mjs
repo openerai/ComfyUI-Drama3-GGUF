@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { runInNewContext } from "node:vm";
-import { detailGuideNodes, guideLanguages, restoreGuideLanguage, setGuideDetails,
+import { detailGuideNodes, guideLanguages, installGuideDetailStack, restoreGuideLanguage, setGuideDetails,
     setGuideLanguage } from "../web/guide-language.js";
 
 function note(role = "setup") {
@@ -156,7 +156,7 @@ test("examples have one download panel, short steps and three folded details", (
         const workflow = JSON.parse(readFileSync(new URL(`../example_workflows/Drama3_GGUF_${name}.json`, import.meta.url)));
         const notes = workflow.nodes.filter(node => node.properties?.drama3Guide);
         const details = notes.filter(node => node.properties.drama3Guide.detail);
-        assert.deepEqual(details.map(node => node.properties.drama3Guide.role).sort(), ["guide", "hardware", "setup"]);
+        assert.deepEqual(details.map(node => node.properties.drama3Guide.role).sort(), ["guide", "hardware", "specs"]);
         assert.ok(details.every(node => node.flags.collapsed === true));
         for (const node of notes) {
             const guide = node.properties.drama3Guide;
@@ -190,7 +190,7 @@ test("toolbar toggles details, localizes and hides controls for older graphs", (
         .replace(/import[\s\S]*?from\s+"[^"\n]+";/g, "");
     runInNewContext(source, {app, document, guideLanguages, detailGuideNodes,
         guideNodes: graph => graph._nodes.filter(node => node.properties?.drama3Guide),
-        restoreGuideLanguage, setGuideLanguage, setGuideDetails});
+        installGuideDetailStack, restoreGuideLanguage, setGuideLanguage, setGuideDetails});
     extension.setup();
     const toolbar = document.body.children[0];
     const [, select, button] = toolbar.children;
@@ -210,4 +210,94 @@ test("toolbar toggles details, localizes and hides controls for older graphs", (
     app.rootGraph = {_nodes: []};
     extension.afterConfigureGraph();
     assert.equal(toolbar.style.display, "none");
+});
+
+function stackedNotes() {
+    return [0, 1, 2].map(order => {
+        const node = detailNote();
+        Object.assign(node.properties.drama3Guide, {stack: "help", stackOrder: order});
+        node.pos = [900, 1200 + order * 70];
+        node.size = [420, 500 + order * 100];
+        return node;
+    });
+}
+
+test("opening stacked help moves later notes down and closing restores the compact column", () => {
+    const nodes = stackedNotes();
+    const script = {type: "Drama3GGUFScript", pos: [1370, 940], widgets_values: ["Keep speech"]};
+    const before = JSON.stringify(script);
+    const graph = {_nodes: [...nodes, script]};
+    installGuideDetailStack(graph);
+    const wrapped = nodes[0].collapse;
+    installGuideDetailStack(graph);
+    assert.equal(nodes[0].collapse, wrapped, "must not wrap a note twice");
+    nodes[0].collapse(true);
+    assert.deepEqual(nodes.map(node => node.pos[1]), [1200, 1770, 1840]);
+    nodes[1].collapse(true);
+    assert.deepEqual(nodes.map(node => node.pos[1]), [1200, 1770, 2440]);
+    // A resized open note must leave the remaining column at the correct spacing.
+    nodes[1].size[1] = 800;
+    setGuideDetails(graph, true);
+    assert.deepEqual(nodes.map(node => node.pos[1]), [1200, 1770, 2640]);
+    setGuideDetails(graph, false);
+    assert.deepEqual(nodes.map(node => node.pos[1]), [1200, 1270, 1340]);
+    assert.equal(JSON.stringify(script), before);
+});
+
+test("stacking respects moved columns and saved expanded positions without changing old notes", () => {
+    const nodes = stackedNotes();
+    const old = detailNote();
+    old.pos = [900, 1500];
+    const moved = nodes[2];
+    moved.pos = [2500, 2000];
+    const graph = {_nodes: [...nodes, old]};
+    installGuideDetailStack(graph);
+    setGuideDetails(graph, true);
+    assert.deepEqual(moved.pos, [2500, 2000]);
+    assert.deepEqual(old.pos, [900, 1500]);
+    const saved = JSON.parse(JSON.stringify(graph));
+    restoreGuideLanguage(saved);
+    installGuideDetailStack(saved);
+    assert.deepEqual(saved._nodes.map(node => node.pos), graph._nodes.map(node => node.pos));
+});
+
+test("all examples keep the requested columns with three stacked guides below quick steps", () => {
+    for (const name of ["TTS", "Voice_Clone", "Voice_Clone_Auto_Transcript"]) {
+        const workflow = JSON.parse(readFileSync(new URL(`../example_workflows/Drama3_GGUF_${name}.json`, import.meta.url)));
+        const node = id => workflow.nodes.find(node => node.id === id);
+        assert.ok(node(25).pos[0] + node(25).size[0] < node(3).pos[0]);
+        assert.ok(node(3).pos[1] + node(3).size[1] < node(24).pos[1]);
+        assert.ok(node(24).pos[1] < node(23).pos[1] && node(23).pos[1] < node(22).pos[1]);
+        for (const [order, id] of [24, 23, 22].entries()) {
+            assert.equal(node(id).properties.drama3Guide.stackOrder, order);
+            assert.ok(node(id).pos[0] + node(id).size[0] < node(20).pos[0] || name === "TTS");
+        }
+        assert.ok(node(20).pos[0] + node(20).size[0] < node(1).pos[0]);
+        assert.equal(node(1).pos[0], node(21).pos[0]);
+        assert.equal(node(1).pos[0], node(2).pos[0]);
+        assert.ok(node(1).pos[1] + node(1).size[1] < node(21).pos[1]);
+        assert.ok(node(21).pos[1] + node(21).size[1] < node(2).pos[1]);
+        for (const translation of Object.values(node(23).properties.drama3Guide.translations)) {
+            for (const required of ["16 GB", "32 GB", "64 GB", "128 GB", "74.7", "Q2", "Q3", "Q4"]) {
+                assert.ok(translation.text.includes(required));
+            }
+        }
+        for (const note of workflow.nodes.filter(node => node.type === "MarkdownNote")) {
+            note.collapse = function() {this.flags.collapsed = !this.flags.collapsed;};
+        }
+        const graph = {_nodes: workflow.nodes};
+        installGuideDetailStack(graph);
+        for (const expanded of [false, true]) {
+            setGuideDetails(graph, expanded);
+            const bounds = workflow.nodes.map(node => ({id: node.id, x: node.pos[0], y: node.pos[1] - 30,
+                w: node.size[0], h: (node.flags?.collapsed ? 0 : node.size[1]) + 30}));
+            for (let i = 0; i < bounds.length; i++) {
+                for (const b of bounds.slice(i + 1)) {
+                    const a = bounds[i];
+                    assert.ok(a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y,
+                        `${name}: overlapping ${a.id}/${b.id}, expanded=${expanded}`);
+                }
+            }
+        }
+    }
 });

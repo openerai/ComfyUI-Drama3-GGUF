@@ -17,6 +17,39 @@ export function detailGuideNodes(graph) {
     return guideNodes(graph).filter(node => node.properties.drama3Guide.detail === true);
 }
 
+const stackedCollapse = Symbol("drama3StackedCollapse");
+
+function arrangeDetailStack(graph, anchor) {
+    const group = anchor.properties.drama3Guide.stack;
+    // Only the supplied help column opts in. A note moved to another column stays there.
+    const nodes = detailGuideNodes(graph).filter(node => node.properties.drama3Guide.stack === group
+        && Math.abs(node.pos[0] - anchor.pos[0]) < 1)
+        .sort((a, b) => a.properties.drama3Guide.stackOrder - b.properties.drama3Guide.stackOrder);
+    let y = nodes[0].pos[1];
+    for (const node of nodes) {
+        node.pos = [node.pos[0], y];
+        // The title bar exists in both states; opening adds the note's body height.
+        y += (node.flags?.collapsed ? 0 : node.size[1]) + 70;
+        node.setDirtyCanvas?.(true, true);
+    }
+}
+
+export function installGuideDetailStack(graph) {
+    for (const node of detailGuideNodes(graph)) {
+        const guide = node.properties.drama3Guide;
+        if (!guide.stack || !Number.isFinite(guide.stackOrder) || node[stackedCollapse]
+            || typeof node.collapse !== "function") continue;
+        const collapse = node.collapse;
+        node.collapse = function(...args) {
+            const before = Boolean(this.flags?.collapsed);
+            const result = collapse.apply(this, args);
+            if (before !== Boolean(this.flags?.collapsed)) arrangeDetailStack(this.graph ?? graph, this);
+            return result;
+        };
+        node[stackedCollapse] = true;
+    }
+}
+
 export function setGuideDetails(graph, expanded) {
     graph.beforeChange?.();
     for (const node of detailGuideNodes(graph)) {
