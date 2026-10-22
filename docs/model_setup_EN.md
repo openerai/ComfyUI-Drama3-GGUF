@@ -31,13 +31,13 @@ Sources: [GGUF model card](https://huggingface.co/Jmica/Drama-3-GGUF), [ASR mode
 
 These are **suggested starting points, not minimum requirements or guaranteed configurations**. Most combinations have not been measured by this project. Available memory, other apps, backend, operating system, reference duration and context all matter.
 
-| Environment | Starting candidate |
+| Your computer | Starting point |
 | --- | --- |
-| Around 16 GB RAM / up to 8 GB VRAM | Unverified; even Q2 may not fit. Check fixed GPU weights below and consider CPU or an external server. |
-| Around 32 GB RAM / 8–12 GB VRAM | Q2 is the smallest file to try. Start with disk experts, cache=8 and pin_experts=false; monitor available memory. |
-| 32–64 GB RAM / around 16 GB VRAM | Compare Q3/Q8 and Q4/Q4 using measured peak memory, not file size alone. |
-| 64+ GB RAM / 24+ GB VRAM | Q4/Q8 is another candidate. Increase cache or context only after measuring headroom. |
-| CPU / other GPU backends | Confirm Drama3 support in your CPU, Metal or Vulkan build. Do not copy CUDA settings blindly. Unified memory is shared by CPU and GPU. |
+| RAM 16 GB or less / VRAM 8 GB or less | Unverified with this setup; even Q2 may not fit. Consider an external server first. |
+| RAM 32 GB or more / VRAM 8–12 GB | Try Q2 with short plain TTS. Consider CPU expert offload and streaming; monitor both RAM and VRAM. 8 GB execution is unverified. |
+| RAM 32–64 GB or more / VRAM 16 GB | Start with Q2 and measure cloning peaks too. Compare Q3/Q4 only after confirming spare memory. |
+| RAM 64 GB or more / VRAM 24 GB or more | Q3/Q4 are comparison candidates. Start short; larger context and references need extra memory. |
+| CPU / Apple unified memory / other GPU | The engine build must support Drama3 on that backend. Do not copy CUDA settings; actual inference is unverified by this project. |
 
 The actual long-form check was **74.7 seconds of Q2 TTS on one Windows CUDA system with 32 GB RAM, 12 GB VRAM and streaming mode**. This does not validate every tier or long-form Clone. [Execution record](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md)
 
@@ -66,6 +66,6 @@ Private commit and resident RAM are different limits. Each installation chooses 
 Sources: [verification](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md), [pinned audio.cpp guide](https://github.com/0xShug0/audio.cpp/blob/ace630deedf60b9c2ff7ec2277a9cdfb1f37f69f/docs/models/fish_drama3.md), [publisher validation limits](https://huggingface.co/Jmica/Drama-3-GGUF#validation-limits). Sizes checked 2026-10-18 and may change.
 
 
-## 0.2.1 installation checks and ASR format
+## 0.2.2 installation checks and ASR format
 The four GGUFs above are TTS choices; only Q2 has actual inference validation in this project. Qwen3-ASR is a separate transcription model. Put the converted single `qwen3_asr_0.6b_bf16.safetensors` file in `models/asr`, then select it in **Drama3 GGUF · ASR Model (Local File)**. Do not mix it with another extension's raw Hugging Face directory loader. Use the unique `Drama3GGUFASRLoader` → `Drama3GGUFASRTranscribe` nodes. Timestamps and ForcedAligner are not needed.
-Automatic transcription also needs the pinned ComfyUI-Drama3 native ASR source; no edits to that extension are required. Follow [portable installation](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md), then run `python check_install.py` and `python install_workflows.py` with ComfyUI's Python. All three examples are copied to **Drama3-GGUF-0.2.1**. Custom paths use --comfy-root or --workflow-dir. Restart/reload and OPEN the copied file: updating files does not change an open canvas's saved Top K=30. New examples use 4097. Listen to assess the generated speech.
+Automatic transcription also needs the pinned ComfyUI-Drama3 native ASR source; no edits to that extension are required. Follow [portable installation](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md), then run `python check_install.py` and `python install_workflows.py` with ComfyUI's Python. All three examples are copied to **Drama3-GGUF-0.2.2**. Custom paths use --comfy-root or --workflow-dir. Restart/reload and OPEN the copied file: updating files does not change an open canvas's saved Top K=30. New examples use 4097. Listen to assess the generated speech.

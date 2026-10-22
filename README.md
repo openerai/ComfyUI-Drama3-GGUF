@@ -42,7 +42,7 @@ python ComfyUI-Drama3-GGUF/check_install.py
 python ComfyUI-Drama3-GGUF/install_workflows.py
 ```
 
-Restart ComfyUI, reload the frontend, then open **Drama3-GGUF-0.2.1** in Workflows.
+Restart ComfyUI, reload the frontend, then open **Drama3-GGUF-0.2.2** in Workflows.
 An already-open canvas keeps its previous values. The helper preserves user files.
 See the [cross-platform requirements, Desktop paths and ASR model formats](docs/portable_install.md)
 before installing on another machine. Only the Python checks are exercised across
@@ -57,8 +57,14 @@ The panel distinguishes locally exercised files from untested choices. See the
 [complete filenames, advanced profiles and validation scope](docs/model_downloads.md).
 File sizes are disk sizes, not RAM/VRAM requirements.
 
-Installation, controls and hardware notes start **collapsed**. Use **Toggle detailed help**
+Memory/troubleshooting, computer hardware profiles and controls notes start **collapsed**. Use **Toggle detailed help**
 at the top to expand or collapse them together; each note can also be opened individually.
+The three help notes sit below the quick steps and move down as earlier help opens.
+Reference audio and quick steps are in the middle, the new script sits beside them,
+and generation, audio controls and saving share the right-hand column.
+The [hardware guide](docs/hardware_guide_EN.md) separates RAM/VRAM starting suggestions
+from actual validation. Installation commands and paths remain in the
+[installation document](docs/portable_install.md).
 **Guide language** switches all marked notes between Korean, English, Japanese and
 Simplified Chinese. Saving remembers the language and collapsed state. Edits to each
 language's guide body are retained. Speech inputs and generation settings are unaffected.

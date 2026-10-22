@@ -8,12 +8,12 @@
       "id": 10,
       "type": "LoadAudio",
       "pos": [
-        840,
-        80
+        900,
+        100
       ],
       "size": [
         380,
-        170
+        200
       ],
       "flags": {},
       "order": 0,
@@ -50,12 +50,12 @@
       "id": 11,
       "type": "TrimAudioDuration",
       "pos": [
-        840,
-        310
+        900,
+        360
       ],
       "size": [
         380,
-        150
+        170
       ],
       "flags": {},
       "order": 1,
@@ -106,12 +106,12 @@
       "id": 12,
       "type": "PreviewAudio",
       "pos": [
-        840,
-        540
+        900,
+        590
       ],
       "size": [
         380,
-        170
+        200
       ],
       "flags": {},
       "order": 2,
@@ -144,12 +144,12 @@
       "id": 13,
       "type": "Drama3GGUFASRLoader",
       "pos": [
-        840,
-        780
+        900,
+        850
       ],
       "size": [
         380,
-        100
+        130
       ],
       "flags": {},
       "mode": 0,
@@ -186,12 +186,12 @@
       "id": 14,
       "type": "Drama3GGUFASRTranscribe",
       "pos": [
-        1300,
-        80
+        1370,
+        100
       ],
       "size": [
         500,
-        230
+        260
       ],
       "flags": {},
       "mode": 0,
@@ -262,8 +262,8 @@
       "id": 15,
       "type": "Drama3GGUFReferenceText",
       "pos": [
-        1300,
-        380
+        1370,
+        440
       ],
       "size": [
         500,
@@ -309,12 +309,12 @@
       "id": 1,
       "type": "Drama3GGUFClone",
       "pos": [
-        1860,
-        80
+        1930,
+        100
       ],
       "size": [
         500,
-        560
+        570
       ],
       "flags": {},
       "order": 6,
@@ -429,12 +429,12 @@
       "id": 2,
       "type": "SaveAudioAdvanced",
       "pos": [
-        1860,
-        1110
+        1930,
+        1150
       ],
       "size": [
         500,
-        210
+        240
       ],
       "flags": {},
       "order": 7,
@@ -481,7 +481,7 @@
       "id": 3,
       "type": "MarkdownNote",
       "pos": [
-        840,
+        880,
         1060
       ],
       "size": [
@@ -533,12 +533,12 @@
       "type": "Drama3GGUFScript",
       "title": "Script & Direction / 새 문장·연기 지시",
       "pos": [
-        1300,
-        850
+        1370,
+        940
       ],
       "size": [
         500,
-        390
+        410
       ],
       "flags": {},
       "order": 9,
@@ -593,12 +593,12 @@
       "type": "Drama3GGUFAudioControls",
       "title": "Audio Controls (Local) / 출력 속도·음량",
       "pos": [
-        1860,
-        710
+        1930,
+        750
       ],
       "size": [
         500,
-        300
+        320
       ],
       "flags": {},
       "order": 10,
@@ -667,12 +667,12 @@
       "type": "MarkdownNote",
       "title": "자세히 · 연기·샘플링·음량",
       "pos": [
-        1300,
-        1420
+        910,
+        1610
       ],
       "size": [
-        1060,
-        900
+        420,
+        1500
       ],
       "flags": {
         "collapsed": true
@@ -703,7 +703,9 @@
               "text": "# 表演、采样与音频调节\n\n## Script & Direction\n\n在 New speech text 中填写新台词，在 Direction 中用自然语言描述表演方式，不必加方括号。Script & Direction 会在前面添加 `[direction]`。没有此节点的基础版可直接在生成文本中输入方括号指示。\n\nDelivery 会用成对标签包裹整个短句。若只想强调某个词，请设置 Delivery=none 并手写标签，例如 `今天是<emphasis>全新的</emphasis>开始。` 或 `<whisper>请保持安静。</whisper>`。`[sighs]` 等声音指示应放在希望出现的位置。这些指示不保证表演或声音质量，请先用短句比较。参考转写只填写录音中实际说出的内容。\n\n### 情绪示例\n\nDelivery 预设并不是全部情绪列表。可使用自然语言描述情绪，并先从 Delivery=none 开始。\n\n- 喜悦：`bright and happy, with a slight smile in the voice`\n- 悲伤：`quietly sad, holding back tears`\n- 克制的愤怒：`low and firm, suppressing anger`\n- 窘迫：`hesitate briefly, then speak cautiously`\n- 情绪变化：`anxious at first, relieved at the end`\n\n也可以在句中插入指示：`[surprised] 真的吗？ [relieved] 太好了。` 这些是表演指示，并不意味着存在一套保证生效的固定情绪命令或数值强度控制。\n\n原生默认分块长度为 200 个字符，长成对标签的作用范围不会跨块延续。选择 Delivery 时，Script & Direction 会拒绝包含标签和指示后超过 200 字符的输入。较长的手写标签段落请拆成短句。[官方语法](https://docs.fish.audio/features/text-to-speech/drama-3)\n\n## 生成与采样\n\n建议从 Temperature=1.0 / Top P=0.9 / Top K=4097 开始，每次只改一个参数。温度过低可能产生静音或重复。本运行时拒绝 Top P=0 和 Top K=0。Temperature=0 也不保证所有重复处理路径完全确定。固定 seed 有助于在相同配置内比较；更改量化、后端或卸载位置可能改变输出。\n\n4097与官方演示一样保留结束标记和全部候选，旧文件的值不会自动更改。生成节点的 Raw output check 显示归一化前的信号。低音量或达到预算的提示不等于已自动判定没有语音，请试听确认。单纯放大或缩短预算不是生成失败的通用解决办法。[对照验证](verification.md#sampling-and-output-diagnostics-0111)\n\nMax seconds 是每个文本块的预算。新节点默认 12 秒，保存的工作流从**每块 47 秒**开始。该值可调，并非总输出时长上限。模型对应的输入上限为 12,173 秒，由 262,144 个上下文位置和编解码器帧率推导而来，并非输出时长或质量保证。提示词、参考和历史也会消耗上下文。\n\n托管服务器的上下文默认从 `fish_drama3.context_length=4096` 开始。config.json 中明确设置的旧值会保留，直至手动修改。合并修改时不要删除路径、后端或内存设置。使用 `python run_server.py --stop` 停止后，下次请求才会应用修改。更多上下文需要更多内存。`request_timeout_seconds=0` 关闭 HTTP 读取等待限制，默认值为 600 秒。超时不会取消服务器推理，重试前应先检查状态。\n\n## Audio Controls (Local)\n\n- Speed=1.0 保持原速；1.2 更快，0.8 更慢。FFmpeg atempo 保持音高。\n- Volume dB：0 保持增益；-6 降低，+3 提高。\n- Normalize loudness 使用本地 EBU R128 处理。此处 Target LUFS 默认为 -16，不保证与 Fish 网页版一致，也不保证每个短音频都精确达到目标。\n- 处理顺序：速度 → 响度归一化 → 增益 → 0.98 峰值限制。归一化后追加增益会改变最终响度。\n\n非原样传递的处理需要 PATH 中有 FFmpeg，或在 config.json 中设置 ffmpeg_path。1x / 0dB / 关闭归一化时，音频采样原样传递。采样率和声道数保持不变，支持一个音频批次。只修改音频调节参数时，可以复用同一图中的生成音频。单独运行 ASR 分支可能清空 ComfyUI 的生成缓存。\n\n## 与 Fish 网页版的区别\n\n这些是本地后处理控制，并非模型原生速度控制，也不是对 Fish 云服务的完整复现。尚未实现云端数字/日期文本规范化、自动标签或 S2.1 标签兼容模式。较难读的数字或单位请改成希望朗读的写法。此前查看的网页为 Drama3 提供音量/速度选项，为 S2.1 Pro 额外提供规范化/标签选项；它们是不同模型与服务。"
             }
           },
-          "detail": true
+          "detail": true,
+          "stack": "help",
+          "stackOrder": 2
         }
       },
       "widgets_values": [
@@ -715,14 +717,14 @@
     {
       "id": 23,
       "type": "MarkdownNote",
-      "title": "자세히 · 설치와 경로",
+      "title": "자세히 · 컴퓨터 사양별 가이드",
       "pos": [
-        2470,
-        80
+        910,
+        1540
       ],
       "size": [
-        1230,
-        850
+        420,
+        1200
       ],
       "flags": {
         "collapsed": true
@@ -733,31 +735,33 @@
         "Node name for S&R": "MarkdownNote",
         "drama3Guide": {
           "version": 1,
-          "role": "setup",
+          "role": "specs",
           "locale": "ko",
           "translations": {
             "ko": {
-              "title": "자세히 · 설치와 경로",
-              "text": "# 설치와 경로\n\n모델 다운로드는 왼쪽 **받을 모델** 한곳에 모았습니다.\n\n1. ComfyUI의 Python으로 requirements.txt를 설치합니다.\n2. 호환 audio.cpp 엔진을 준비하고 config.json에 실행 파일·GGUF·백엔드를 지정합니다.\n3. 자동 받아쓰기는 고정 버전 ComfyUI-Drama3 네이티브 ASR 소스도 준비합니다. 외부 파일 수정은 필요 없습니다.\n4. 현재 노드 폴더에서 다음을 실행합니다.\n\n```sh\npython check_install.py\npython install_workflows.py\n```\n\n세 예제는 **Drama3-GGUF-0.2.1** 폴더에 복사됩니다. 재시작·화면 새로고침 후 그 파일을 새로 여세요. 열려 있던 이전 화면은 자동 변경되지 않습니다.\n\nDesktop의 앱 폴더와 실제 ComfyUI 폴더는 다를 수 있습니다. 사용자 경로·공유 모델·ASR 설치 명령은 [전체 설치 절차](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)를 보세요."
+              "title": "자세히 · 컴퓨터 사양별 가이드",
+              "text": "# 컴퓨터 사양별 가이드\n\n**현재 audio.cpp + Jmica GGUF 구성의 선택 출발점**입니다. 파일 크기는 VRAM 요구량이 아니며, 아래 표는 최소 사양·실행 보장이 아닙니다.\n\n| 내 컴퓨터 | 어디서 시작할까 |\n| --- | --- |\n| RAM 16 GB 이하 / VRAM 8 GB 이하 | 이 구성에서 실행을 확인하지 않았습니다. Q2도 부족할 수 있어 외부 서버를 우선 검토합니다. |\n| RAM 32 GB 이상 / VRAM 8–12 GB | Q2부터 짧은 TTS로 시험합니다. CPU 전문가 오프로딩·streaming을 검토하고 RAM·VRAM을 함께 봅니다. 8 GB 실행은 미확인입니다. |\n| RAM 32–64 GB 이상 / VRAM 16 GB | Q2부터 시작하고 복제까지 메모리 피크를 확인합니다. 여유가 확인된 뒤 Q3·Q4를 비교합니다. |\n| RAM 64 GB 이상 / VRAM 24 GB 이상 | Q3·Q4 비교 후보입니다. 큰 문맥·참조 음성도 추가 메모리를 쓰므로 짧은 입력부터 확인합니다. |\n| CPU / Apple 통합 메모리 / 다른 GPU | 해당 엔진 빌드의 Drama3 지원이 필요합니다. CUDA 설정을 그대로 사용하지 않으며, 이 프로젝트의 실제 추론 검증 범위 밖입니다. |\n\n**실제 확인 범위**\n- Windows · RAM 128 GB · RTX 5070 Ti 16 GB: Q2로 TTS·수동/자동 받아쓰기 복제 실행 확인.\n- 별도의 Windows · RAM 32 GB · VRAM 12 GB 구성: Q2·streaming 장문 TTS 74.7초 생성 기록. 해당 조합 전체의 품질 보장은 아닙니다.\n- Q3·Q4와 다른 운영체제의 추론은 이 프로젝트에서 미검증입니다.\n\n**부담을 줄이는 순서**\n1. 일반 TTS와 짧은 문장으로 먼저 확인합니다.\n2. SSD에 모델을 두고, disk_experts=true · expert_cache_size=8 · pin_experts=false를 출발점으로 검토합니다.\n3. VRAM이 부족하면 CPU 전문가 오프로딩·코덱 CPU·streaming을 검토합니다. RAM 사용과 대기 시간은 늘 수 있습니다.\n4. 자동 받아쓰기는 ASR 0.6B부터 시작합니다. 복제는 참조 음성 인코딩 때문에 TTS보다 메모리를 더 쓸 수 있습니다.\n\n설정은 각 PC의 config.json에서 선택합니다. 이 안내는 설정을 자동 변경하지 않습니다.\n\n[상세 설정](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_KO.md) · [실제 검증 기록](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md)\n\n[설치와 경로](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)\n"
             },
             "en": {
-              "title": "Details · installation and paths",
-              "text": "# Installation and paths\n\nModel downloads appear only in **Model downloads** on the left.\n\n1. Install requirements.txt with ComfyUI's Python.\n2. Prepare a compatible audio.cpp engine and set executable/GGUF/backend in config.json.\n3. Automatic transcription also needs the pinned ComfyUI-Drama3 native ASR source; no source edits are required.\n4. From this node's directory run:\n\n```sh\npython check_install.py\npython install_workflows.py\n```\n\nAll three examples go to **Drama3-GGUF-0.2.1**. Restart/reload and open the copied file. An already-open canvas keeps its old values.\n\nDesktop's app folder can differ from the actual ComfyUI installation. See [full installation steps](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md) for paths, shared models and the ASR source commands."
+              "title": "Details · computer hardware guide",
+              "text": "# Computer hardware guide\n\n**Starting choices for the current audio.cpp + Jmica GGUF setup.** Disk size is not VRAM demand. These are suggestions, not minimum requirements or guarantees.\n\n| Your computer | Starting point |\n| --- | --- |\n| RAM 16 GB or less / VRAM 8 GB or less | Unverified with this setup; even Q2 may not fit. Consider an external server first. |\n| RAM 32 GB or more / VRAM 8–12 GB | Try Q2 with short plain TTS. Consider CPU expert offload and streaming; monitor both RAM and VRAM. 8 GB execution is unverified. |\n| RAM 32–64 GB or more / VRAM 16 GB | Start with Q2 and measure cloning peaks too. Compare Q3/Q4 only after confirming spare memory. |\n| RAM 64 GB or more / VRAM 24 GB or more | Q3/Q4 are comparison candidates. Start short; larger context and references need extra memory. |\n| CPU / Apple unified memory / other GPU | The engine build must support Drama3 on that backend. Do not copy CUDA settings; actual inference is unverified by this project. |\n\n**Actually exercised**\n- Windows, RAM 128 GB, RTX 5070 Ti 16 GB: Q2 TTS, manual Clone and automatic-transcript Clone.\n- Separate Windows, RAM 32 GB, VRAM 12 GB setup: a recorded 74.7 s Q2 streaming TTS run. This is not a quality guarantee for that hardware tier.\n- Q3/Q4 and inference on other operating systems remain unverified by this project.\n\n**Reduce demand step by step**\n1. Begin with short plain TTS.\n2. Keep the model on SSD; consider disk_experts=true, expert_cache_size=8, pin_experts=false as starting settings.\n3. If VRAM runs out, consider CPU expert offload, CPU codec or streaming. RAM demand and latency can increase.\n4. Start optional transcription with ASR 0.6B. Cloning also encodes the reference and may need more memory than TTS.\n\nChoose settings in each PC's config.json. This guide does not change them automatically.\n\n[Detailed settings](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_EN.md) · [Actual validation](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md)\n\n[Installation and paths](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)\n"
             },
             "ja": {
-              "title": "詳細 · 導入とパス",
-              "text": "# 導入とパス\n\nモデル一覧は左のダウンロード欄に統合しています。\n\n1. ComfyUIのPythonでrequirements.txtを導入。\n2. 対応audio.cppとconfig.jsonの実行ファイル・GGUF・backendを設定。\n3. 自動文字起こしには固定版のネイティブASRソースも必要。外部ソース修正は不要。\n4. このノードのディレクトリーで実行：\n\n```sh\npython check_install.py\npython install_workflows.py\n```\n\n3つの例を **Drama3-GGUF-0.2.1** にコピーします。再起動・画面更新後にそのファイルを開き直してください。開いたままの画面は自動変更されません。\n\nDesktopのアプリ場所と実際のComfyUI場所は異なる場合があります。[導入手順](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)で共有パスやASRの導入コマンドを確認してください。"
+              "title": "詳細 · PCスペック別ガイド",
+              "text": "# PCスペック別ガイド\n\n**現在のaudio.cpp + Jmica GGUF構成での出発点**です。ファイル容量はVRAM使用量ではありません。最低要件や動作保証ではありません。\n\n| PCの構成 | どこから試すか |\n| --- | --- |\n| RAM 16 GB以下 / VRAM 8 GB以下 | この構成では未検証です。Q2でも不足する可能性があり、外部サーバーを先に検討します。 |\n| RAM 32 GB以上 / VRAM 8–12 GB | Q2と短い通常TTSから開始。CPUエキスパートオフロードとstreamingを検討し、RAM・VRAMを測定。8 GBでの実行は未確認です。 |\n| RAM 32–64 GB以上 / VRAM 16 GB | Q2から開始し、音声複製のピークも確認。余裕があればQ3・Q4を比較します。 |\n| RAM 64 GB以上 / VRAM 24 GB以上 | Q3・Q4の比較候補です。長い文脈や参照もメモリを使うため、短い入力から確認します。 |\n| CPU / Apple統合メモリ / その他GPU | 対応ビルドのDrama3サポートが必要です。CUDA設定を流用しません。本プロジェクトでは実推論未検証です。 |\n\n**実行確認の範囲**\n- Windows・RAM 128 GB・RTX 5070 Ti 16 GB：Q2でTTS・手動/自動文字起こし複製を実行。\n- 別のWindows・RAM 32 GB・VRAM 12 GB構成：Q2・streamingで74.7秒のTTS生成記録。仕様区分全体の品質保証ではありません。\n- Q3・Q4と他OSでの推論は本プロジェクトでは未検証です。\n\n**負荷を下げる順序**\n1. 短い通常TTSから確認します。\n2. SSDにモデルを置き、disk_experts=true・expert_cache_size=8・pin_experts=falseを出発点として検討。\n3. VRAM不足ならCPUエキスパートオフロード・CPUコーデック・streamingを検討。RAMと待ち時間は増える場合があります。\n4. 自動文字起こしはASR 0.6Bから開始。複製は参照のエンコードで通常TTSよりメモリを使う場合があります。\n\n設定は各PCのconfig.jsonで選択します。このガイドは自動変更しません。\n\n[詳細設定](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_JA.md) · [実行検証](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md)\n\n[導入とパス](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)\n"
             },
             "zh": {
-              "title": "详细 · 安装与路径",
-              "text": "# 安装与路径\n\n模型列表只保留在左侧下载区。\n\n1. 用ComfyUI的Python安装requirements.txt。\n2. 准备兼容audio.cpp并设置config.json中的程序、GGUF与backend。\n3. 自动转写还需固定版原生ASR源码，无需修改外部源码。\n4. 在本节点目录运行：\n\n```sh\npython check_install.py\npython install_workflows.py\n```\n\n三种示例复制到 **Drama3-GGUF-0.2.1**。重启、刷新后重新打开该文件；已打开的旧画面不会自动改变。\n\nDesktop应用位置可能不同于实际ComfyUI目录。共享路径和ASR安装命令见[完整安装步骤](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)。"
+              "title": "详细 · 电脑配置指南",
+              "text": "# 电脑配置指南\n\n**适用于当前audio.cpp + Jmica GGUF配置的起点建议。** 文件大小不是显存需求；下表不是最低配置或运行保证。\n\n| 电脑配置 | 从哪里开始 |\n| --- | --- |\n| RAM 16 GB及以下 / 显存8 GB及以下 | 此配置未经验证，Q2也可能放不下。优先考虑外部服务器。 |\n| RAM 32 GB及以上 / 显存8–12 GB | 从Q2和简短普通TTS开始。考虑CPU专家卸载及streaming，同时观察RAM与显存。8 GB运行未经确认。 |\n| RAM 32–64 GB及以上 / 显存16 GB | 从Q2开始，并测量克隆峰值。确认有余量后再比较Q3、Q4。 |\n| RAM 64 GB及以上 / 显存24 GB及以上 | 可比较Q3、Q4。长上下文和参考音频需要额外内存，先用短输入确认。 |\n| CPU / Apple统一内存 / 其他GPU | 对应引擎构建必须支持Drama3，勿直接套用CUDA设置。本项目未验证实际推理。 |\n\n**实际验证范围**\n- Windows、RAM 128 GB、RTX 5070 Ti 16 GB：Q2完成TTS、手动及自动转写克隆。\n- 另一台Windows、RAM 32 GB、显存12 GB配置：有Q2 streaming生成74.7秒TTS的记录，不保证该配置档位的整体质量。\n- 本项目未验证Q3、Q4或其他操作系统上的推理。\n\n**降低负担的顺序**\n1. 先用简短普通TTS确认。\n2. 模型放SSD；可从disk_experts=true、expert_cache_size=8、pin_experts=false开始考虑。\n3. 显存不足时考虑CPU专家卸载、CPU编解码器或streaming，RAM需求与等待时间可能增加。\n4. 可选转写从ASR 0.6B开始；克隆需要编码参考音频，可能比普通TTS占用更多内存。\n\n在每台PC的config.json中选择设置，本指南不会自动修改配置。\n\n[详细设置](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_ZH.md) · [实际验证](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md)\n\n[安装与路径](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)\n"
             }
           },
-          "detail": true
+          "detail": true,
+          "stack": "help",
+          "stackOrder": 1
         }
       },
       "widgets_values": [
-        "# 설치와 경로\n\n모델 다운로드는 왼쪽 **받을 모델** 한곳에 모았습니다.\n\n1. ComfyUI의 Python으로 requirements.txt를 설치합니다.\n2. 호환 audio.cpp 엔진을 준비하고 config.json에 실행 파일·GGUF·백엔드를 지정합니다.\n3. 자동 받아쓰기는 고정 버전 ComfyUI-Drama3 네이티브 ASR 소스도 준비합니다. 외부 파일 수정은 필요 없습니다.\n4. 현재 노드 폴더에서 다음을 실행합니다.\n\n```sh\npython check_install.py\npython install_workflows.py\n```\n\n세 예제는 **Drama3-GGUF-0.2.1** 폴더에 복사됩니다. 재시작·화면 새로고침 후 그 파일을 새로 여세요. 열려 있던 이전 화면은 자동 변경되지 않습니다.\n\nDesktop의 앱 폴더와 실제 ComfyUI 폴더는 다를 수 있습니다. 사용자 경로·공유 모델·ASR 설치 명령은 [전체 설치 절차](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)를 보세요."
+        "# 컴퓨터 사양별 가이드\n\n**현재 audio.cpp + Jmica GGUF 구성의 선택 출발점**입니다. 파일 크기는 VRAM 요구량이 아니며, 아래 표는 최소 사양·실행 보장이 아닙니다.\n\n| 내 컴퓨터 | 어디서 시작할까 |\n| --- | --- |\n| RAM 16 GB 이하 / VRAM 8 GB 이하 | 이 구성에서 실행을 확인하지 않았습니다. Q2도 부족할 수 있어 외부 서버를 우선 검토합니다. |\n| RAM 32 GB 이상 / VRAM 8–12 GB | Q2부터 짧은 TTS로 시험합니다. CPU 전문가 오프로딩·streaming을 검토하고 RAM·VRAM을 함께 봅니다. 8 GB 실행은 미확인입니다. |\n| RAM 32–64 GB 이상 / VRAM 16 GB | Q2부터 시작하고 복제까지 메모리 피크를 확인합니다. 여유가 확인된 뒤 Q3·Q4를 비교합니다. |\n| RAM 64 GB 이상 / VRAM 24 GB 이상 | Q3·Q4 비교 후보입니다. 큰 문맥·참조 음성도 추가 메모리를 쓰므로 짧은 입력부터 확인합니다. |\n| CPU / Apple 통합 메모리 / 다른 GPU | 해당 엔진 빌드의 Drama3 지원이 필요합니다. CUDA 설정을 그대로 사용하지 않으며, 이 프로젝트의 실제 추론 검증 범위 밖입니다. |\n\n**실제 확인 범위**\n- Windows · RAM 128 GB · RTX 5070 Ti 16 GB: Q2로 TTS·수동/자동 받아쓰기 복제 실행 확인.\n- 별도의 Windows · RAM 32 GB · VRAM 12 GB 구성: Q2·streaming 장문 TTS 74.7초 생성 기록. 해당 조합 전체의 품질 보장은 아닙니다.\n- Q3·Q4와 다른 운영체제의 추론은 이 프로젝트에서 미검증입니다.\n\n**부담을 줄이는 순서**\n1. 일반 TTS와 짧은 문장으로 먼저 확인합니다.\n2. SSD에 모델을 두고, disk_experts=true · expert_cache_size=8 · pin_experts=false를 출발점으로 검토합니다.\n3. VRAM이 부족하면 CPU 전문가 오프로딩·코덱 CPU·streaming을 검토합니다. RAM 사용과 대기 시간은 늘 수 있습니다.\n4. 자동 받아쓰기는 ASR 0.6B부터 시작합니다. 복제는 참조 음성 인코딩 때문에 TTS보다 메모리를 더 쓸 수 있습니다.\n\n설정은 각 PC의 config.json에서 선택합니다. 이 안내는 설정을 자동 변경하지 않습니다.\n\n[상세 설정](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_KO.md) · [실제 검증 기록](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md)\n\n[설치와 경로](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/portable_install.md)\n"
       ],
       "inputs": [],
       "outputs": [],
@@ -769,12 +773,12 @@
       "type": "MarkdownNote",
       "title": "자세히 · 메모리·문제 해결",
       "pos": [
-        2470,
-        1010
+        910,
+        1470
       ],
       "size": [
-        1230,
-        1100
+        420,
+        780
       ],
       "flags": {
         "collapsed": true
@@ -805,7 +809,9 @@
               "text": "# 内存与故障排查\n\n- 请测量RAM/VRAM峰值，不要用文件大小推断显存需求。\n- backend和内存设置放在各PC的config.json；不要将CUDA设置直接用于CPU、Metal或Vulkan。\n- disk_experts、expert_cache_size、cpu_expert_layers与codec_backend影响速度和内存。\n- Chunk budget是每段上限，并非目标时长；达到上限时请检查结尾。\n- 无声时先确认**当前画面中的**Top K=4097，响度处理也会放大噪声。\n- 修改配置后停止管理服务器，让下次运行加载新设置。\n\n```sh\npython run_server.py --stop\n```\n\n[硬件详细说明](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_ZH.md) · [实际验证范围](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/verification.md)\n\n多个OS的Python检查不代表所有GPU和语音质量都得到保证。"
             }
           },
-          "detail": true
+          "detail": true,
+          "stack": "help",
+          "stackOrder": 0
         }
       },
       "widgets_values": [
@@ -819,7 +825,7 @@
     {
       "id": 25,
       "type": "MarkdownNote",
-      "title": "받을 모델 · 이 목록에서 선택",
+      "title": "받을 모델 · 현재 audio.cpp 구성용",
       "pos": [
         40,
         80
@@ -841,27 +847,27 @@
           "locale": "ko",
           "translations": {
             "ko": {
-              "title": "받을 모델 · 이 목록에서 선택",
-              "text": "# 받을 파일\n\n**음성 생성(TTS): GGUF 하나만 받으세요.**\n\n| 다운로드 | 디스크 크기 | 이 프로젝트 확인 |\n| --- | ---: | --- |\n| [Q2 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | 실제 실행 확인 |\n| [Q3 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | 미검증 선택지 |\n| [Q4 / Q4 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | 미검증 선택지 |\n| [Q4 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | 미검증 선택지 |\n\n**자동 받아쓰기 복제만: ASR 하나를 추가합니다.** 일반 TTS·수동 복제에는 필요 없습니다.\n\n| 다운로드 | 디스크 크기 | 이 프로젝트 확인 |\n| --- | ---: | --- |\n| [Qwen3-ASR 0.6B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_0.6b_bf16.safetensors) | 1.46 GiB | 실제 실행 확인 |\n| [Qwen3-ASR 1.7B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_1.7b_bf16.safetensors) | 3.80 GiB | 미검증 선택지 |\n\n**저장 위치**\n- GGUF → `models/drama3/`에 두고 config.json의 model_path로 지정\n- ASR → `models/asr/`에 두고 ASR Model (Local File)에서 선택\n\nASR은 **변환된 단일 safetensors**입니다. 다른 확장의 원본 HF 폴더용 로더와 혼용하지 마세요.\n\nGiB는 디스크 크기이며 RAM·VRAM 요구량이 아닙니다. GGUF 안에 코덱이 들어 있고, 호환 audio.cpp 엔진은 별도입니다.\n\n[전체 파일명·고급 GGUF·해시](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [모델·사양 안내](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_KO.md)\n\n설치·연기·메모리 설명은 상단 **자세한 설명 접기/펼치기** 버튼으로 봅니다."
+              "title": "받을 모델 · 현재 audio.cpp 구성용",
+              "text": "# 현재 audio.cpp용 모델\n\nJmica 배포본 기준입니다. 다른 Drama-3 GGUF는 전용 엔진이나 패치가 필요할 수 있습니다.\n\n\n**음성 생성(TTS): GGUF 하나만 받으세요.**\n\n| 다운로드 | 디스크 크기 | 이 프로젝트 확인 |\n| --- | ---: | --- |\n| [Q2 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | 실제 실행 확인 |\n| [Q3 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | 미검증 선택지 |\n| [Q4 / Q4 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | 미검증 선택지 |\n| [Q4 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | 미검증 선택지 |\n\n**자동 받아쓰기 복제만: ASR 하나를 추가합니다.** 일반 TTS·수동 복제에는 필요 없습니다.\n\n| 다운로드 | 디스크 크기 | 이 프로젝트 확인 |\n| --- | ---: | --- |\n| [Qwen3-ASR 0.6B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_0.6b_bf16.safetensors) | 1.46 GiB | 실제 실행 확인 |\n| [Qwen3-ASR 1.7B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_1.7b_bf16.safetensors) | 3.80 GiB | 미검증 선택지 |\n\n**저장 위치**\n- GGUF → `models/drama3/`에 두고 config.json의 model_path로 지정\n- ASR → `models/asr/`에 두고 ASR Model (Local File)에서 선택\n\nASR은 **변환된 단일 safetensors**입니다. 다른 확장의 원본 HF 폴더용 로더와 혼용하지 마세요.\n\nGiB는 디스크 크기이며 RAM·VRAM 요구량이 아닙니다. GGUF 안에 코덱이 들어 있고, 호환 audio.cpp 엔진은 별도입니다.\n\n[전체 파일명·고급 GGUF·해시](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [모델·사양 안내](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_KO.md)\n\n사양·연기·메모리 설명은 상단 **자세한 설명 접기/펼치기** 버튼으로 봅니다."
             },
             "en": {
-              "title": "Model downloads · choose here",
-              "text": "# Files to download\n\n**TTS: download ONE GGUF.**\n\n| Download | Disk size | Project validation |\n| --- | ---: | --- |\n| [Q2 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | Inference checked |\n| [Q3 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | Untested option |\n| [Q4 / Q4 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | Untested option |\n| [Q4 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | Untested option |\n\n**Automatic-transcript Clone only: add ONE ASR file.** Plain TTS and manual Clone skip it.\n\n| Download | Disk size | Project validation |\n| --- | ---: | --- |\n| [Qwen3-ASR 0.6B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_0.6b_bf16.safetensors) | 1.46 GiB | Inference checked |\n| [Qwen3-ASR 1.7B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_1.7b_bf16.safetensors) | 3.80 GiB | Untested option |\n\n**Storage**\n- GGUF → `models/drama3/`; select its path in config.json\n- ASR → `models/asr/`; select it in ASR Model (Local File)\n\nASR uses a **converted single safetensors file**, not another extension's raw HF directory loader.\n\nGiB means disk size, not RAM/VRAM requirements. The GGUF embeds its codec; a compatible audio.cpp engine is separate.\n\n[Full filenames, advanced GGUFs and hashes](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [Model/hardware guide](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_EN.md)\n\nUse **Toggle detailed help** above for installation, acting and memory notes."
+              "title": "Models · for this audio.cpp setup",
+              "text": "# Models for this audio.cpp setup\n\nThese are Jmica packages. Other Drama-3 GGUFs may require a different engine or patch.\n\n\n**TTS: download ONE GGUF.**\n\n| Download | Disk size | Project validation |\n| --- | ---: | --- |\n| [Q2 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | Inference checked |\n| [Q3 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | Untested option |\n| [Q4 / Q4 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | Untested option |\n| [Q4 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | Untested option |\n\n**Automatic-transcript Clone only: add ONE ASR file.** Plain TTS and manual Clone skip it.\n\n| Download | Disk size | Project validation |\n| --- | ---: | --- |\n| [Qwen3-ASR 0.6B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_0.6b_bf16.safetensors) | 1.46 GiB | Inference checked |\n| [Qwen3-ASR 1.7B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_1.7b_bf16.safetensors) | 3.80 GiB | Untested option |\n\n**Storage**\n- GGUF → `models/drama3/`; select its path in config.json\n- ASR → `models/asr/`; select it in ASR Model (Local File)\n\nASR uses a **converted single safetensors file**, not another extension's raw HF directory loader.\n\nGiB means disk size, not RAM/VRAM requirements. The GGUF embeds its codec; a compatible audio.cpp engine is separate.\n\n[Full filenames, advanced GGUFs and hashes](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [Model/hardware guide](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_EN.md)\n\nUse **Toggle detailed help** above for hardware profiles, acting and memory notes."
             },
             "ja": {
-              "title": "モデルのダウンロード · ここで選択",
-              "text": "# ダウンロードするファイル\n\n**TTS：GGUFを1つだけ選びます。**\n\n| ダウンロード | ディスク容量 | 本プロジェクトの確認 |\n| --- | ---: | --- |\n| [Q2 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | 推論確認済み |\n| [Q3 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | 未検証の選択肢 |\n| [Q4 / Q4 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | 未検証の選択肢 |\n| [Q4 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | 未検証の選択肢 |\n\n**自動文字起こしCloneのみ：ASRを1つ追加。** 通常TTS・手動Cloneには不要です。\n\n| ダウンロード | ディスク容量 | 本プロジェクトの確認 |\n| --- | ---: | --- |\n| [Qwen3-ASR 0.6B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_0.6b_bf16.safetensors) | 1.46 GiB | 推論確認済み |\n| [Qwen3-ASR 1.7B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_1.7b_bf16.safetensors) | 3.80 GiB | 未検証の選択肢 |\n\n**保存先**\n- GGUF → `models/drama3/`、config.jsonのmodel_pathで指定\n- ASR → `models/asr/`、ASR Model (Local File)で選択\n\nASRは**変換済み単一safetensors**です。他の拡張の元HFフォルダー用ローダーと混用しません。\n\nGiBはディスク容量で、RAM・VRAM要件ではありません。GGUFにはコーデックが入り、対応audio.cppエンジンは別途必要です。\n\n[全ファイル名・高度なGGUF・ハッシュ](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [モデル・仕様](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_JA.md)\n\n上の **詳しい説明を開閉** で導入・演技・メモリ説明を表示できます。"
+              "title": "モデル · 現在のaudio.cpp構成用",
+              "text": "# 現在のaudio.cpp用モデル\n\nJmica配布版の一覧です。他のDrama-3 GGUFには別エンジンやパッチが必要な場合があります。\n\n\n**TTS：GGUFを1つだけ選びます。**\n\n| ダウンロード | ディスク容量 | 本プロジェクトの確認 |\n| --- | ---: | --- |\n| [Q2 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | 推論確認済み |\n| [Q3 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | 未検証の選択肢 |\n| [Q4 / Q4 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | 未検証の選択肢 |\n| [Q4 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | 未検証の選択肢 |\n\n**自動文字起こしCloneのみ：ASRを1つ追加。** 通常TTS・手動Cloneには不要です。\n\n| ダウンロード | ディスク容量 | 本プロジェクトの確認 |\n| --- | ---: | --- |\n| [Qwen3-ASR 0.6B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_0.6b_bf16.safetensors) | 1.46 GiB | 推論確認済み |\n| [Qwen3-ASR 1.7B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_1.7b_bf16.safetensors) | 3.80 GiB | 未検証の選択肢 |\n\n**保存先**\n- GGUF → `models/drama3/`、config.jsonのmodel_pathで指定\n- ASR → `models/asr/`、ASR Model (Local File)で選択\n\nASRは**変換済み単一safetensors**です。他の拡張の元HFフォルダー用ローダーと混用しません。\n\nGiBはディスク容量で、RAM・VRAM要件ではありません。GGUFにはコーデックが入り、対応audio.cppエンジンは別途必要です。\n\n[全ファイル名・高度なGGUF・ハッシュ](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [モデル・仕様](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_JA.md)\n\n上の **詳しい説明を開閉** でPCスペック・演技・メモリ説明を表示できます。"
             },
             "zh": {
-              "title": "模型下载 · 在此选择",
-              "text": "# 需要下载的文件\n\n**TTS：只选一个GGUF。**\n\n| 下载 | 磁盘大小 | 本项目验证 |\n| --- | ---: | --- |\n| [Q2 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | 实际推理已验证 |\n| [Q3 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | 未验证选项 |\n| [Q4 / Q4 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | 未验证选项 |\n| [Q4 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | 未验证选项 |\n\n**仅自动转写Clone：另加一个ASR文件。** 普通TTS和手动Clone不需要。\n\n| 下载 | 磁盘大小 | 本项目验证 |\n| --- | ---: | --- |\n| [Qwen3-ASR 0.6B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_0.6b_bf16.safetensors) | 1.46 GiB | 实际推理已验证 |\n| [Qwen3-ASR 1.7B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_1.7b_bf16.safetensors) | 3.80 GiB | 未验证选项 |\n\n**存放位置**\n- GGUF → `models/drama3/`，在config.json的model_path中指定\n- ASR → `models/asr/`，在ASR Model (Local File)中选择\n\nASR是**转换后的单个safetensors文件**，不要与其他扩展的原始HF文件夹加载器混用。\n\nGiB是磁盘大小，并非RAM/VRAM需求。GGUF已含编解码器；兼容audio.cpp引擎需另行准备。\n\n[完整文件名、高级GGUF与哈希](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [模型与硬件](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_ZH.md)\n\n点击上方 **展开/收起详细说明** 查看安装、表演和内存说明。"
+              "title": "模型 · 当前audio.cpp配置",
+              "text": "# 当前audio.cpp适用模型\n\n本列表为Jmica发行版；其他Drama-3 GGUF可能需要不同引擎或补丁。\n\n\n**TTS：只选一个GGUF。**\n\n| 下载 | 磁盘大小 | 本项目验证 |\n| --- | ---: | --- |\n| [Q2 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | 实际推理已验证 |\n| [Q3 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | 未验证选项 |\n| [Q4 / Q4 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | 未验证选项 |\n| [Q4 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | 未验证选项 |\n\n**仅自动转写Clone：另加一个ASR文件。** 普通TTS和手动Clone不需要。\n\n| 下载 | 磁盘大小 | 本项目验证 |\n| --- | ---: | --- |\n| [Qwen3-ASR 0.6B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_0.6b_bf16.safetensors) | 1.46 GiB | 实际推理已验证 |\n| [Qwen3-ASR 1.7B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_1.7b_bf16.safetensors) | 3.80 GiB | 未验证选项 |\n\n**存放位置**\n- GGUF → `models/drama3/`，在config.json的model_path中指定\n- ASR → `models/asr/`，在ASR Model (Local File)中选择\n\nASR是**转换后的单个safetensors文件**，不要与其他扩展的原始HF文件夹加载器混用。\n\nGiB是磁盘大小，并非RAM/VRAM需求。GGUF已含编解码器；兼容audio.cpp引擎需另行准备。\n\n[完整文件名、高级GGUF与哈希](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [模型与硬件](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_ZH.md)\n\n点击上方 **展开/收起详细说明** 查看电脑配置、表演和内存说明。"
             }
           },
           "detail": false
         }
       },
       "widgets_values": [
-        "# 받을 파일\n\n**음성 생성(TTS): GGUF 하나만 받으세요.**\n\n| 다운로드 | 디스크 크기 | 이 프로젝트 확인 |\n| --- | ---: | --- |\n| [Q2 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | 실제 실행 확인 |\n| [Q3 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | 미검증 선택지 |\n| [Q4 / Q4 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | 미검증 선택지 |\n| [Q4 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | 미검증 선택지 |\n\n**자동 받아쓰기 복제만: ASR 하나를 추가합니다.** 일반 TTS·수동 복제에는 필요 없습니다.\n\n| 다운로드 | 디스크 크기 | 이 프로젝트 확인 |\n| --- | ---: | --- |\n| [Qwen3-ASR 0.6B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_0.6b_bf16.safetensors) | 1.46 GiB | 실제 실행 확인 |\n| [Qwen3-ASR 1.7B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_1.7b_bf16.safetensors) | 3.80 GiB | 미검증 선택지 |\n\n**저장 위치**\n- GGUF → `models/drama3/`에 두고 config.json의 model_path로 지정\n- ASR → `models/asr/`에 두고 ASR Model (Local File)에서 선택\n\nASR은 **변환된 단일 safetensors**입니다. 다른 확장의 원본 HF 폴더용 로더와 혼용하지 마세요.\n\nGiB는 디스크 크기이며 RAM·VRAM 요구량이 아닙니다. GGUF 안에 코덱이 들어 있고, 호환 audio.cpp 엔진은 별도입니다.\n\n[전체 파일명·고급 GGUF·해시](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [모델·사양 안내](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_KO.md)\n\n설치·연기·메모리 설명은 상단 **자세한 설명 접기/펼치기** 버튼으로 봅니다."
+        "# 현재 audio.cpp용 모델\n\nJmica 배포본 기준입니다. 다른 Drama-3 GGUF는 전용 엔진이나 패치가 필요할 수 있습니다.\n\n\n**음성 생성(TTS): GGUF 하나만 받으세요.**\n\n| 다운로드 | 디스크 크기 | 이 프로젝트 확인 |\n| --- | ---: | --- |\n| [Q2 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q2_K.gguf) | 15.88 GiB | 실제 실행 확인 |\n| [Q3 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q3_K_S.gguf) | 18.93 GiB | 미검증 선택지 |\n| [Q4 / Q4 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-4bit-experts-Q4_K_S.gguf) | 21.78 GiB | 미검증 선택지 |\n| [Q4 / Q8 backbone](https://huggingface.co/Jmica/Drama-3-GGUF/blob/17a5b40c5dc2c2be986f5371a7e650108b828e29/drama-3-backbone-8bit-experts-Q4_K_S.gguf) | 22.91 GiB | 미검증 선택지 |\n\n**자동 받아쓰기 복제만: ASR 하나를 추가합니다.** 일반 TTS·수동 복제에는 필요 없습니다.\n\n| 다운로드 | 디스크 크기 | 이 프로젝트 확인 |\n| --- | ---: | --- |\n| [Qwen3-ASR 0.6B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_0.6b_bf16.safetensors) | 1.46 GiB | 실제 실행 확인 |\n| [Qwen3-ASR 1.7B](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI/blob/6ad8c9be026925839479a8d97749068a4202fbe9/qwen3_asr_1.7b_bf16.safetensors) | 3.80 GiB | 미검증 선택지 |\n\n**저장 위치**\n- GGUF → `models/drama3/`에 두고 config.json의 model_path로 지정\n- ASR → `models/asr/`에 두고 ASR Model (Local File)에서 선택\n\nASR은 **변환된 단일 safetensors**입니다. 다른 확장의 원본 HF 폴더용 로더와 혼용하지 마세요.\n\nGiB는 디스크 크기이며 RAM·VRAM 요구량이 아닙니다. GGUF 안에 코덱이 들어 있고, 호환 audio.cpp 엔진은 별도입니다.\n\n[전체 파일명·고급 GGUF·해시](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [모델·사양 안내](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_KO.md)\n\n사양·연기·메모리 설명은 상단 **자세한 설명 접기/펼치기** 버튼으로 봅니다."
       ],
       "inputs": [],
       "outputs": [],
@@ -955,10 +961,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.38,
+      "scale": 0.48,
       "offset": [
-        160,
-        300
+        130,
+        150
       ]
     }
   },

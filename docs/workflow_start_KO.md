@@ -1,4 +1,7 @@
-# 받을 파일
+# 현재 audio.cpp용 모델
+
+Jmica 배포본 기준입니다. 다른 Drama-3 GGUF는 전용 엔진이나 패치가 필요할 수 있습니다.
+
 
 **음성 생성(TTS): GGUF 하나만 받으세요.**
 
@@ -26,4 +29,4 @@ GiB는 디스크 크기이며 RAM·VRAM 요구량이 아닙니다. GGUF 안에 �
 
 [전체 파일명·고급 GGUF·해시](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_downloads.md) · [모델·사양 안내](https://github.com/openerai/ComfyUI-Drama3-GGUF/blob/main/docs/model_setup_KO.md)
 
-설치·연기·메모리 설명은 상단 **자세한 설명 접기/펼치기** 버튼으로 봅니다.
+사양·연기·메모리 설명은 상단 **자세한 설명 접기/펼치기** 버튼으로 봅니다.

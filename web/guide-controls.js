@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { guideNodes, guideLanguages, restoreGuideLanguage, setGuideLanguage,
-    detailGuideNodes, setGuideDetails } from "./guide-language.js?v=0.2.1";
+    detailGuideNodes, installGuideDetailStack, setGuideDetails } from "./guide-language.js?v=0.2.2";
 
 let toolbar;
 let select;
@@ -60,10 +60,12 @@ app.registerExtension({
     name: "Drama3GGUF.GuideLanguage",
     setup() {
         restoreGuideLanguage(app.rootGraph);
+        installGuideDetailStack(app.rootGraph);
         updateToolbar();
     },
     afterConfigureGraph() {
         restoreGuideLanguage(app.rootGraph);
+        installGuideDetailStack(app.rootGraph);
         updateToolbar();
     },
 });
